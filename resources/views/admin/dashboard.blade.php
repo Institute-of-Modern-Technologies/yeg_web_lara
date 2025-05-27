@@ -336,6 +336,7 @@
     </div>
 
     <!-- User Management Modals -->
+    <!-- Create User Modal -->
     <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 overflow-hidden animate-fadeIn transform transition-all duration-300">
             <!-- Modal Header -->
@@ -470,6 +471,154 @@
             </div>
         </div>
     </div>
+    
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 overflow-hidden animate-fadeIn transform transition-all duration-300">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-primary to-red-700 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-user-edit mr-3"></i>
+                    <span>Edit User</span>
+                </h3>
+                <button type="button" class="text-white hover:text-gray-200 focus:outline-none" onclick="closeEditUserModal()">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <form id="editUserForm">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="edit_user_id" name="user_id">
+                    <div class="space-y-4">
+                        <!-- Row 1: Name and Email -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_name">
+                                    Full Name
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" id="edit_name" name="name" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter full name" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Address -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_email">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" id="edit_email" name="email" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter email address" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 2: Username and User Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Username -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_username">
+                                    Username
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-at"></i>
+                                    </span>
+                                    <input type="text" id="edit_username" name="username" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter username" required>
+                                </div>
+                            </div>
+                            
+                            <!-- User Type -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_user_type_id">
+                                    User Type
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-user-tag"></i>
+                                    </span>
+                                    <select id="edit_user_type_id" name="user_type_id" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary appearance-none" required>
+                                        <option value="" disabled>Select user type</option>
+                                        <option value="3">Student</option>
+                                        <option value="2">School Admin</option>
+                                        <option value="1">Super Admin</option>
+                                    </select>
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 3: Password (Optional) -->
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                    <span class="text-sm text-gray-700 font-medium">Password Update (Optional)</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mb-3">Leave blank if you don't want to change the password</p>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <!-- Password -->
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_password">
+                                            New Password
+                                        </label>
+                                        <div class="relative">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" id="edit_password" name="password" class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter new password">
+                                            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('edit_password', 'editPasswordToggle')">
+                                                <i id="editPasswordToggle" class="fas fa-eye-slash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Confirm Password -->
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-semibold mb-2" for="edit_password_confirmation">
+                                            Confirm New Password
+                                        </label>
+                                        <div class="relative">
+                                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <input type="password" id="edit_password_confirmation" name="password_confirmation" class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Confirm new password">
+                                            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('edit_password_confirmation', 'editConfirmPasswordToggle')">
+                                                <i id="editConfirmPasswordToggle" class="fas fa-eye-slash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center" onclick="closeEditUserModal()">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Include Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -505,7 +654,7 @@
             return false;
         }
         
-        // Function to close the user modal - accessible directly from HTML
+        // Functions to open/close the user modals - accessible directly from HTML
         function closeUserModal() {
             console.log('closeUserModal called');
             const modal = document.getElementById('createUserModal');
@@ -607,7 +756,34 @@
                 userTypeFilter.addEventListener('change', filterUsers);
             }
             
-            // Form submission handling with AJAX
+            // Add click event listeners to close modals when clicking outside
+            document.querySelectorAll('.fixed.inset-0.bg-black.bg-opacity-50').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        if (modal.id === 'editUserModal') {
+                            closeEditUserModal();
+                        } else {
+                            closeUserModal();
+                        }
+                    }
+                });
+            });
+            
+            // Close modals with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const visibleModal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50.flex');
+                    if (visibleModal) {
+                        if (visibleModal.id === 'editUserModal') {
+                            closeEditUserModal();
+                        } else {
+                            closeUserModal();
+                        }
+                    }
+                }
+            });
+            
+            // Create User Form submission handling with AJAX
             const createUserForm = document.getElementById('createUserForm');
             if (createUserForm) {
                 createUserForm.addEventListener('submit', function(e) {
@@ -711,24 +887,116 @@
                 });
             }
             
-            // Close modal when clicking outside
-            document.querySelectorAll('.fixed.inset-0.bg-black.bg-opacity-50').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        closeUserModal();
-                    }
+            // Edit User Form submission handling with AJAX
+            const editUserForm = document.getElementById('editUserForm');
+            if (editUserForm) {
+                editUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+                    
+                    // Clear previous error messages
+                    document.querySelectorAll('#editUserForm .error-message').forEach(el => el.remove());
+                    document.querySelectorAll('#editUserForm .border-red-500').forEach(el => {
+                        el.classList.remove('border-red-500');
+                        el.classList.remove('focus:ring-red-500');
+                        el.classList.remove('focus:border-red-500');
+                    });
+                    
+                    // Get form data
+                    const formData = new FormData(this);
+                    const userId = document.getElementById('edit_user_id').value;
+                    
+                    // Send AJAX request
+                    fetch(`/admin/users/${userId}`, {
+                        method: 'POST', // Laravel accepts POST for PUT with _method
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message || 'User updated successfully',
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                // Close modal
+                                closeEditUserModal();
+                                
+                                // Reload page to refresh user list
+                                window.location.reload();
+                            });
+                        } else {
+                            // Show validation errors
+                            const errors = data.errors;
+                            if (errors) {
+                                Object.keys(errors).forEach(field => {
+                                    // Handle field name adjustments
+                                    let formField = field;
+                                    if (field.startsWith('edit_')) {
+                                        formField = field;
+                                    } else {
+                                        formField = 'edit_' + field;
+                                    }
+                                    
+                                    const input = document.getElementById(formField);
+                                    if (input) {
+                                        // Highlight input
+                                        input.classList.add('border-red-500');
+                                        input.classList.add('focus:ring-red-500');
+                                        input.classList.add('focus:border-red-500');
+                                        
+                                        // Add error message
+                                        const errorMsg = document.createElement('div');
+                                        errorMsg.className = 'text-red-500 text-xs mt-1 error-message';
+                                        errorMsg.textContent = errors[field][0];
+                                        input.parentNode.appendChild(errorMsg);
+                                    }
+                                });
+                            }
+                            
+                            // Show error toast
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.message || 'There were errors in your submission'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        // Show error message
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'There was a problem updating the user. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6'
+                        });
+                        console.error('Error:', error);
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
                 });
-            });
-            
-            // Close with ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    const visibleModal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50.flex');
-                    if (visibleModal) {
-                        closeUserModal();
-                    }
-                }
-            });
+            }
         });
         
         // These general modal functions are kept for reference but not used directly
@@ -750,14 +1018,111 @@
             }
         }
         
-        // Edit user function
+        // Open the edit user modal and fetch user data
+        function openEditUserModal() {
+            const modal = document.getElementById('editUserModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            } else {
+                console.error('Edit modal element not found!');
+            }
+            return false;
+        }
+        
+        // Close the edit user modal
+        function closeEditUserModal() {
+            const modal = document.getElementById('editUserModal');
+            const modalContent = modal.querySelector('div'); // Get the modal content container
+            
+            // Add fadeOut animation
+            if (modalContent) {
+                modalContent.classList.add('animate-fadeOut');
+                
+                // Wait for animation to finish before hiding modal
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modalContent.classList.remove('animate-fadeOut');
+                    document.body.style.overflow = ''; // Restore scrolling
+                }, 200);
+            } else {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
+            // Reset form
+            document.getElementById('editUserForm').reset();
+            
+            // Clear validation errors
+            document.querySelectorAll('#editUserForm .error-message').forEach(el => el.remove());
+            document.querySelectorAll('#editUserForm .border-red-500').forEach(el => {
+                el.classList.remove('border-red-500');
+                el.classList.remove('focus:ring-red-500');
+                el.classList.remove('focus:border-red-500');
+            });
+            
+            return false;
+        }
+        
+        // Edit user function - fetch user data and show modal
         function editUser(userId) {
-            // In a real implementation, this would fetch user data and populate a form
+            // Show loading indicator
             Swal.fire({
-                title: 'Edit User',
-                text: 'Edit user functionality will be implemented soon!',
-                icon: 'info',
-                confirmButtonColor: '#FF0000'
+                title: 'Loading...',
+                text: 'Fetching user data',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Fetch user data from the server
+            fetch(`/admin/users/${userId}/edit`, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Close loading indicator
+                Swal.close();
+                
+                if (data.success) {
+                    // Populate form with user data
+                    const user = data.user;
+                    document.getElementById('edit_user_id').value = user.id;
+                    document.getElementById('edit_name').value = user.name;
+                    document.getElementById('edit_email').value = user.email;
+                    document.getElementById('edit_username').value = user.username;
+                    document.getElementById('edit_user_type_id').value = user.user_type_id;
+                    
+                    // Open modal
+                    openEditUserModal();
+                } else {
+                    // Show error message
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Could not retrieve user data',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Show error message
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'There was a problem fetching user data. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                });
             });
         }
         

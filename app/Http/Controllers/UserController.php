@@ -83,6 +83,36 @@ class UserController extends Controller
     }
 
     /**
+     * Get the specified user for editing.
+     */
+    public function edit(User $user)
+    {
+        // Check if user is authorized to edit users
+        if (Auth::user()->user_type_id != 1) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        try {
+            // Return the user data for editing
+            return response()->json([
+                'success' => true,
+                'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching user for editing', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching the user data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Update the specified user in storage.
      */
     public function update(Request $request, User $user)
