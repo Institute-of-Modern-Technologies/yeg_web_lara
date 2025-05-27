@@ -1,0 +1,230 @@
+/* Custom CSS for Young Experts Group */
+
+/* Base Styles */
+body {
+    font-family: 'Instrument Sans', sans-serif;
+}
+
+/* Logo Styling */
+.logo-young {
+    color: #FF00FF; /* Neon pink */
+}
+
+.logo-experts {
+    background-color: #ffcb05; /* Yellow */
+    color: #000;
+    padding: 2px 5px;
+    font-weight: bold;
+}
+
+.logo-group {
+    color: #00ffff; /* Cyan/Teal */
+}
+
+/* Custom Styles */
+:root {
+    --primary-color: #820909;
+    --secondary-color: #e95978;
+    --accent-color: #05b4e1;
+    --light-color: #ffffff;
+    --dark-color: #121212;
+}
+
+/* Text Shadow Classes */
+.text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Carousel Styles */
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background-color: var(--secondary-color);
+    transform: scale(1.2);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #FF00FF;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: #c50000;
+    color: white;
+    min-height: 500px;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+.carousel-dot.active {
+    background-color: #FF00FF;
+    width: 25px;
+    border-radius: 5px;
+}
+
+/* Navigation */
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #FF00FF;
+    bottom: -5px;
+    left: 0;
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Social Media Icons */
+.social-icon {
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Improved Logos Marquee Animation */
+.logos-slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+    background: white;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.logos-slider {
+    display: flex;
+    animation: scroll 25s linear infinite;
+    width: max-content;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.logos-slide {
+    display: flex;
+    align-items: center;
+    gap: 70px;
+    padding: 0 20px;
+}
+
+.logo-item {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.logo-item:hover {
+    transform: scale(1.1);
+}
+
+.logo-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Pause on hover */
+.logos-slider-container:hover .logos-slider {
+    animation-play-state: paused;
+}
+
+/* Testimonials Styles */
+.testimonials-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+.testimonials-slider {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.testimonial-card {
+    transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.carousel-dots button {
+    transition: all 0.3s ease;
+}
+
+.carousel-nav-btn {
+    transition: all 0.3s ease;
+}
+
+.carousel-nav-btn:hover {
+    background-color: #f3f4f6;
+    transform: scale(1.1);
+}

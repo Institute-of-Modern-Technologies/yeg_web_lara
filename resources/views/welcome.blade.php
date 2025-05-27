@@ -1,0 +1,1391 @@
+@extends('layouts.app')
+
+@section('content')
+    <!-- Header Navigation -->
+    <header class="bg-white py-4 px-6 flex justify-between items-center shadow-sm">
+        <!-- Logo -->
+        <a href="{{ url('/') }}" class="flex items-center">
+            <span class="logo-young text-xl font-medium">Young</span>
+            <span class="logo-experts mx-1 text-xl">Experts</span>
+            <span class="logo-group text-xl font-medium">Group</span>
+        </a>
+        
+        <!-- Navigation Links -->
+        <nav class="hidden md:block">
+            <ul class="flex space-x-8">
+                <li><a href="#hero-section" class="nav-link font-medium">Home</a></li>
+                <li><a href="#about-us" class="nav-link font-medium">About</a></li>
+                <li><a href="#our-stages" class="nav-link font-medium">Stages</a></li>
+                <li><a href="#programs" class="nav-link font-medium">Programs</a></li>
+                <li><a href="#faq" class="nav-link font-medium">FAQ'S</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Right Side - Enroll Button and Social Icons -->
+        <div class="flex items-center space-x-4">
+            <a href="#" class="btn-primary hidden md:block">Enroll</a>
+            
+            <!-- Social Media Icons -->
+            <div class="hidden md:flex space-x-3">
+                <a href="#" class="social-icon text-gray-600 hover:text-primary">
+                    <i class="fa-regular fa-envelope"></i>
+                </a>
+                <a href="#" class="social-icon text-gray-600 hover:text-blue-600">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-icon text-gray-600 hover:text-red-600">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="social-icon text-gray-600 hover:text-pink-500">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="#" class="social-icon text-gray-600 hover:text-pink-600">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section with Carousel -->
+    <section id="hero-section" class="hero-section relative overflow-hidden min-h-[600px] md:min-h-[700px] bg-primary">
+        <!-- Carousel Item 1 -->
+        <div class="carousel-item active" id="slide1">
+            <!-- Background Image -->
+            <div class="absolute inset-0 w-full h-full">
+                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Young Experts Group" class="w-full h-full object-cover">
+                <!-- Subtle overlay for text readability -->
+                <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
+            </div>
+            
+            <!-- Text Content -->
+            <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
+                <div class="container-fluid px-0">
+                    <div class="max-w-2xl text-center py-6 px-8 mt-40 md:mt-48 lg:mt-56">
+                        <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg">
+                            <span class="text-white">Get </span>
+                            <span class="text-secondary">CAREER-READY</span>
+                        </h1>
+                        <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md">
+                            <span class="text-secondary">Before</span>
+                            <span class="text-white"> COMPLETING SCHOOL</span>
+                        </h2>
+                        <p class="text-white text-lg mb-6 text-shadow-sm">Empowering Young Minds Through Tech and Entrepreneurship</p>
+                        <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carousel Controls -->
+        <div class="carousel-controls absolute bottom-6 w-full flex justify-center space-x-3 z-10">
+            <div class="carousel-dot active" data-slide="slide1"></div>
+            <div class="carousel-dot" data-slide="slide2"></div>
+            <div class="carousel-dot" data-slide="slide3"></div>
+        </div>
+        
+        <!-- Carousel Navigation Arrows -->
+        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
+            <i class="fas fa-chevron-left text-white"></i>
+        </button>
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
+            <i class="fas fa-chevron-right text-white"></i>
+        </button>
+    </section>
+
+    <!-- Our Stages Section -->
+    <section id="our-stages" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary">Our Stages</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <!-- Discover Card -->
+                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-primary text-3xl mb-3">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">Discover</h3>
+                    <p class="text-gray-600 text-sm">Transforming Ideas<br>into Innovation.</p>
+                </div>
+                
+                <!-- Build Card -->
+                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-primary text-3xl mb-3">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">Build</h3>
+                    <p class="text-gray-600 text-sm">Crafting the Next<br>Big Thing.</p>
+                </div>
+                
+                <!-- Mastery Card -->
+                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-primary text-3xl mb-3">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">Mastery</h3>
+                    <p class="text-gray-600 text-sm">Where Skill Meets<br>Innovation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Welcome Section -->
+    <section id="programs" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold mb-4">Welcome</h2>
+                <p class="text-lg">
+                    Equipping young minds with skills in 
+                    <span class="text-primary">Technology</span>, 
+                    <span class="bg-secondary text-black px-2">Entrepreneurship</span>, 
+                    and 
+                    <span class="text-neon-pink">Creativity</span>.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Left Column - Our Program -->
+                <div class="border border-gray-200 rounded-md p-6 relative">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-neon-pink text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Our Program</h3>
+                    </div>
+                    
+                    <p class="mb-4">
+                        We collaborate with schools to provide
+                        <span class="text-neon-pink font-medium">innovative</span>, 
+                        <span class="text-neon-pink font-medium">engaging</span>, and 
+                        <span class="text-neon-pink font-medium">practical</span>
+                        learning experiences that prepare
+                        students for a <span class="bg-secondary text-black px-1">tech-driven future</span>.
+                    </p>
+                    
+                    <!-- Video Element -->
+                    <div class="mb-6 mt-6 rounded-md overflow-hidden shadow-md">
+                        <video class="w-full h-auto" controls poster="{{ asset('images/laptop.jpg') }}">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    
+                    <button class="bg-neon-pink text-white px-4 py-2 rounded-md hover:bg-opacity-90 inline-flex items-center">
+                        Find Out More 
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                
+                <!-- Right Column - Why Partner With Us -->
+                <div class="border border-gray-200 rounded-md p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-neon-pink text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Why Partner With Us</h3>
+                    </div>
+                    
+                    <p class="mb-6">
+                        <span class="text-neon-pink font-bold">T</span>he Young Experts Group (YEG) collaborates with schools to provide hands-on 
+                        <span class="bg-cyan-500 text-white px-1">Technology</span>, 
+                        <span class="bg-secondary text-black px-1">Entrepreneurship</span>, and
+                        <span class="bg-neon-pink text-white px-1">Creativity</span> training. Our tailored programs complement academic learning and prepare students for a tech-driven future.
+                    </p>
+                    
+                    <!-- Feature Boxes -->
+                    <div class="space-y-4">
+                        <!-- Integrated Learning -->
+                        <div class="border border-cyan-200 rounded-md p-3 bg-cyan-50">
+                            <div class="flex items-start">
+                                <div class="bg-cyan-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-puzzle-piece text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-cyan-500">Integrated Learning</h4>
+                                    <p class="text-sm">We work with your school to design a program that fits seamlessly into your curriculum needs.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Practical & Fun -->
+                        <div class="border border-yellow-200 rounded-md p-3 bg-yellow-50">
+                            <div class="flex items-start">
+                                <div class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-lightbulb text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-yellow-500">Practical & Fun</h4>
+                                    <p class="text-sm">Hands-on projects that keep students engaged while learning valuable skills.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Flexible & Customizable -->
+                        <div class="border border-pink-200 rounded-md p-3 bg-pink-50">
+                            <div class="flex items-start">
+                                <div class="bg-neon-pink text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-sliders-h text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-neon-pink">Flexible & Customizable</h4>
+                                    <p class="text-sm">Programs are designed to match your school's specific needs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Happenings Section -->
+    <section id="happenings" class="py-16 bg-primary text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column - Blog Posts -->
+                <div class="lg:col-span-2">
+                    <h4 class="text-sm mb-2">HAPPENINGS AT <span class="text-secondary font-bold">YOUNG EXPERTS</span></h4>
+                    <h2 class="text-3xl font-bold mb-8">
+                        This Week at<span class="text-secondary"> Young Experts </span><span class="text-cyan-400">GROUP</span>:
+                        <br>where your ideas come to life!
+                    </h2>
+                    
+                    <!-- Blog Post 1 -->
+                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6">
+                        <div class="flex-shrink-0 mr-4">
+                            <div class="relative rounded-md overflow-hidden w-32 h-32">
+                                <img src="https://placehold.co/150x150" alt="Mother's Day" class="w-full h-full object-cover">
+                                <div class="absolute bottom-2 right-2 w-8 h-8 bg-neon-pink rounded-full flex items-center justify-center">
+                                    <i class="fas fa-play text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center text-xs mb-1">
+                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> DADDY'S PRIDE</span>
+                                <span><i class="far fa-calendar text-secondary mr-1"></i> May 11, 2023</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Happy Mother's Day</h3>
+                            <p class="text-sm text-gray-200 mb-2">
+                                Happy Mother's Day to the beautiful souls who hold the world together with their love, find grace, strength, and endless warmth in everything they do! You deserve to celebrate you—the heartbeats of our homes. <span class="text-yellow-500">🌟</span> <span class="text-red-500">❤️</span> <span class="text-yellow-500">🌹</span>
+                            </p>
+                            <div class="text-xs text-gray-300">
+                                Posted in: Lunch
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Blog Post 2 -->
+                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6">
+                        <div class="flex-shrink-0 mr-4">
+                            <div class="relative rounded-md overflow-hidden w-32 h-32">
+                                <img src="https://placehold.co/150x150" alt="Bintu vs Homework" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center text-xs mb-1">
+                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> KAREN AKIALE</span>
+                                <span><i class="far fa-calendar text-secondary mr-1"></i> JANUARY 24, 2020</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Hijia Bintu Vs the Homework Rebel</h3>
+                            <p class="text-sm text-gray-200 mb-2">
+                                "Hijia Bintu vs the Homework Rebel" is a short story about a smart girl who takes on a classmate known for always avoiding homework, leading to a fun and clever classroom showdown... <span class="text-yellow-500">🌟</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Blog Post 3 -->
+                    <div class="flex bg-black bg-opacity-20 rounded-md p-4">
+                        <div class="flex-shrink-0 mr-4">
+                            <div class="relative rounded-md overflow-hidden w-32 h-32">
+                                <img src="https://placehold.co/150x150" alt="Queensnsburg" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center text-xs mb-1">
+                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> Nathan Elrom Winnes</span>
+                                <span><i class="far fa-calendar text-secondary mr-1"></i> JANUARY 24, 2020</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">There lived a Queensnsburg</h3>
+                            <p class="text-sm text-gray-200 mb-2">
+                                In a land woven with mystery and grace, Queensnsburg stood tall—a realm of stories untold, where legends were born and dreams dared to bloom... <span class="text-yellow-500">👍</span> <span class="text-yellow-500">🌹</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - Stats/Register -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white text-black rounded-md p-6">
+                        <h3 class="text-sm text-center mb-4">FUN FACTS ABOUT <span class="text-secondary font-bold">YOUNG EXPERTS</span></h3>
+                        
+                        <!-- Stats 1 -->
+                        <div class="text-center mb-6">
+                            <h2 class="text-4xl font-bold text-purple-800">2000</h2>
+                            <p class="text-xs uppercase text-gray-600">
+                                NUMBER OF STUDENTS<br>
+                                <span class="text-xs normal-case">learning with</span><br>
+                                <span class="text-xs text-secondary font-bold">Young Experts</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Stats 2 -->
+                        <div class="text-center mb-6">
+                            <h2 class="text-4xl font-bold text-purple-800">100</h2>
+                            <p class="text-xs uppercase text-gray-600">
+                                NUMBER OF SCHOOLS<br>
+                                <span class="text-xs normal-case">partner schools</span><br>
+                                <span class="text-xs text-secondary font-bold">of Young Experts</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Stats 3 -->
+                        <div class="text-center mb-6">
+                            <h2 class="text-4xl font-bold text-purple-800">50+</h2>
+                            <p class="text-xs uppercase text-gray-600">
+                                NUMBER OF TRAINERS<br>
+                                <span class="text-xs normal-case">available at</span><br>
+                                <span class="text-xs text-secondary font-bold">Young Experts</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Register Button -->
+                        <button class="w-full bg-cyan-400 text-white py-3 rounded-md mt-4 flex items-center justify-center">
+                            <i class="fas fa-arrow-circle-right mr-2"></i> Register Now <i class="fas fa-arrow-circle-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-blue-50">
+        <div class="container mx-auto px-6">
+            <!-- Top Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+                <!-- Left Column - Text -->
+                <div class="flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">FAQs</h2>
+                    <p class="text-gray-600">
+                        Have questions? Here you'll find the answers most
+                        valued by our learners, along with access to step-
+                        by-step instructions and support.
+                    </p>
+                </div>
+                
+                <!-- Right Column - Illustration -->
+                <div class="flex justify-center items-center relative">
+                    <div class="relative">
+                        <img src="https://img.freepik.com/free-vector/people-asking-questions-illustration_23-2148910989.jpg" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
+                        <!-- Question Marks -->
+                        <div class="absolute -top-4 right-12 text-3xl text-orange-400">?</div>
+                        <div class="absolute top-12 -left-4 text-3xl text-orange-400">?</div>
+                        <div class="absolute -bottom-2 right-20 text-3xl text-orange-400">?</div>
+                        <div class="absolute bottom-24 -right-4 text-3xl text-orange-400">?</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-12"></div>
+            
+            <!-- FAQ Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column - Categories -->
+                <div class="lg:col-span-1">
+                    <h3 class="text-lg font-semibold mb-6 text-gray-800">Categories</h3>
+                    
+                    <!-- Category List -->
+                    <div class="space-y-2">
+                        <!-- About Us -->
+                        <div class="border border-teal-300 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
+                                <span class="text-gray-700">About us</span>
+                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Career Guidance -->
+                        <div class="border border-teal-300 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
+                                <span class="text-gray-700">Career Guidance</span>
+                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Our Programs -->
+                        <div class="border border-teal-300 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
+                                <span class="text-gray-700">Our Programs</span>
+                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tutoring and mentors -->
+                        <div class="border border-teal-300 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
+                                <span class="text-gray-700">Tutoring and mentors</span>
+                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Enrollment and rates -->
+                        <div class="border border-teal-300 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
+                                <span class="text-gray-700">Enrollment and rates</span>
+                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                    <i class="fas fa-plus text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column - FAQ Questions -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-lg font-semibold mb-6 text-gray-800">FAQ'S</h3>
+                    
+                    <!-- FAQ Accordion -->
+                    <div class="space-y-4" id="faq-accordion">
+                        <!-- Question 1 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">What is the Young Experts Group (YEG)?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    The Young Experts Group (YEG) is an educational initiative that focuses on equipping young minds with skills in technology, entrepreneurship, and creativity. We partner with schools to provide innovative learning experiences that prepare students for a technology-driven future.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 2 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">Who can join the YEG program?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    Our programs are designed for students of various age groups, typically ranging from elementary to high school levels. We also work directly with schools to implement our curriculum as part of their educational offerings.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 3 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">What will participants learn?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    Participants will learn a variety of skills across three main pillars: Technology (coding, digital literacy, app development), Entrepreneurship (business fundamentals, problem-solving, project management), and Creativity (design thinking, innovation, digital arts).
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 4 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">How is the program structured?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    Our programs follow a three-stage approach: Discover (exploring foundational concepts), Build (applying knowledge through hands-on projects), and Mastery (refining skills and creating comprehensive solutions). Each stage builds upon the previous one to ensure a complete learning journey.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 5 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">What makes YEG different from regular tech classes?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    YEG stands out by integrating technology education with entrepreneurship and creativity. We focus on practical, project-based learning rather than theoretical knowledge alone. Our curriculum is designed to be engaging, fun, and directly applicable to real-world scenarios.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 6 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">What do students receive at the end of the program?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    Upon completion, students receive a certificate of achievement, a digital portfolio of their projects, and access to the YEG alumni network. More importantly, they gain valuable skills, confidence, and a foundation for future academic and career pursuits.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 7 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">Where is YEG held?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    YEG programs are flexible in location. We can implement our curriculum directly within schools during regular hours or after school. We also offer online options for remote learning and dedicated workshops at our partner locations.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 8 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">How do we register our child or school?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    You can register through our website by clicking the 'Register Now' button. For schools interested in partnering with us, please reach out through the 'Contact Us' section or send an email to partnerships@youngexpertsgroup.com for a personalized consultation.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 9 -->
+                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                            <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
+                                <h4 class="text-gray-700">Is there a cost to participate?</h4>
+                                <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 border-t border-gray-100 faq-answer" style="display: none;">
+                                <p class="text-gray-600">
+                                    Yes, there is a program fee that varies based on the specific course, duration, and delivery method. We offer scholarship options for qualifying students and special rates for school partnerships. Contact us for detailed pricing information.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnered Schools Section -->
+    <section class="py-16 bg-primary text-white">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <p class="text-sm uppercase tracking-widest mb-2">EXPERIENCE & CONNECT</p>
+                <h2 class="text-4xl font-bold text-cyan-400 mb-4">Partnered Schools</h2>
+                <p class="text-lg text-yellow-400 max-w-2xl mx-auto">
+                    Your school can be part of our growing network—let's teach, grow, and
+                    innovate together.
+                </p>
+            </div>
+            
+            <!-- School Showcase Carousel -->
+            <div class="relative max-w-5xl mx-auto">
+                <!-- School Slide -->
+                <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
+                    <div class="aspect-w-16 aspect-h-9 relative">
+                        <img src="https://placehold.co/1200x600/771919/ffffff" alt="School Computer Lab" class="w-full object-cover">
+                        
+                        <!-- School Name Badge -->
+                        <div class="absolute bottom-6 left-6">
+                            <div class="bg-red-700 text-white py-2 px-4 inline-block font-bold uppercase">
+                                DADDY'S PRIDE ACADEMY
+                            </div>
+                        </div>
+                        
+                        <!-- Expand Button -->
+                        <div class="absolute top-6 right-6">
+                            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md p-2">
+                                <i class="fas fa-expand text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carousel Navigation Dots -->
+                <div class="flex justify-center mt-6 space-x-2">
+                    <button class="w-3 h-3 rounded-full bg-cyan-400"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+                    <button class="w-3 h-3 rounded-full bg-neon-pink"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore Our Events Section -->
+    <section id="events" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-primary mb-3">Explore Our Events</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Discover our wide range of events tailored to enhance your learning journey.
+                </p>
+            </div>
+            
+            <!-- Event Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <!-- Event Card 1 - Project Week -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Project Week" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-primary">Project Week</h3>
+                            <span class="text-xs text-white bg-neon-pink px-2 py-1 rounded-full">All Levels</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            A fun week where young minds build, create, and show off the...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">1 week</span>
+                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                Learn more 
+                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Card 2 - Company Presentation -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Company Presentation" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-primary">Company Presentation</h3>
+                            <span class="text-xs text-black bg-yellow-400 px-2 py-1 rounded-full">Intermediate</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            A chance for young teams to present their creative ideas...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">1 day</span>
+                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                Learn more 
+                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Card 3 - YEG Challenge -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="YEG Challenge" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-primary">YEG Challenge</h3>
+                            <span class="text-xs text-white bg-red-600 px-2 py-1 rounded-full">Advanced</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            An exciting competition where young experts solve real-worl...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">2 days</span>
+                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                Learn more 
+                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Card 4 - Latest on Board -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                    <div class="relative">
+                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Latest on Board" class="w-full h-48 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-bold text-primary">Latest on Board</h3>
+                            <span class="text-xs text-white bg-cyan-400 px-2 py-1 rounded-full">Brand new</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">
+                            Meet the newest young experts joining our journey of creativ...
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500">Ongoing</span>
+                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                Learn more 
+                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View All Button -->
+            <div class="text-center mt-10">
+                <a href="#" class="inline-block bg-primary text-white py-3 px-6 rounded-md hover:bg-primary-dark transition duration-300">
+                    View All Events 
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Young Experts Group Section -->
+    <section id="about-us" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-14">
+                <h2 class="text-3xl font-bold mb-4">
+                    Why <span class="text-neon-pink">Young</span> <span class="bg-black text-yellow-400 px-2">Experts</span> <span class="text-cyan-400">Group</span> is the best Solution for Innovation
+                </h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Our comprehensive curriculum covers all key subjects with expert trainers and innovative methods.
+                </p>
+            </div>
+            
+            <!-- Program Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl mx-auto">
+                <!-- Coding -->
+                <div class="text-center">
+                    <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
+                            <i class="fas fa-code text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Coding</h3>
+                    <p class="text-gray-600 text-sm">
+                        Learn programming skills through interactive and project-based learning
+                    </p>
+                </div>
+                
+                <!-- Digital Marketing -->
+                <div class="text-center">
+                    <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-orange-200 rounded-md flex items-center justify-center border-2 border-orange-300">
+                            <i class="fas fa-bullhorn text-orange-500 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Digital Marketing</h3>
+                    <p class="text-gray-600 text-sm">
+                        Develop business skills and strategies to bring ideas to market
+                    </p>
+                </div>
+                
+                <!-- Graphics Design -->
+                <div class="text-center">
+                    <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
+                            <i class="fas fa-palette text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Graphics Design</h3>
+                    <p class="text-gray-600 text-sm">
+                        Explore creative design principles through hands-on projects
+                    </p>
+                </div>
+                
+                <!-- Entrepreneurship -->
+                <div class="text-center">
+                    <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
+                            <i class="fas fa-chart-line text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Entrepreneurship</h3>
+                    <p class="text-gray-600 text-sm">
+                        Develop business skills and strategies to bring ideas to market
+                    </p>
+                </div>
+                
+                <!-- Artificial Intelligence Basics -->
+                <div class="text-center">
+                    <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-yellow-200 rounded-md flex items-center justify-center border-2 border-yellow-300">
+                            <i class="fas fa-brain text-yellow-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Artificial Intelligence Basics</h3>
+                    <p class="text-gray-600 text-sm">
+                        Create content for social media, analytics, and digital platforms
+                    </p>
+                </div>
+                
+                <!-- Creativity Workshops -->
+                <div class="text-center">
+                    <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
+                            <i class="fas fa-lightbulb text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-primary font-bold mb-2">Creativity Workshops</h3>
+                    <p class="text-gray-600 text-sm">
+                        Discover how to turn creative ideas into practical solutions
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partnered Schools Marquee Section -->
+    <section id="partners" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-3">
+                    Partnered <span class="text-orange-500">Schools</span>
+                </h2>
+                <p class="text-gray-600">
+                    Join us at these exciting upcoming events with our valued partners
+                </p>
+            </div>
+            
+            <!-- School Logos Marquee - Better Implementation -->
+            <div class="logos-slider-container">
+                <div class="logos-slider">
+                    <!-- First set of logos -->
+                    <div class="logos-slide">
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+1" alt="School 1">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+2" alt="School 2">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+3" alt="School 3">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+4" alt="School 4">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+5" alt="School 5">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+6" alt="School 6">
+                        </div>
+                    </div>
+                    
+                    <!-- Duplicate for seamless scrolling -->
+                    <div class="logos-slide">
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+1" alt="School 1">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+2" alt="School 2">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+3" alt="School 3">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+4" alt="School 4">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+5" alt="School 5">
+                        </div>
+                        <div class="logo-item">
+                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+6" alt="School 6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-primary mb-3">What Our Community Says</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Hear from our students, parents, and community members about their experiences with
+                    our educational programs.
+                </p>
+            </div>
+            
+            <!-- Testimonials Carousel -->
+            <div class="relative">
+                <div class="testimonials-container overflow-hidden">
+                    <div class="testimonials-slider flex">
+                        <!-- Testimonial 1 -->
+                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
+                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
+                                <!-- Person Info -->
+                                <div class="flex items-center mb-4">
+                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
+                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=ISA" alt="International School of Accra" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">International School of Accra</h3>
+                                        <p class="text-sm text-gray-600">Partner School</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial Content -->
+                                <p class="text-gray-700 mb-4">
+                                    "Partnering with the Young Experts Group has been one of the most transformative decisions for our school. We've seen our students grow from passive learners into confident creators—designing websites, crafting digital stories, and presenting their own innovations with pride. What impresses me most is how YEG blends tech skills with creativity, critical thinking, and real-world application..."
+                                </p>
+                                
+                                <!-- Read More Link -->
+                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
+                                
+                                <!-- Star Rating -->
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 2 -->
+                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
+                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
+                                <!-- Person Info -->
+                                <div class="flex items-center mb-4">
+                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
+                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=MC" alt="Mr. Carlos" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Mr. Carlos</h3>
+                                        <p class="text-sm text-gray-600">Proud YEG Parent</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial Content -->
+                                <p class="text-gray-700 mb-4">
+                                    "I was amazed. In just two weeks, my 6-year-old—who once wanted to be a footballer—was suddenly dreaming of becoming an architect. He designed a house complete with cars, motorbikes, and a garage! Soon after, he designed a birthday card with his cousins photo on it..."
+                                </p>
+                                
+                                <!-- Read More Link -->
+                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
+                                
+                                <!-- Star Rating -->
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 3 -->
+                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
+                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
+                                <!-- Person Info -->
+                                <div class="flex items-center mb-4">
+                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
+                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=P" alt="Priscilla" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-primary">Priscilla</h3>
+                                        <p class="text-sm text-gray-600">Basic 7 Student, Daddy's Pride Academy</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial Content -->
+                                <p class="text-gray-700 mb-4">
+                                    "Before the Young Expert Group (Y.E.G) came to our school, I didn't know much about computers. Thanks to their program, I've learned to create websites, use Canva for designs, and work with ChatGPT to help with my homework..."
+                                </p>
+                                
+                                <!-- Read More Link -->
+                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
+                                
+                                <!-- Star Rating -->
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carousel Navigation -->
+                <div class="flex justify-center mt-8 items-center space-x-2">
+                    <button class="carousel-nav-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
+                        <i class="fas fa-chevron-left text-gray-500"></i>
+                    </button>
+                    
+                    <div class="carousel-dots flex space-x-2">
+                        <button class="w-3 h-3 rounded-full bg-neon-pink"></button>
+                        <button class="w-3 h-3 rounded-full bg-gray-300"></button>
+                        <button class="w-3 h-3 rounded-full bg-gray-300"></button>
+                    </div>
+                    
+                    <button class="carousel-nav-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
+                        <i class="fas fa-chevron-right text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-purple-800 mb-4">Pricing</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Young Experts Group offers flexible pricing options to accommodate different 
+                    needs and schedules.
+                </p>
+            </div>
+            
+            <!-- Pricing Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <!-- Card 1: YEG Partnered School -->
+                <div class="bg-white rounded-lg border border-cyan-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-school text-cyan-500"></i>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-gray-800 text-center mb-4">YEG Partnered School</h3>
+                    
+                    <div class="flex items-baseline justify-center mb-6">
+                        <span class="text-cyan-500 text-sm font-medium">GHC</span>
+                        <span class="text-3xl font-bold text-cyan-500 mx-1">150</span>
+                        <span class="text-gray-400 text-sm">- 350</span>
+                    </div>
+                    
+                    <p class="text-sm text-gray-600 mb-6">
+                        Pricing varies based on resources provided, including number of tutors, internet access, and learning materials.
+                    </p>
+                    
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-5 h-5 bg-cyan-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                                <i class="fas fa-check text-cyan-500 text-xs"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">Access to YEG curriculum</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-5 h-5 bg-cyan-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                                <i class="fas fa-check text-cyan-500 text-xs"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">School-integrated learning</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Card 2: Weekend & Vacation YEG -->
+                <div class="bg-white rounded-lg border border-pink-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col space-y-4">
+                        <!-- Weekend YEG -->
+                        <div>
+                            <div class="flex justify-center mb-4">
+                                <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-calendar-day text-pink-500"></i>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Weekend YEG</h3>
+                            
+                            <div class="flex items-baseline justify-center mb-6">
+                                <span class="text-pink-500 text-sm font-medium">GHC</span>
+                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
+                                <span class="text-gray-400 text-sm">- 450</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Vacation YEG -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Vacation YEG</h3>
+                            
+                            <div class="flex items-baseline justify-center mb-6">
+                                <span class="text-pink-500 text-sm font-medium">GHC</span>
+                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
+                                <span class="text-gray-400 text-sm">- 450</span>
+                            </div>
+                        </div>
+                        
+                        <!-- After-School YEG -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">After-School YEG</h3>
+                            
+                            <div class="flex items-baseline justify-center mb-2">
+                                <span class="text-pink-500 text-sm font-medium">GHC</span>
+                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
+                                <span class="text-gray-400 text-sm">- 450</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Weekend & Vacation YEG -->
+                <div class="bg-white rounded-lg border border-yellow-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-umbrella-beach text-yellow-500"></i>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Weekend & Vacation YEG</h3>
+                    
+                    <div class="flex items-baseline justify-center mb-6">
+                        <span class="text-yellow-500 text-sm font-medium">GHC</span>
+                        <span class="text-3xl font-bold text-yellow-500 mx-1">600</span>
+                        <span class="text-gray-400 text-sm">- 700</span>
+                    </div>
+                    
+                    <p class="text-sm text-gray-600 mb-6">
+                        Combined program offering both weekend and vacation learning experiences at a discounted rate.
+                    </p>
+                    
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                                <i class="fas fa-check text-yellow-500 text-xs"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">Best value package</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                                <i class="fas fa-check text-yellow-500 text-xs"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">Year-round learning</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Important Note -->
+            <div class="max-w-5xl mx-auto mt-8 bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0 mr-3">
+                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-info text-red-500"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700 mb-1">Important Note</p>
+                        <p class="text-sm text-gray-600">
+                            The first price in each range applies to students from YEG-partnered schools. Contact us for detailed pricing based on your specific requirements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-primary text-white pt-12 pb-4">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Column 1: Young Experts Group -->
+                <div>
+                    <h3 class="text-xl font-bold text-secondary mb-4">Young Experts Group</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#hero-section" class="hover:text-secondary transition-colors">Home</a></li>
+                        <li><a href="#our-stages" class="hover:text-secondary transition-colors">About Us</a></li>
+                        <li><a href="#programs" class="hover:text-secondary transition-colors">Programs</a></li>
+                        <li><a href="#faq" class="hover:text-secondary transition-colors">FAQs</a></li>
+                        <li><a href="#pricing" class="hover:text-secondary transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 2: Contact Info -->
+                <div>
+                    <h3 class="text-xl font-bold text-secondary mb-4">Contact Info</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="far fa-envelope text-secondary mr-3 mt-1"></i>
+                            <span>yeg@imtghana.com</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt text-secondary mr-3 mt-1"></i>
+                            <span>+233 547147313</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-secondary mr-3 mt-1"></i>
+                            <div>
+                                <p>No. 8 Borstal Street,</p>
+                                <p>Roman Ridge Accra.</p>
+                                <p>P.O.Box 4754 Accra</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start mt-2">
+                            <i class="fas fa-map-marker-alt text-secondary mr-3 mt-1 opacity-0"></i>
+                            <div>
+                                <p>Lapaz Nii Boi Accra.</p>
+                                <p>P.O.Box 4754 Accra</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3: Quick Links -->
+                <div>
+                    <h3 class="text-xl font-bold text-secondary mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#our-stages" class="hover:text-secondary transition-colors">Stages</a></li>
+                        <li><a href="#programs" class="hover:text-secondary transition-colors">Registration</a></li>
+                        <li><a href="#contact" class="hover:text-secondary transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 4: Newsletter -->
+                <div>
+                    <h3 class="text-xl font-bold text-secondary mb-4">Newsletter</h3>
+                    <p class="mb-4 text-sm">Stay updated with our latest news and offers.</p>
+                    
+                    <form action="#" method="POST" class="space-y-3">
+                        <div>
+                            <input type="email" placeholder="Your email address" class="w-full px-4 py-2 bg-primary-dark border border-primary-dark text-white rounded-md focus:outline-none focus:ring-1 focus:ring-secondary">
+                        </div>
+                        <button type="submit" class="w-full py-2 bg-secondary text-primary font-medium rounded-md hover:bg-opacity-90 transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Social Media Icons -->
+            <div class="flex justify-center space-x-6 py-8">
+                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-primary-dark opacity-50"></div>
+            
+            <!-- Copyright -->
+            <div class="text-center text-sm text-gray-300 mt-6">
+                <p>© 2025 Young Experts Group | Designed by Institute Of Modern Technologies</p>
+            </div>
+        </div>
+    </footer>
+@endsection
+
+@section('scripts')
+    <script>
+        // Toggle FAQ accordion items
+        function toggleFaq(element) {
+            // Get the answer panel (next sibling after the question)
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('.faq-icon i');
+            
+            // Toggle the display of the answer
+            if (answer.style.display === 'none' || !answer.style.display) {
+                answer.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+                element.classList.add('bg-gray-50');
+            } else {
+                answer.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+                element.classList.remove('bg-gray-50');
+            }
+        }
+
+        $(document).ready(function() {
+            // Hero Carousel functionality
+            $('.carousel-dot').click(function() {
+                const slideId = $(this).data('slide');
+                $('.carousel-item').removeClass('active');
+                $('#' + slideId).addClass('active');
+                $('.carousel-dot').removeClass('active');
+                $(this).addClass('active');
+            });
+            
+            // Category toggle functionality for FAQs
+            $('.categories .border').click(function() {
+                // Handle category selection logic here
+                console.log('Category clicked');
+            });
+            
+            // Testimonials Carousel functionality
+            let currentSlide = 0;
+            const testimonialCards = $('.testimonial-card');
+            const totalSlides = Math.ceil(testimonialCards.length / 3);
+            const dots = $('.carousel-dots button');
+            
+            // Initialize dots
+            dots.eq(0).addClass('active');
+            
+            // Previous button
+            $('.carousel-nav-btn:first-child').click(function() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateTestimonialsSlider();
+                }
+            });
+            
+            // Next button
+            $('.carousel-nav-btn:last-child').click(function() {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateTestimonialsSlider();
+                }
+            });
+            
+            // Dot navigation
+            dots.click(function() {
+                currentSlide = $(this).index();
+                updateTestimonialsSlider();
+            });
+            
+            function updateTestimonialsSlider() {
+                const translateValue = -currentSlide * 100 + '%';
+                $('.testimonials-slider').css('transform', 'translateX(' + translateValue + ')');
+                
+                // Update active dot
+                dots.removeClass('bg-neon-pink').addClass('bg-gray-300');
+                dots.eq(currentSlide).removeClass('bg-gray-300').addClass('bg-neon-pink');
+            }
+        });
+    </script>
+@endsection
