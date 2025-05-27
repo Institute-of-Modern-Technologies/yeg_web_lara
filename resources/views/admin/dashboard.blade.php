@@ -148,25 +148,12 @@
                     <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</span>
                     
                     <nav class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-white active-menu-item">
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-white active-menu-item">
                             <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
                             <span>Dashboard</span>
                         </a>
                         
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-users w-5 h-5 mr-3"></i>
-                            <span>User Management</span>
-                        </a>
-                        
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-school w-5 h-5 mr-3"></i>
-                            <span>Schools</span>
-                        </a>
-                        
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-book w-5 h-5 mr-3"></i>
-                            <span>Courses</span>
-                        </a>
+                        <!-- Other menu items will be added when they're implemented -->
                     </nav>
                 </div>
                 
@@ -180,31 +167,14 @@
                             <i class="fas fa-user-plus w-5 h-5 mr-3"></i>
                             <span>Create New User</span>
                         </a>
-                        
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-university w-5 h-5 mr-3"></i>
-                            <span>Add School</span>
-                        </a>
-                        
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
-                            <span>System Settings</span>
-                        </a>
+                        <!-- Other admin features will be added as implemented -->
                     </nav>
                 </div>
                 @endif
                 
-                <!-- Bottom section for help and support -->
+                <!-- Bottom section - placeholder for future content -->
                 <div class="mt-auto px-4 py-6 border-t border-gray-700">
-                    <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                        <i class="fas fa-question-circle w-5 h-5 mr-3"></i>
-                        <span>Help & Support</span>
-                    </a>
-                    
-                    <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                        <i class="fas fa-cog w-5 h-5 mr-3"></i>
-                        <span>Settings</span>
-                    </a>
+                    <!-- Support links will be added when implemented -->
                 </div>
             </div>
         </aside>
