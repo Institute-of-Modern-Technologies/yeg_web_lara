@@ -3,9 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Dashboard - Young Experts Group</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -253,7 +255,7 @@
                     <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center">
                         <h2 class="text-lg font-bold text-gray-800">User Management</h2>
                         @if(Auth::user()->user_type_id == 1)
-                        <button class="bg-primary text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-700 transition-colors duration-200 mt-2 md:mt-0" id="add-user-btn">
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg flex items-center hover:bg-red-700 transition-colors duration-200 mt-2 md:mt-0" id="add-user-btn" onclick="openUserModal();">
                             <i class="fas fa-plus mr-2"></i> Add New User
                         </button>
                         @endif
@@ -261,17 +263,17 @@
                     <div class="p-6">
                         <div class="flex flex-col md:flex-row justify-between mb-4 space-y-3 md:space-y-0">
                             <div class="relative w-full md:w-64">
-                                <input type="text" placeholder="Search users..." class="pl-10 pr-4 py-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                <input type="text" id="userSearchInput" placeholder="Search users..." class="pl-10 pr-4 py-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
                                 <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                             </div>
                             <div class="flex space-x-2">
-                                <select class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                                <select id="userTypeFilter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                                     <option value="">All User Types</option>
                                     <option value="1">Super Admin</option>
                                     <option value="2">School Admin</option>
                                     <option value="3">Student</option>
                                 </select>
-                                <button class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">
+                                <button id="applyFilterBtn" class="px-4 py-2 bg-gray-200 rounded-lg text-gray-700 hover:bg-gray-300">
                                     <i class="fas fa-filter"></i>
                                 </button>
                             </div>
@@ -290,7 +292,40 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm">
-                                    <!-- User rows -->
+                                    @foreach(\App\Models\User::all() as $user)
+                                    <tr data-user-type="{{ $user->user_type_id }}">
+                                        <td class="py-3 px-4">{{ $user->name }}</td>
+                                        <td class="py-3 px-4">{{ $user->username }}</td>
+                                        <td class="py-3 px-4">{{ $user->email }}</td>
+                                        <td class="py-3 px-4">
+                                            @php
+                                                $badgeClass = 'bg-gray-100 text-gray-800';
+                                                if($user->user_type_id == 1) {
+                                                    $badgeClass = 'bg-purple-100 text-purple-800';
+                                                } elseif($user->user_type_id == 2) {
+                                                    $badgeClass = 'bg-blue-100 text-blue-800';
+                                                } elseif($user->user_type_id == 3) {
+                                                    $badgeClass = 'bg-green-100 text-green-800';
+                                                }
+                                            @endphp
+                                            <span class="{{ $badgeClass }} px-2 py-1 rounded-full text-xs font-semibold">
+                                                {{ $user->userType ? $user->userType->name : 'Unknown' }}
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4 text-center">
+                                            <div class="flex justify-center space-x-2">
+                                                <button class="text-blue-500 hover:text-blue-700" onclick="editUser({{ $user->id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                @if(Auth::id() != $user->id)
+                                                <button class="text-red-500 hover:text-red-700" onclick="deleteUser({{ $user->id }}, '{{ $user->name }}')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -302,13 +337,203 @@
 
     <!-- User Management Modals -->
     <div id="createUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <!-- Create user form -->
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 overflow-hidden animate-fadeIn transform transition-all duration-300">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-primary to-red-700 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    <i class="fas fa-user-plus mr-3"></i>
+                    <span>Create New User</span>
+                </h3>
+                <button type="button" class="text-white hover:text-gray-200 focus:outline-none" onclick="closeUserModal()">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <form id="createUserForm">
+                    @csrf
+                    <div class="space-y-4">
+                        <!-- Row 1: Name and Email -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="name">
+                                    Full Name
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" id="name" name="name" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter full name" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Address -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter email address" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 2: Username and User Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Username -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="username">
+                                    Username
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-at"></i>
+                                    </span>
+                                    <input type="text" id="username" name="username" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter username" required>
+                                </div>
+                            </div>
+                            
+                            <!-- User Type -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="user_type_id">
+                                    User Type
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-user-tag"></i>
+                                    </span>
+                                    <select id="user_type_id" name="user_type_id" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary appearance-none" required>
+                                        <option value="" disabled selected>Select user type</option>
+                                        <option value="3">Student</option>
+                                        <option value="2">School Admin</option>
+                                        <option value="1">Super Admin</option>
+                                    </select>
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 3: Password and Confirm Password -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Password -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" id="password" name="password" class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Enter password" required>
+                                    <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('password', 'passwordToggle')">
+                                        <i id="passwordToggle" class="fas fa-eye-slash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Confirm Password -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-2" for="password_confirmation">
+                                    Confirm Password
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" id="password_confirmation" name="password_confirmation" class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Confirm password" required>
+                                    <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700" onclick="togglePasswordVisibility('password_confirmation', 'confirmPasswordToggle')">
+                                        <i id="confirmPasswordToggle" class="fas fa-eye-slash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center" onclick="closeUserModal()">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Create User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Include Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <style>
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeOut {
+            animation: fadeOut 0.2s ease-in-out;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+    </style>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Function to open the user modal - accessible directly from HTML
+        function openUserModal() {
+            console.log('openUserModal called directly');
+            const modal = document.getElementById('createUserModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            } else {
+                console.error('Modal element not found!');
+            }
+            return false;
+        }
+        
+        // Function to close the user modal - accessible directly from HTML
+        function closeUserModal() {
+            console.log('closeUserModal called');
+            const modal = document.getElementById('createUserModal');
+            const modalContent = modal.querySelector('div'); // Get the modal content container
+            
+            // Add fadeOut animation
+            if (modalContent) {
+                modalContent.classList.add('animate-fadeOut');
+                
+                // Wait for animation to finish before hiding modal
+                setTimeout(() => {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modalContent.classList.remove('animate-fadeOut');
+                    document.body.style.overflow = ''; // Restore scrolling
+                }, 200);
+            } else {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            return false;
+        }
+    
+        // Immediately execute scripts after page load
+        window.addEventListener('load', function() {
+            console.log('Page fully loaded');
+            
             // Mobile menu toggle
             const sidebar = document.getElementById('sidebar');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -319,17 +544,275 @@
                 });
             }
             
-            // Add User button functionality
+            // Debug the modals on the page
+            console.log('Modal element:', document.getElementById('createUserModal'));
+            
+            // Add User button functionality as backup
             const addUserBtn = document.getElementById('add-user-btn');
+            console.log('Add User button found:', addUserBtn);
             
             if (addUserBtn) {
-                addUserBtn.addEventListener('click', function() {
-                    const modal = document.getElementById('createUserModal');
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
+                addUserBtn.addEventListener('click', function(e) {
+                    console.log('Add User click event fired');
+                    e.preventDefault();
+                    openUserModal();
                 });
             }
+            
+            // Function to filter users by search term and type
+            function filterUsers() {
+                const searchTerm = userSearchInput ? userSearchInput.value.toLowerCase() : '';
+                const filterType = userTypeFilter ? userTypeFilter.value : '';
+                const userTable = document.querySelector('table tbody');
+                const userRows = userTable.querySelectorAll('tr');
+                
+                userRows.forEach(row => {
+                    const userName = row.cells[0].textContent.toLowerCase();
+                    const userUsername = row.cells[1].textContent.toLowerCase();
+                    const userEmail = row.cells[2].textContent.toLowerCase();
+                    const userType = row.cells[3].textContent.toLowerCase();
+                    const userTypeId = row.getAttribute('data-user-type');
+                    
+                    // Match search term
+                    const matchesSearch = searchTerm === '' || 
+                        userName.includes(searchTerm) || 
+                        userUsername.includes(searchTerm) || 
+                        userEmail.includes(searchTerm) || 
+                        userType.includes(searchTerm);
+                    
+                    // Match filter type
+                    const matchesFilter = filterType === '' || userTypeId === filterType;
+                    
+                    // Show/hide row
+                    if (matchesSearch && matchesFilter) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+            
+            // User search functionality
+            const userSearchInput = document.getElementById('userSearchInput');
+            if (userSearchInput) {
+                userSearchInput.addEventListener('keyup', filterUsers);
+            }
+            
+            // User type filter functionality
+            const userTypeFilter = document.getElementById('userTypeFilter');
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+            
+            if (userTypeFilter && applyFilterBtn) {
+                applyFilterBtn.addEventListener('click', filterUsers);
+                userTypeFilter.addEventListener('change', filterUsers);
+            }
+            
+            // Form submission handling with AJAX
+            const createUserForm = document.getElementById('createUserForm');
+            if (createUserForm) {
+                createUserForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating...';
+                    
+                    // Clear previous error messages
+                    document.querySelectorAll('.error-message').forEach(el => el.remove());
+                    document.querySelectorAll('.border-red-500').forEach(el => {
+                        el.classList.remove('border-red-500');
+                        el.classList.remove('focus:ring-red-500');
+                        el.classList.remove('focus:border-red-500');
+                    });
+                    
+                    // Get form data
+                    const formData = new FormData(this);
+                    
+                    // Send AJAX request
+                    fetch('{{ route("users.store") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData))
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonColor: '#FF0000',
+                            }).then(() => {
+                                // Reset form and close modal
+                                createUserForm.reset();
+                                closeUserModal();
+                                
+                                // Reload page to refresh user list
+                                window.location.reload();
+                            });
+                        } else {
+                            // Show validation errors
+                            const errors = data.errors;
+                            if (errors) {
+                                Object.keys(errors).forEach(field => {
+                                    const input = document.getElementById(field);
+                                    if (input) {
+                                        // Highlight input
+                                        input.classList.add('border-red-500');
+                                        input.classList.add('focus:ring-red-500');
+                                        input.classList.add('focus:border-red-500');
+                                        
+                                        // Add error message
+                                        const errorMsg = document.createElement('div');
+                                        errorMsg.className = 'text-red-500 text-xs mt-1 error-message';
+                                        errorMsg.textContent = errors[field][0];
+                                        input.parentNode.appendChild(errorMsg);
+                                    }
+                                });
+                            }
+                            
+                            // Show error toast
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'There were errors in your submission'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        // Show error message
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'There was a problem creating the user. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF0000'
+                        });
+                        console.error('Error:', error);
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
+                });
+            }
+            
+            // Close modal when clicking outside
+            document.querySelectorAll('.fixed.inset-0.bg-black.bg-opacity-50').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeUserModal();
+                    }
+                });
+            });
+            
+            // Close with ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const visibleModal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50.flex');
+                    if (visibleModal) {
+                        closeUserModal();
+                    }
+                }
+            });
         });
+        
+        // These general modal functions are kept for reference but not used directly
+        // We're using the specific openUserModal and closeUserModal functions instead
+        
+        // Password visibility toggle
+        function togglePasswordVisibility(inputId, toggleId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(toggleId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+        
+        // Edit user function
+        function editUser(userId) {
+            // In a real implementation, this would fetch user data and populate a form
+            Swal.fire({
+                title: 'Edit User',
+                text: 'Edit user functionality will be implemented soon!',
+                icon: 'info',
+                confirmButtonColor: '#FF0000'
+            });
+        }
+        
+        // Delete user function
+        function deleteUser(userId, userName) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `Do you want to delete ${userName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Send AJAX request to delete user
+                    fetch(`/admin/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                data.message,
+                                'success'
+                            ).then(() => {
+                                // Reload page to refresh user list
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                data.message,
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire(
+                            'Error!',
+                            'There was a problem deleting the user. Please try again.',
+                            'error'
+                        );
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>

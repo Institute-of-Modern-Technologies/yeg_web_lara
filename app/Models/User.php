@@ -13,6 +13,14 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Get the user type that owns the user.
+     */
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class);
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -21,8 +29,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_type',
         'username',
+        'user_type_id',
     ];
 
     /**
