@@ -921,130 +921,214 @@
                 </p>
             </div>
             
+            @php
+                // Get active testimonials ordered by display_order
+                $testimonials = \App\Models\Testimonial::active()->ordered()->get();
+            @endphp
+            
             <!-- Testimonials Carousel -->
             <div class="relative">
                 <div class="testimonials-container overflow-hidden">
                     <div class="testimonials-slider flex">
-                        <!-- Testimonial 1 -->
-                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
-                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
-                                <!-- Person Info -->
-                                <div class="flex items-center mb-4">
-                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
-                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=ISA" alt="International School of Accra" class="w-full h-full object-cover">
+                        @forelse($testimonials as $key => $testimonial)
+                            <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
+                                <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
+                                    <!-- Person Info -->
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
+                                            <img src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-primary">{{ $testimonial->name }}</h3>
+                                            <p class="text-sm text-gray-600">{{ $testimonial->role }}{{ $testimonial->institution ? ', ' . $testimonial->institution : '' }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-primary">International School of Accra</h3>
-                                        <p class="text-sm text-gray-600">Partner School</p>
+                                    
+                                    <!-- Testimonial Content -->
+                                    <p class="text-gray-700 mb-4">
+                                        "{{ $testimonial->getShortContent(150) }}"
+                                    </p>
+                                    
+                                    <!-- Read More Link -->
+                                    <a href="#" class="text-neon-pink hover:underline inline-block mb-4" data-testimonial-id="{{ $testimonial->id }}">Read More →</a>
+                                    
+                                    <!-- Star Rating -->
+                                    <div class="flex text-yellow-400">
+                                        {!! $testimonial->getRatingStars() !!}
                                     </div>
-                                </div>
-                                
-                                <!-- Testimonial Content -->
-                                <p class="text-gray-700 mb-4">
-                                    "Partnering with the Young Experts Group has been one of the most transformative decisions for our school. We've seen our students grow from passive learners into confident creators—designing websites, crafting digital stories, and presenting their own innovations with pride. What impresses me most is how YEG blends tech skills with creativity, critical thinking, and real-world application..."
-                                </p>
-                                
-                                <!-- Read More Link -->
-                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
-                                
-                                <!-- Star Rating -->
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Testimonial 2 -->
-                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
-                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
-                                <!-- Person Info -->
-                                <div class="flex items-center mb-4">
-                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
-                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=MC" alt="Mr. Carlos" class="w-full h-full object-cover">
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-primary">Mr. Carlos</h3>
-                                        <p class="text-sm text-gray-600">Proud YEG Parent</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Testimonial Content -->
-                                <p class="text-gray-700 mb-4">
-                                    "I was amazed. In just two weeks, my 6-year-old—who once wanted to be a footballer—was suddenly dreaming of becoming an architect. He designed a house complete with cars, motorbikes, and a garage! Soon after, he designed a birthday card with his cousins photo on it..."
-                                </p>
-                                
-                                <!-- Read More Link -->
-                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
-                                
-                                <!-- Star Rating -->
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
+                        @empty
+                            <div class="w-full text-center py-8">
+                                <p class="text-gray-500">No testimonials available at the moment.</p>
                             </div>
-                        </div>
-                        
-                        <!-- Testimonial 3 -->
-                        <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
-                            <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
-                                <!-- Person Info -->
-                                <div class="flex items-center mb-4">
-                                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
-                                        <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=P" alt="Priscilla" class="w-full h-full object-cover">
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-primary">Priscilla</h3>
-                                        <p class="text-sm text-gray-600">Basic 7 Student, Daddy's Pride Academy</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Testimonial Content -->
-                                <p class="text-gray-700 mb-4">
-                                    "Before the Young Expert Group (Y.E.G) came to our school, I didn't know much about computers. Thanks to their program, I've learned to create websites, use Canva for designs, and work with ChatGPT to help with my homework..."
-                                </p>
-                                
-                                <!-- Read More Link -->
-                                <a href="#" class="text-neon-pink hover:underline inline-block mb-4">Read More →</a>
-                                
-                                <!-- Star Rating -->
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
                 
-                <!-- Carousel Navigation -->
-                <div class="flex justify-center mt-8 items-center space-x-2">
-                    <button class="carousel-nav-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
-                        <i class="fas fa-chevron-left text-gray-500"></i>
-                    </button>
-                    
-                    <div class="carousel-dots flex space-x-2">
-                        <button class="w-3 h-3 rounded-full bg-neon-pink"></button>
-                        <button class="w-3 h-3 rounded-full bg-gray-300"></button>
-                        <button class="w-3 h-3 rounded-full bg-gray-300"></button>
+                @if($testimonials->count() > 0)
+                    <!-- Carousel Navigation -->
+                    <div class="flex justify-center mt-8 items-center space-x-2">
+                        <button class="carousel-nav-btn prev-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
+                            <i class="fas fa-chevron-left text-gray-500"></i>
+                        </button>
+                        
+                        <div class="carousel-dots flex space-x-2">
+                            @for($i = 0; $i < ceil($testimonials->count() / 3); $i++)
+                                <button class="dot w-3 h-3 rounded-full {{ $i == 0 ? 'bg-neon-pink' : 'bg-gray-300' }}" data-index="{{ $i }}"></button>
+                            @endfor
+                        </div>
+                        
+                        <button class="carousel-nav-btn next-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
+                            <i class="fas fa-chevron-right text-gray-500"></i>
+                        </button>
                     </div>
-                    
-                    <button class="carousel-nav-btn w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">
-                        <i class="fas fa-chevron-right text-gray-500"></i>
+                @endif
+            </div>
+            
+            <!-- Testimonial Modal for Read More -->
+            <div id="testimonial-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+                <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+                    <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
+                    
+                    <div id="modal-content" class="mt-4">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Testimonials carousel functionality
+            const slider = document.querySelector('.testimonials-slider');
+            const dots = document.querySelectorAll('.dot');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const cardWidth = document.querySelector('.testimonial-card')?.offsetWidth;
+            const totalSlides = {{ $testimonials->count() }};
+            const slidesPerView = window.innerWidth >= 768 ? 3 : 1;
+            const totalGroups = Math.ceil(totalSlides / slidesPerView);
+            let currentGroup = 0;
+            
+            if (slider && totalSlides > 0) {
+                // Update dots
+                const updateDots = () => {
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('bg-neon-pink', index === currentGroup);
+                        dot.classList.toggle('bg-gray-300', index !== currentGroup);
+                    });
+                };
+                
+                // Slide to group
+                const slideToGroup = (index) => {
+                    if (index < 0) index = totalGroups - 1;
+                    if (index >= totalGroups) index = 0;
+                    
+                    currentGroup = index;
+                    const translateValue = -index * (slidesPerView * cardWidth);
+                    slider.style.transform = `translateX(${translateValue}px)`;
+                    updateDots();
+                };
+                
+                // Attach click events to dots
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => slideToGroup(index));
+                });
+                
+                // Attach click events to prev/next buttons
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => slideToGroup(currentGroup - 1));
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => slideToGroup(currentGroup + 1));
+                }
+                
+                // Initialize slider transition
+                slider.style.transition = 'transform 0.5s ease';
+                
+                // Testimonial modal functionality
+                const modal = document.getElementById('testimonial-modal');
+                const modalContent = document.getElementById('modal-content');
+                const closeModal = document.getElementById('close-modal');
+                const readMoreLinks = document.querySelectorAll('[data-testimonial-id]');
+                
+                // Data for testimonials
+                const testimonialData = {
+                    @foreach($testimonials as $testimonial)
+                        {{ $testimonial->id }}: {
+                            name: "{{ $testimonial->name }}",
+                            role: "{{ $testimonial->role }}",
+                            institution: "{{ $testimonial->institution }}",
+                            content: "{{ $testimonial->content }}",
+                            image: "{{ asset('storage/' . $testimonial->image_path) }}",
+                            rating: {{ $testimonial->rating }}
+                        },
+                    @endforeach
+                };
+                
+                // Open modal with testimonial content
+                readMoreLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const id = link.getAttribute('data-testimonial-id');
+                        const data = testimonialData[id];
+                        
+                        if (data) {
+                            // Generate star rating HTML
+                            let stars = '';
+                            for (let i = 1; i <= 5; i++) {
+                                stars += `<i class="fas ${i <= data.rating ? 'fa-star' : 'far fa-star'}"></i>`;
+                            }
+                            
+                            // Populate modal content
+                            modalContent.innerHTML = `
+                                <div class="flex items-center mb-6">
+                                    <div class="w-16 h-16 rounded-full overflow-hidden mr-4">
+                                        <img src="${data.image}" alt="${data.name}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold text-primary">${data.name}</h3>
+                                        <p class="text-sm text-gray-600">${data.role}${data.institution ? ', ' + data.institution : ''}</p>
+                                        <div class="flex text-yellow-400 mt-1">${stars}</div>
+                                    </div>
+                                </div>
+                                <div class="prose max-w-none">
+                                    <p class="text-gray-700">"${data.content}"</p>
+                                </div>
+                            `;
+                            
+                            // Show modal
+                            modal.classList.remove('hidden');
+                            document.body.style.overflow = 'hidden';  // Prevent scrolling
+                        }
+                    });
+                });
+                
+                // Close modal
+                if (closeModal) {
+                    closeModal.addEventListener('click', () => {
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = '';  // Restore scrolling
+                    });
+                }
+                
+                // Close modal when clicking outside
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = '';  // Restore scrolling
+                    }
+                });
+            }
+        });
+    </script>
+    @endpush
 
     <!-- Pricing Section -->
     <section id="pricing" class="py-16 bg-gray-50">

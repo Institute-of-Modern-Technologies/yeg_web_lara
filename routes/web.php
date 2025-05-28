@@ -89,6 +89,19 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/happenings/update-order', [
         '\App\Http\Controllers\HappeningController', 'updateOrder'
     ])->name('admin.happenings.update-order');
+    
+    // Testimonial Management Routes
+    Route::resource('testimonials', '\App\Http\Controllers\TestimonialController')->names([
+        'index' => 'admin.testimonials.index',
+        'create' => 'admin.testimonials.create',
+        'store' => 'admin.testimonials.store',
+        'edit' => 'admin.testimonials.edit',
+        'update' => 'admin.testimonials.update',
+        'destroy' => 'admin.testimonials.destroy'
+    ]);
+    Route::post('/testimonials/update-order', [
+        '\App\Http\Controllers\TestimonialController', 'updateOrder'
+    ])->name('admin.testimonials.update-order');
 });
 
 // School Admin Routes
