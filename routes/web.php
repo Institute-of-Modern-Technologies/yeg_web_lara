@@ -1,10 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
+
+// Dashboard shortcut route - redirects to appropriate dashboard based on user type
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+    
+    if (!$user) {
+        return redirect('/login');
+    }
+    
+    $userType = \App\Models\UserType::find($user->user_type_id);
+    
+    if ($userType) {
+        switch ($userType->slug) {
+            case 'super_admin':
+                return redirect('/admin/dashboard');
+            case 'school_admin':
+                return redirect('/school/dashboard');
+            case 'student':
+                return redirect('/student/dashboard');
+            default:
+                return redirect('/');
+        }
+    }
+    
+    return redirect('/');
+})->name('dashboard');
 
 
 // Authentication Routes

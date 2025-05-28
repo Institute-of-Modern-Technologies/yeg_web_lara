@@ -22,9 +22,15 @@
         </nav>
                 <!-- Right Side - Login, Enroll Button and Social Icons -->
         <div class="flex items-center space-x-4">
+            @auth
+            <a href="/dashboard" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
+                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+            </a>
+            @else
             <a href="/login" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
                 <i class="fas fa-user mr-2"></i> Login
             </a>
+            @endauth
             <a href="#" class="btn-primary hidden md:block">Enroll</a>
             
             <!-- Social Media Icons -->

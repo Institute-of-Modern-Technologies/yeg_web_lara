@@ -30,6 +30,8 @@ class WelcomeController extends Controller
         // Get active hero sections
         $heroSections = $this->heroSectionService->getActiveHeroSections();
         
+        // We don't need to explicitly check auth here - Laravel will pass the auth data automatically
+        // This keeps the session alive when browsing between authenticated and non-authenticated pages
         return view('welcome', compact('heroSections'));
     }
 }

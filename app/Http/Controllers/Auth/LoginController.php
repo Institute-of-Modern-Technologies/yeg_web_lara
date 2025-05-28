@@ -15,6 +15,26 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        // If user is already logged in, redirect to appropriate dashboard
+        if (Auth::check()) {
+            $user = Auth::user();
+            $userType = UserType::find($user->user_type_id);
+            
+            if ($userType) {
+                switch ($userType->slug) {
+                    case 'super_admin':
+                        return redirect('/admin/dashboard');
+                    case 'school_admin':
+                        return redirect('/school/dashboard');
+                    case 'student':
+                        return redirect('/student/dashboard');
+                    default:
+                        // For unrecognized user types, default to welcome page
+                        return redirect('/');
+                }
+            }
+        }
+
         return view('auth.login');
     }
 
@@ -35,11 +55,12 @@ class LoginController extends Controller
             return back()->with('error', 'The provided credentials do not match our records');
         }
         
-        // Attempt to authenticate the user without checking user_type
+        // Attempt to authenticate the user with remember me functionality
         if (Auth::attempt([
             'username' => $request->username,
             'password' => $request->password,
-        ], $request->filled('remember'))) {
+        ], $request->has('remember'))) {
+            // Force the session to be regenerated and kept alive longer
             $request->session()->regenerate();
             
             // Get the authenticated user with their user type

@@ -44,6 +44,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Remember Me Token Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define the number of days that the remember me token should be
+    | considered valid. This ensures users stay logged in for longer periods
+    | when they check the remember me option.
+    |
+    */
+
+    'remember' => [
+        'lifetime' => 30, // 30 days for remember me tokens
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | User Providers
     |--------------------------------------------------------------------------
     |
