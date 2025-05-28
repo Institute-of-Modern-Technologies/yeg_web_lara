@@ -702,73 +702,60 @@
             
             <!-- Event Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                <!-- Event Card 1 - Project Week -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                    <div class="relative">
-                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Project Week" class="w-full h-48 object-cover">
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-primary">Project Week</h3>
-                            <span class="text-xs text-white bg-neon-pink px-2 py-1 rounded-full">All Levels</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">
-                            A fun week where young minds build, create, and show off the...
-                        </p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">1 week</span>
-                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
-                                Learn more 
-                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @php
+                    // Get active events ordered by display_order
+                    $events = \App\Models\Event::active()->ordered()->get();
+                @endphp
                 
-                <!-- Event Card 2 - Company Presentation -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                    <div class="relative">
-                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Company Presentation" class="w-full h-48 object-cover">
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-primary">Company Presentation</h3>
-                            <span class="text-xs text-black bg-yellow-400 px-2 py-1 rounded-full">Intermediate</span>
+                @forelse($events as $event)
+                    <!-- Event Card -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                        <div class="relative">
+                            @if($event->media_type == 'image')
+                                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
+                            @else
+                                <div class="relative w-full h-48 bg-gray-900">
+                                    <video class="absolute inset-0 w-full h-full object-cover" poster="{{ asset('images/video-poster.jpg') }}" controls>
+                                        <source src="{{ asset('storage/' . $event->media_path) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <span class="play-button bg-white bg-opacity-80 rounded-full p-3">
+                                            <i class="fas fa-play text-primary text-xl"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-                        <p class="text-gray-600 text-sm mb-4">
-                            A chance for young teams to present their creative ideas...
-                        </p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">1 day</span>
-                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
-                                Learn more 
-                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                            </a>
+                        <div class="p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-bold text-primary">{{ $event->title }}</h3>
+                                <span class="text-xs px-2 py-1 rounded-full" style="background-color: {{ $event->level_color }}; color: {{ $event->level_color == '#ffffff' ? '#000000' : '#ffffff' }};">
+                                    {{ $event->level ?? 'All Levels' }}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">
+                                {{ $event->getShortDescription(100) }}
+                            </p>
+                            <div class="flex justify-between items-center">
+                                @if($event->duration)
+                                    <span class="text-sm text-gray-500">{{ $event->duration }}</span>
+                                @else
+                                    <span class="text-sm text-gray-500">Coming soon</span>
+                                @endif
+                                <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                    Learn more 
+                                    <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Event Card 3 - YEG Challenge -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                    <div class="relative">
-                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="YEG Challenge" class="w-full h-48 object-cover">
+                @empty
+                    <!-- No Events Message -->
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-gray-500">No events available at the moment. Check back soon!</p>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-primary">YEG Challenge</h3>
-                            <span class="text-xs text-white bg-red-600 px-2 py-1 rounded-full">Advanced</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">
-                            An exciting competition where young experts solve real-worl...
-                        </p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">2 days</span>
-                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
-                                Learn more 
-                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
+                @endforelse
                 </div>
                 
                 <!-- Event Card 4 - Latest on Board -->
