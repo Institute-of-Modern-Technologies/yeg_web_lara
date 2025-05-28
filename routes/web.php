@@ -102,6 +102,19 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/testimonials/update-order', [
         '\App\Http\Controllers\TestimonialController', 'updateOrder'
     ])->name('admin.testimonials.update-order');
+    
+    // Partner School Management Routes
+    Route::resource('partner-schools', '\App\Http\Controllers\PartnerSchoolController')->names([
+        'index' => 'admin.partner-schools.index',
+        'create' => 'admin.partner-schools.create',
+        'store' => 'admin.partner-schools.store',
+        'edit' => 'admin.partner-schools.edit',
+        'update' => 'admin.partner-schools.update',
+        'destroy' => 'admin.partner-schools.destroy'
+    ]);
+    Route::post('/partner-schools/update-order', [
+        '\App\Http\Controllers\PartnerSchoolController', 'updateOrder'
+    ])->name('admin.partner-schools.update-order');
 });
 
 // School Admin Routes

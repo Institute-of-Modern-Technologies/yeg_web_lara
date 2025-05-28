@@ -633,41 +633,135 @@
                 </p>
             </div>
             
+            @php
+                // Get active partner schools ordered by display_order
+                $partnerSchools = \App\Models\PartnerSchool::active()->ordered()->get();
+            @endphp
+            
             <!-- School Showcase Carousel -->
             <div class="relative max-w-5xl mx-auto">
-                <!-- School Slide -->
-                <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
-                    <div class="aspect-w-16 aspect-h-9 relative">
-                        <img src="https://placehold.co/1200x600/771919/ffffff" alt="School Computer Lab" class="w-full object-cover">
-                        
-                        <!-- School Name Badge -->
-                        <div class="absolute bottom-6 left-6">
-                            <div class="bg-red-700 text-white py-2 px-4 inline-block font-bold uppercase">
-                                DADDY'S PRIDE ACADEMY
+                @if($partnerSchools->isEmpty())
+                <!-- No Schools Message -->
+                <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative p-10 text-center">
+                    <p class="text-white text-lg">No partner schools available at the moment. Be the first to join our network!</p>
+                </div>
+                @else
+                <!-- School Slides -->
+                <div class="schools-carousel overflow-hidden">
+                    <div class="schools-carousel-inner flex transition-transform duration-500">
+                        @foreach($partnerSchools as $index => $school)
+                        <div class="school-slide flex-shrink-0 w-full {{ $index > 0 ? 'hidden' : '' }}" data-index="{{ $index }}">
+                            <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
+                                <div class="aspect-w-16 aspect-h-9 relative">
+                                    <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="w-full object-cover">
+                                    
+                                    <!-- School Name Badge -->
+                                    <div class="absolute bottom-6 left-6">
+                                        <div class="bg-red-700 text-white py-2 px-4 inline-block font-bold uppercase">
+                                            {{ $school->name }}
+                                        </div>
+                                    </div>
+                                    
+                                    @if($school->website_url)
+                                    <!-- Visit Website Button -->
+                                    <div class="absolute top-6 right-6">
+                                        <a href="{{ $school->website_url }}" target="_blank" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md p-2 inline-block">
+                                            <i class="fas fa-external-link-alt text-white"></i>
+                                        </a>
+                                    </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- Expand Button -->
-                        <div class="absolute top-6 right-6">
-                            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md p-2">
-                                <i class="fas fa-expand text-white"></i>
-                            </button>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
                 
                 <!-- Carousel Navigation Dots -->
                 <div class="flex justify-center mt-6 space-x-2">
-                    <button class="w-3 h-3 rounded-full bg-cyan-400"></button>
-                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
-                    <button class="w-3 h-3 rounded-full bg-neon-pink"></button>
-                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
-                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
-                    <button class="w-3 h-3 rounded-full bg-gray-400"></button>
+                    @foreach($partnerSchools as $index => $school)
+                    <button class="school-nav-dot w-3 h-3 rounded-full {{ $index == 0 ? 'bg-cyan-400' : 'bg-gray-400' }}" data-index="{{ $index }}"></button>
+                    @endforeach
                 </div>
+                
+                <!-- Carousel Navigation Arrows (only if more than one school) -->
+                @if($partnerSchools->count() > 1)
+                <div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 z-10">
+                    <button class="school-prev bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-chevron-left text-white"></i>
+                    </button>
+                    <button class="school-next bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-chevron-right text-white"></i>
+                    </button>
+                </div>
+                @endif
+                @endif
             </div>
         </div>
     </section>
+    
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Partner Schools Carousel functionality
+            const slides = document.querySelectorAll('.school-slide');
+            const dots = document.querySelectorAll('.school-nav-dot');
+            const prevBtn = document.querySelector('.school-prev');
+            const nextBtn = document.querySelector('.school-next');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+            
+            // Only initialize if there are slides
+            if (totalSlides > 0) {
+                // Function to show a specific slide
+                function showSlide(index) {
+                    // Hide all slides
+                    slides.forEach(slide => {
+                        slide.classList.add('hidden');
+                    });
+                    
+                    // Show the current slide
+                    slides[index].classList.remove('hidden');
+                    
+                    // Update dots
+                    dots.forEach((dot, idx) => {
+                        dot.classList.toggle('bg-cyan-400', idx === index);
+                        dot.classList.toggle('bg-gray-400', idx !== index);
+                    });
+                }
+                
+                // Go to previous slide
+                function prevSlide() {
+                    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                    showSlide(currentSlide);
+                }
+                
+                // Go to next slide
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    showSlide(currentSlide);
+                }
+                
+                // Add click events to dots
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        currentSlide = index;
+                        showSlide(currentSlide);
+                    });
+                });
+                
+                // Add click events to navigation buttons
+                if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+                if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+                
+                // Auto-advance slides every 5 seconds if there's more than one slide
+                if (totalSlides > 1) {
+                    setInterval(nextSlide, 5000);
+                }
+            }
+        });
+    </script>
+    @endpush
 
     <!-- Explore Our Events Section -->
     <section id="events" class="py-16 bg-white">
