@@ -1,0 +1,240 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\HeroSection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+class HeroSectionController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        // Get all hero sections ordered by display order
+        $heroSections = HeroSection::orderBy('display_order', 'asc')->get();
+        
+        return view('admin.hero-sections.index', compact('heroSections'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        return view('admin.hero-sections.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'button_text' => 'nullable|string|max:50',
+            'button_link' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+            'display_order' => 'integer|min:0',
+            'text_color' => 'nullable|string|max:50',
+            'overlay_color' => 'nullable|string|max:50',
+            'overlay_opacity' => 'nullable|numeric|min:0|max:1',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        // Handle image upload
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
+            $image->move(public_path('storage/hero-sections'), $imageName);
+            $imagePath = 'hero-sections/' . $imageName;
+        }
+        
+        // Create new hero section
+        HeroSection::create([
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'image_path' => $imagePath,
+            'button_text' => $request->button_text,
+            'button_link' => $request->button_link,
+            'is_active' => $request->has('is_active'),
+            'display_order' => $request->display_order ?? 0,
+            'text_color' => $request->text_color ?? '#ffffff',
+            'overlay_color' => $request->overlay_color,
+            'overlay_opacity' => $request->overlay_opacity ?? 0.5,
+        ]);
+        
+        return redirect()->route('admin.hero-sections.index')
+            ->with('success', 'Hero section created successfully!');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        // We're not using this method since we manage hero sections in index view
+        return redirect()->route('admin.hero-sections.index');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $heroSection = HeroSection::findOrFail($id);
+        
+        return view('admin.hero-sections.edit', compact('heroSection'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $heroSection = HeroSection::findOrFail($id);
+        
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'button_text' => 'nullable|string|max:50',
+            'button_link' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+            'display_order' => 'integer|min:0',
+            'text_color' => 'nullable|string|max:50',
+            'overlay_color' => 'nullable|string|max:50',
+            'overlay_opacity' => 'nullable|numeric|min:0|max:1',
+        ]);
+        
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        
+        // Handle image upload if new image is provided
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($heroSection->image_path) {
+                $oldImagePath = public_path('storage/' . $heroSection->image_path);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            // Store new image
+            $image = $request->file('image');
+            $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
+            $image->move(public_path('storage/hero-sections'), $imageName);
+            $heroSection->image_path = 'hero-sections/' . $imageName;
+        }
+        
+        // Update hero section data
+        $heroSection->title = $request->title;
+        $heroSection->subtitle = $request->subtitle;
+        $heroSection->button_text = $request->button_text;
+        $heroSection->button_link = $request->button_link;
+        $heroSection->is_active = $request->has('is_active');
+        $heroSection->display_order = $request->display_order ?? 0;
+        $heroSection->text_color = $request->text_color ?? '#ffffff';
+        $heroSection->overlay_color = $request->overlay_color;
+        $heroSection->overlay_opacity = $request->overlay_opacity ?? 0.5;
+        
+        $heroSection->save();
+        
+        return redirect()->route('admin.hero-sections.index')
+            ->with('success', 'Hero section updated successfully!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+        }
+        
+        $heroSection = HeroSection::findOrFail($id);
+        
+        // Delete image file if it exists
+        if ($heroSection->image_path && Storage::disk('public')->exists($heroSection->image_path)) {
+            Storage::disk('public')->delete($heroSection->image_path);
+        }
+        
+        $heroSection->delete();
+        
+        return response()->json([
+            'success' => true, 
+            'message' => 'Hero section deleted successfully!'
+        ]);
+    }
+    
+    /**
+     * Update the order of hero sections.
+     */
+    public function updateOrder(Request $request)
+    {
+        // Check if user is authorized to manage hero sections
+        if (Auth::user()->user_type_id != 1) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+        }
+        
+        $validator = Validator::make($request->all(), [
+            'items' => 'required|array',
+            'items.*.id' => 'required|exists:hero_sections,id',
+            'items.*.order' => 'required|integer|min:0',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+        
+        foreach ($request->items as $item) {
+            HeroSection::where('id', $item['id'])->update(['display_order' => $item['order']]);
+        }
+        
+        return response()->json(['success' => true, 'message' => 'Order updated successfully']);
+    }
+}

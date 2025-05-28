@@ -153,6 +153,11 @@
                             <span>Dashboard</span>
                         </a>
                         
+                        <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                            <i class="fas fa-image w-5 h-5 mr-3"></i>
+                            <span>Hero Sections</span>
+                        </a>
+                        
                         <!-- Other menu items will be added when they're implemented -->
                     </nav>
                 </div>
@@ -182,6 +187,7 @@
         <!-- Main Content Area - FULL WIDTH -->
         <main class="content-area">
             <div class="p-6">
+                @if(Route::currentRouteName() == 'admin.dashboard')
                 <!-- Dashboard Header -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
@@ -301,6 +307,9 @@
                         </div>
                     </div>
                 </div>
+                @else
+                    @yield('content')
+                @endif
             </div>
         </main>
     </div>

@@ -55,8 +55,9 @@
 
     <!-- Hero Section with Carousel -->
     <section id="hero-section" class="hero-section relative overflow-hidden min-h-[600px] md:min-h-[700px] bg-primary">
-        <!-- Carousel Item 1 -->
-        <div class="carousel-item active" id="slide1">
+        @if($heroSections->isEmpty())
+        <!-- Default Hero Section (Shown when no hero sections are configured) -->
+        <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
                 <img src="{{ asset('images/Hero picture 3.png') }}" alt="Young Experts Group" class="w-full h-full object-cover">
@@ -74,30 +75,61 @@
                             <span class="text-secondary">CAREER-READY</span>
                         </h1>
                         <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md">
-                            <span class="text-secondary">Before</span>
-                            <span class="text-white"> COMPLETING SCHOOL</span>
+                            <span class="text-white">Nurturing Future Innovators</span>
                         </h2>
-                        <p class="text-white text-lg mb-6 text-shadow-sm">Empowering Young Minds Through Tech and Entrepreneurship</p>
                         <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
                     </div>
                 </div>
             </div>
         </div>
+        @else
+        <!-- Dynamic Hero Sections from Database -->
+        @foreach($heroSections as $index => $heroSection)
+        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" id="slide-{{ $heroSection->id }}">
+            <!-- Background Image -->
+            <div class="absolute inset-0 w-full h-full">
+                <img src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}" class="w-full h-full object-cover">
+                <!-- Custom overlay with configured color and opacity -->
+                <div class="absolute inset-0" style="{{ app(\App\Services\HeroSectionService::class)->generateOverlayStyles($heroSection) }}"></div>
+            </div>
+            
+            <!-- Text Content -->
+            <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
+                <div class="container-fluid px-0">
+                    <div class="max-w-2xl text-center py-6 px-8 mt-40 md:mt-48 lg:mt-56" style="{{ app(\App\Services\HeroSectionService::class)->generateHeroStyles($heroSection) }}">
+                        <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg" style="color: {{ $heroSection->text_color }}">
+                            {{ $heroSection->title }}
+                        </h1>
+                        @if($heroSection->subtitle)
+                        <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md" style="color: {{ $heroSection->text_color }}">
+                            {{ $heroSection->subtitle }}
+                        </h2>
+                        @endif
+                        @if($heroSection->button_text)
+                        <a href="{{ $heroSection->button_link ?? '#' }}" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">{{ $heroSection->button_text }}</a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
         
         <!-- Carousel Controls -->
         <div class="carousel-controls absolute bottom-6 w-full flex justify-center space-x-3 z-10">
-            <div class="carousel-dot active" data-slide="slide1"></div>
-            <div class="carousel-dot" data-slide="slide2"></div>
-            <div class="carousel-dot" data-slide="slide3"></div>
+            @foreach($heroSections as $index => $heroSection)
+            <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}" data-slide="slide-{{ $heroSection->id }}"></div>
+            @endforeach
         </div>
         
         <!-- Carousel Navigation Arrows -->
-        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
+        <button class="carousel-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
             <i class="fas fa-chevron-left text-white"></i>
         </button>
-        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
+        <button class="carousel-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full p-2 z-10">
             <i class="fas fa-chevron-right text-white"></i>
         </button>
+        @endif
     </section>
 
     <!-- Our Stages Section -->
@@ -1341,6 +1373,58 @@
                 $('#' + slideId).addClass('active');
                 $('.carousel-dot').removeClass('active');
                 $(this).addClass('active');
+            });
+            
+            // Hero Carousel Navigation Arrows
+            $('.carousel-prev').click(function() {
+                const activeDot = $('.carousel-dot.active');
+                let prevDot = activeDot.prev('.carousel-dot');
+                
+                // If no previous dot, go to the last dot (loop back)
+                if (prevDot.length === 0) {
+                    prevDot = $('.carousel-dot:last');
+                }
+                
+                // Trigger click on the dot to show the corresponding slide
+                prevDot.click();
+            });
+            
+            $('.carousel-next').click(function() {
+                const activeDot = $('.carousel-dot.active');
+                let nextDot = activeDot.next('.carousel-dot');
+                
+                // If no next dot, go to the first dot (loop)
+                if (nextDot.length === 0) {
+                    nextDot = $('.carousel-dot:first');
+                }
+                
+                // Trigger click on the dot to show the corresponding slide
+                nextDot.click();
+            });
+            
+            // Auto-rotate carousel every 5 seconds
+            let carouselInterval;
+            
+            function startCarouselAutoplay() {
+                carouselInterval = setInterval(function() {
+                    $('.carousel-next').click();
+                }, 5000);
+            }
+            
+            function stopCarouselAutoplay() {
+                clearInterval(carouselInterval);
+            }
+            
+            // Start autoplay on page load if there are hero sections
+            if ($('.carousel-dot').length > 1) {
+                startCarouselAutoplay();
+            }
+            
+            // Pause autoplay when user interacts with carousel
+            $('.carousel-dot, .carousel-prev, .carousel-next').on('click', function() {
+                stopCarouselAutoplay();
+                // Restart autoplay after user interaction (after 10 seconds)
+                setTimeout(startCarouselAutoplay, 10000);
             });
             
             // Category toggle functionality for FAQs
