@@ -120,6 +120,16 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                        <!-- Text Position -->
+                        <div>
+                            <label for="text_position" class="block text-sm font-medium text-gray-700 mb-1">Text Position</label>
+                            <select name="text_position" id="text_position" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                                <option value="top" {{ old('text_position') == 'top' ? 'selected' : '' }}>Top</option>
+                                <option value="middle" {{ old('text_position') == 'middle' ? 'selected' : '' }}>Middle</option>
+                                <option value="bottom" {{ old('text_position') == 'bottom' || old('text_position') == null ? 'selected' : '' }}>Bottom</option>
+                            </select>
+                        </div>
+                        
                         <!-- Text Color -->
                         <div>
                             <label for="text_color" class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>

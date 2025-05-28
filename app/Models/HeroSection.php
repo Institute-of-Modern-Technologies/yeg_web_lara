@@ -21,7 +21,8 @@ class HeroSection extends Model
         'display_order',
         'text_color',
         'overlay_color',
-        'overlay_opacity'
+        'overlay_opacity',
+        'text_position'
     ];
 
     /**

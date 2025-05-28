@@ -68,7 +68,7 @@
             <!-- Text Content -->
             <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
                 <div class="container-fluid px-0">
-                    <div class="max-w-2xl text-center py-6 px-8 mt-40 md:mt-48 lg:mt-56">
+                    <div class="max-w-2xl text-center py-6 px-8">
                         <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg">
                             <span class="text-white">Get </span>
@@ -94,9 +94,9 @@
             </div>
             
             <!-- Text Content -->
-            <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
+            <div class="relative h-full flex {{ $heroSection->text_position == 'top' ? 'items-start pt-32' : ($heroSection->text_position == 'middle' ? 'items-center' : 'items-end pb-16') }} justify-start pl-8 md:pl-16 lg:pl-24">
                 <div class="container-fluid px-0">
-                    <div class="max-w-2xl text-center py-6 px-8 mt-40 md:mt-48 lg:mt-56" style="{{ app(\App\Services\HeroSectionService::class)->generateHeroStyles($heroSection) }}">
+                    <div class="max-w-2xl text-center py-6 px-8" style="{{ app(\App\Services\HeroSectionService::class)->generateHeroStyles($heroSection) }}">
                         <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg" style="color: {{ $heroSection->text_color }}">
                             {{ $heroSection->title }}

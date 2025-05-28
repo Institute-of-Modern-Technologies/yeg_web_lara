@@ -90,6 +90,7 @@ class HeroSectionController extends Controller
             'text_color' => $request->text_color ?? '#ffffff',
             'overlay_color' => $request->overlay_color,
             'overlay_opacity' => $request->overlay_opacity ?? 0.5,
+            'text_position' => $request->text_position ?? 'bottom',
         ]);
         
         return redirect()->route('admin.hero-sections.index')
@@ -179,6 +180,7 @@ class HeroSectionController extends Controller
         $heroSection->text_color = $request->text_color ?? '#ffffff';
         $heroSection->overlay_color = $request->overlay_color;
         $heroSection->overlay_opacity = $request->overlay_opacity ?? 0.5;
+        $heroSection->text_position = $request->text_position ?? 'bottom';
         
         $heroSection->save();
         
