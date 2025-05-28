@@ -163,6 +163,11 @@
                             <span>Events</span>
                         </a>
                         
+                        <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                            <i class="fas fa-newspaper w-5 h-5 mr-3"></i>
+                            <span>Happenings</span>
+                        </a>
+                        
                         <!-- Other menu items will be added when they're implemented -->
                     </nav>
                 </div>

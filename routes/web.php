@@ -76,6 +76,19 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/events/update-order', [
         '\App\Http\Controllers\EventController', 'updateOrder'
     ])->name('admin.events.update-order');
+    
+    // Happening Management Routes
+    Route::resource('happenings', '\App\Http\Controllers\HappeningController')->names([
+        'index' => 'admin.happenings.index',
+        'create' => 'admin.happenings.create',
+        'store' => 'admin.happenings.store',
+        'edit' => 'admin.happenings.edit',
+        'update' => 'admin.happenings.update',
+        'destroy' => 'admin.happenings.destroy'
+    ]);
+    Route::post('/happenings/update-order', [
+        '\App\Http\Controllers\HappeningController', 'updateOrder'
+    ])->name('admin.happenings.update-order');
 });
 
 // School Admin Routes

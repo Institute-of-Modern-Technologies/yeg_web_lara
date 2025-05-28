@@ -295,68 +295,48 @@
                         <br>where your ideas come to life!
                     </h2>
                     
-                    <!-- Blog Post 1 -->
+                    @php
+                        // Get active happenings ordered by display_order and recent date
+                        $happenings = \App\Models\Happening::active()->ordered()->recent()->take(3)->get();
+                    @endphp
+                    
+                    @forelse($happenings as $happening)
+                    <!-- Blog Post -->
                     <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6">
                         <div class="flex-shrink-0 mr-4">
                             <div class="relative rounded-md overflow-hidden w-32 h-32">
-                                <img src="https://placehold.co/150x150" alt="Mother's Day" class="w-full h-full object-cover">
-                                <div class="absolute bottom-2 right-2 w-8 h-8 bg-neon-pink rounded-full flex items-center justify-center">
-                                    <i class="fas fa-play text-white"></i>
-                                </div>
+                                @if($happening->media_type == 'image')
+                                    <img src="{{ asset('storage/' . $happening->media_path) }}" alt="{{ $happening->title }}" class="w-full h-full object-cover">
+                                @else
+                                    <img src="{{ asset('storage/' . $happening->media_path) }}" alt="{{ $happening->title }}" class="w-full h-full object-cover">
+                                    <div class="absolute bottom-2 right-2 w-8 h-8 bg-neon-pink rounded-full flex items-center justify-center">
+                                        <i class="fas fa-play text-white"></i>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center text-xs mb-1">
-                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> DADDY'S PRIDE</span>
-                                <span><i class="far fa-calendar text-secondary mr-1"></i> May 11, 2023</span>
+                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> {{ strtoupper($happening->author_name ?? 'ANONYMOUS') }}</span>
+                                <span><i class="far fa-calendar text-secondary mr-1"></i> {{ $happening->getFormattedDate() }}</span>
                             </div>
-                            <h3 class="text-xl font-bold mb-2">Happy Mother's Day</h3>
+                            <h3 class="text-xl font-bold mb-2">{{ $happening->title }}</h3>
                             <p class="text-sm text-gray-200 mb-2">
-                                Happy Mother's Day to the beautiful souls who hold the world together with their love, find grace, strength, and endless warmth in everything they do! You deserve to celebrate you—the heartbeats of our homes. <span class="text-yellow-500">🌟</span> <span class="text-red-500">❤️</span> <span class="text-yellow-500">🌹</span>
+                                {{ $happening->getShortContent(200) }}
                             </p>
+                            @if($happening->category)
                             <div class="text-xs text-gray-300">
-                                Posted in: Lunch
+                                Posted in: {{ $happening->category }}
                             </div>
+                            @endif
                         </div>
                     </div>
-                    
-                    <!-- Blog Post 2 -->
-                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6">
-                        <div class="flex-shrink-0 mr-4">
-                            <div class="relative rounded-md overflow-hidden w-32 h-32">
-                                <img src="https://placehold.co/150x150" alt="Bintu vs Homework" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center text-xs mb-1">
-                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> KAREN AKIALE</span>
-                                <span><i class="far fa-calendar text-secondary mr-1"></i> JANUARY 24, 2020</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">Hijia Bintu Vs the Homework Rebel</h3>
-                            <p class="text-sm text-gray-200 mb-2">
-                                "Hijia Bintu vs the Homework Rebel" is a short story about a smart girl who takes on a classmate known for always avoiding homework, leading to a fun and clever classroom showdown... <span class="text-yellow-500">🌟</span>
-                            </p>
-                        </div>
+                    @empty
+                    <!-- No Happenings Message -->
+                    <div class="bg-black bg-opacity-20 rounded-md p-6 text-center">
+                        <p class="text-gray-200">No happenings available at the moment. Check back soon for updates!</p>
                     </div>
-                    
-                    <!-- Blog Post 3 -->
-                    <div class="flex bg-black bg-opacity-20 rounded-md p-4">
-                        <div class="flex-shrink-0 mr-4">
-                            <div class="relative rounded-md overflow-hidden w-32 h-32">
-                                <img src="https://placehold.co/150x150" alt="Queensnsburg" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center text-xs mb-1">
-                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> Nathan Elrom Winnes</span>
-                                <span><i class="far fa-calendar text-secondary mr-1"></i> JANUARY 24, 2020</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-2">There lived a Queensnsburg</h3>
-                            <p class="text-sm text-gray-200 mb-2">
-                                In a land woven with mystery and grace, Queensnsburg stood tall—a realm of stories untold, where legends were born and dreams dared to bloom... <span class="text-yellow-500">👍</span> <span class="text-yellow-500">🌹</span>
-                            </p>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
                 
                 <!-- Right Column - Stats/Register -->
@@ -756,31 +736,8 @@
                         <p class="text-gray-500">No events available at the moment. Check back soon!</p>
                     </div>
                 @endforelse
-                </div>
-                
-                <!-- Event Card 4 - Latest on Board -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                    <div class="relative">
-                        <img src="https://placehold.co/600x400/ffae00/ffffff" alt="Latest on Board" class="w-full h-48 object-cover">
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-bold text-primary">Latest on Board</h3>
-                            <span class="text-xs text-white bg-cyan-400 px-2 py-1 rounded-full">Brand new</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">
-                            Meet the newest young experts joining our journey of creativ...
-                        </p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">Ongoing</span>
-                            <a href="#" class="text-sm text-primary hover:text-primary-dark flex items-center">
-                                Learn more 
-                                <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
+        </div>
             
             <!-- View All Button -->
             <div class="text-center mt-10">
