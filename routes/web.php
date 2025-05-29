@@ -115,6 +115,16 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/partner-schools/update-order', [
         '\App\Http\Controllers\PartnerSchoolController', 'updateOrder'
     ])->name('admin.partner-schools.update-order');
+    
+    // Program Types Management Routes
+    Route::resource('program-types', '\App\Http\Controllers\Admin\ProgramTypeController')->names([
+        'index' => 'admin.program-types.index',
+        'create' => 'admin.program-types.create',
+        'store' => 'admin.program-types.store',
+        'edit' => 'admin.program-types.edit',
+        'update' => 'admin.program-types.update',
+        'destroy' => 'admin.program-types.destroy'
+    ]);
 });
 
 // School Admin Routes

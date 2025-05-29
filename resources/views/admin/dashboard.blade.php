@@ -190,6 +190,27 @@
                             </div>
                         </div>
                         
+                        <!-- Setups Section -->
+                        <div class="mt-6 pt-6 border-t border-gray-700">
+                            <div x-data="{ open: false }">
+                                <button @click="open = !open" class="w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                                        <span>Setups</span>
+                                    </div>
+                                    <i class="fas" :class="open ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                                </button>
+                                
+                                <div x-show="open" class="mt-2 space-y-1 pl-12">
+                                    <a href="{{ route('admin.program-types.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                        <i class="fas fa-list-alt w-5 h-5 mr-3"></i>
+                                        <span>Program Types</span>
+                                    </a>
+                                    <!-- More setup items can be added here -->
+                                </div>
+                            </div>
+                        </div>
+                        
                         <!-- Other menu items will be added when they're implemented -->
                     </nav>
                 </div>
