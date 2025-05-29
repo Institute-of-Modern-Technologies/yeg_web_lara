@@ -148,35 +148,47 @@
                     <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</span>
                     
                     <nav class="mt-4 space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-white active-menu-item">
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
                             <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
                             <span>Dashboard</span>
                         </a>
                         
-                        <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-image w-5 h-5 mr-3"></i>
-                            <span>Hero Sections</span>
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                            <i class="fas fa-users w-5 h-5 mr-3"></i>
+                            <span>Users</span>
                         </a>
                         
-                        <a href="{{ route('admin.events.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-calendar-alt w-5 h-5 mr-3"></i>
-                            <span>Events</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-newspaper w-5 h-5 mr-3"></i>
-                            <span>Happenings</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-quote-left w-5 h-5 mr-3"></i>
-                            <span>Testimonials</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-school w-5 h-5 mr-3"></i>
-                            <span>Partner Schools</span>
-                        </a>
+                        <!-- Advertisement Section -->
+                        <div class="mt-6 pt-6 border-t border-gray-700">
+                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Advertisement</span>
+                            
+                            <div class="mt-3 space-y-1">
+                                <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-image w-5 h-5 mr-3"></i>
+                                    <span>Hero Sections</span>
+                                </a>
+                                
+                                <a href="{{ route('admin.events.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-calendar-alt w-5 h-5 mr-3"></i>
+                                    <span>Events</span>
+                                </a>
+                                
+                                <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-newspaper w-5 h-5 mr-3"></i>
+                                    <span>Happenings</span>
+                                </a>
+                                
+                                <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-quote-left w-5 h-5 mr-3"></i>
+                                    <span>Testimonials</span>
+                                </a>
+                                
+                                <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-school w-5 h-5 mr-3"></i>
+                                    <span>Partner Schools</span>
+                                </a>
+                            </div>
+                        </div>
                         
                         <!-- Other menu items will be added when they're implemented -->
                     </nav>
@@ -229,7 +241,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-500 text-sm font-medium uppercase">Total Users</p>
-                                <h3 class="text-3xl font-bold text-gray-800 mt-1">127</h3>
+                                <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ \App\Models\User::count() }}</h3>
                             </div>
                             <div class="bg-red-100 p-3 rounded-full">
                                 <i class="fas fa-users text-primary text-xl"></i>
@@ -277,6 +289,9 @@
 
                         <!-- Users Table -->
                         <div class="overflow-x-auto">
+                            @php
+                                $paginatedUsers = \App\Models\User::paginate(5);
+                            @endphp
                             <table class="min-w-full bg-white rounded-lg overflow-hidden">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
@@ -288,7 +303,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-600 text-sm">
-                                    @foreach(\App\Models\User::all() as $user)
+                                    @foreach($paginatedUsers as $user)
                                     <tr data-user-type="{{ $user->user_type_id }}">
                                         <td class="py-3 px-4">{{ $user->name }}</td>
                                         <td class="py-3 px-4">{{ $user->username }}</td>
@@ -324,6 +339,11 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            
+                            <!-- Pagination Links with Tailwind Styling -->
+                            <div class="mt-5 flex justify-center">
+                                {{ $paginatedUsers->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

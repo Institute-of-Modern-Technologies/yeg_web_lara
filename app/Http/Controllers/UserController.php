@@ -21,7 +21,8 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Unauthorized access');
         }
         
-        $users = User::all();
+        // Get users with pagination (5 users per page)
+        $users = User::paginate(5);
         return view('admin.users.index', compact('users'));
     }
 
