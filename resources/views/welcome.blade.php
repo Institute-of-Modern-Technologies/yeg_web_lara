@@ -27,18 +27,12 @@
                 <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
             </a>
             @else
-            <div class="relative hidden md:block group">
-                <a href="#" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center sign-in-btn">
-                    <i class="fas fa-user mr-2"></i> Login
-                </a>
-                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
-                    <div class="py-2">
-                        <a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                        <a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
-                        <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
-                    </div>
-                </div>
-            </div>
+            <a href="/login" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
+                <i class="fas fa-user mr-2"></i> Login
+            </a>
+            <a href="/schools/register" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
+                <i class="fas fa-school mr-2"></i> School Registration
+            </a>
             @endauth
             <div class="relative hidden md:block group">
                 <a href="#" class="btn-primary enroll-btn">Enroll</a>
