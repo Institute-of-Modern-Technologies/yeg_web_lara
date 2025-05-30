@@ -12,6 +12,32 @@ Route::get('/schools/register', [\App\Http\Controllers\SchoolRegistrationControl
 Route::post('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'register'])->name('school.register.submit');
 Route::get('/schools/register/success', [\App\Http\Controllers\SchoolRegistrationController::class, 'showSuccess'])->name('school.register.success');
 
+// Student Registration Routes
+Route::prefix('students')->name('student.registration.')->group(function () {
+    // Step 1: Program Type Selection
+    Route::get('/register', [\App\Http\Controllers\StudentRegistrationController::class, 'showStep1'])->name('step1');
+    Route::post('/register/step1', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep1'])->name('process_step1');
+    
+    // Step 2: School Selection (different for In School vs Other program types)
+    Route::post('/register/step2-inschool', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep2InSchool'])->name('process_step2_inschool');
+    Route::post('/register/step2-other', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep2Other'])->name('process_step2_other');
+    
+    // Step 3: In School - Who is paying?
+    Route::post('/register/step3-inschool', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep3InSchool'])->name('process_step3_inschool');
+    
+    // Payment processing
+    Route::post('/register/payment', [\App\Http\Controllers\StudentRegistrationController::class, 'processPayment'])->name('process_payment');
+    
+    // Student details form
+    Route::get('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'showDetailsForm'])->name('details');
+    Route::post('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'processDetails'])->name('process_details');
+    
+    // Success page
+    Route::get('/register/success', function() {
+        return view('student.registration.success');
+    })->name('success');
+});
+
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -141,6 +167,17 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'destroy' => 'admin.schools.destroy'
     ]);
     Route::patch('/schools/{id}/status', ['\App\Http\Controllers\Admin\SchoolController', 'updateStatus'])->name('admin.schools.update-status');
+    
+    // Fee Management Routes
+    Route::resource('fees', '\App\Http\Controllers\Admin\FeeController')->names([
+        'index' => 'admin.fees.index',
+        'create' => 'admin.fees.create',
+        'store' => 'admin.fees.store',
+        'edit' => 'admin.fees.edit',
+        'update' => 'admin.fees.update',
+        'destroy' => 'admin.fees.destroy'
+    ]);
+    Route::patch('/fees/{fee}/toggle-status', ['\App\Http\Controllers\Admin\FeeController', 'toggleStatus'])->name('admin.fees.toggle-status');
 });
 
 // School Admin Routes

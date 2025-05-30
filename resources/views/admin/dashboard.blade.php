@@ -210,6 +210,10 @@
                                         <i class="fas fa-school w-5 h-5 mr-3"></i>
                                         <span>Schools</span>
                                     </a>
+                                    <a href="{{ route('admin.fees.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                        <i class="fas fa-money-bill-wave w-5 h-5 mr-3"></i>
+                                        <span>Program Fees</span>
+                                    </a>
                                     <!-- More setup items can be added here -->
                                 </div>
                             </div>
