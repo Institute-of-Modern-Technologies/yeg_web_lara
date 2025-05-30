@@ -7,6 +7,11 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
 
+// School Registration Routes
+Route::get('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'showRegistrationForm'])->name('school.register');
+Route::post('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'register'])->name('school.register.submit');
+Route::get('/schools/register/success', [\App\Http\Controllers\SchoolRegistrationController::class, 'showSuccess'])->name('school.register.success');
+
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -125,6 +130,17 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'update' => 'admin.program-types.update',
         'destroy' => 'admin.program-types.destroy'
     ]);
+    
+    // Schools Management Routes
+    Route::resource('schools', '\App\Http\Controllers\Admin\SchoolController')->names([
+        'index' => 'admin.schools.index',
+        'create' => 'admin.schools.create',
+        'store' => 'admin.schools.store',
+        'edit' => 'admin.schools.edit',
+        'update' => 'admin.schools.update',
+        'destroy' => 'admin.schools.destroy'
+    ]);
+    Route::patch('/schools/{id}/status', ['\App\Http\Controllers\Admin\SchoolController', 'updateStatus'])->name('admin.schools.update-status');
 });
 
 // School Admin Routes

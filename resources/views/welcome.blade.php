@@ -27,11 +27,29 @@
                 <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
             </a>
             @else
-            <a href="/login" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
-                <i class="fas fa-user mr-2"></i> Login
-            </a>
+            <div class="relative hidden md:block group">
+                <a href="#" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center sign-in-btn">
+                    <i class="fas fa-user mr-2"></i> Login
+                </a>
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                    <div class="py-2">
+                        <a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                        <a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                        <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                    </div>
+                </div>
+            </div>
             @endauth
-            <a href="#" class="btn-primary hidden md:block">Enroll</a>
+            <div class="relative hidden md:block group">
+                <a href="#" class="btn-primary enroll-btn">Enroll</a>
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                    <div class="py-2">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                        <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                    </div>
+                </div>
+            </div>
             
             <!-- Social Media Icons -->
             <div class="hidden md:flex space-x-3">
@@ -83,7 +101,16 @@
                         <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md">
                             <span class="text-white">Nurturing Future Innovators</span>
                         </h2>
-                        <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
+                        <div class="relative inline-block group">
+                            <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                    <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,7 +140,16 @@
                         </h2>
                         @endif
                         @if($heroSection->button_text)
-                        <a href="{{ $heroSection->button_link ?? '#' }}" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">{{ $heroSection->button_text }}</a>
+                        <div class="relative inline-block group">
+                            <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">{{ $heroSection->button_text }}</a>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                    <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                                </div>
+                            </div>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -215,10 +251,19 @@
                         </video>
                     </div>
                     
-                    <button class="bg-neon-pink text-white px-4 py-2 rounded-md hover:bg-opacity-90 inline-flex items-center">
-                        Find Out More 
-                        <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                    <div class="relative inline-block group">
+                        <button class="bg-neon-pink text-white px-4 py-2 rounded-md hover:bg-opacity-90 inline-flex items-center">
+                            Find Out More 
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Right Column - Why Partner With Us -->

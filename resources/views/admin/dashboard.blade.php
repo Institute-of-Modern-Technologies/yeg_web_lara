@@ -206,6 +206,10 @@
                                         <i class="fas fa-list-alt w-5 h-5 mr-3"></i>
                                         <span>Program Types</span>
                                     </a>
+                                    <a href="{{ route('admin.schools.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                        <i class="fas fa-school w-5 h-5 mr-3"></i>
+                                        <span>Schools</span>
+                                    </a>
                                     <!-- More setup items can be added here -->
                                 </div>
                             </div>
