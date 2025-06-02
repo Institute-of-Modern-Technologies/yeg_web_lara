@@ -19,6 +19,11 @@
                     <div>
                         <h2 class="text-xl font-semibold text-gray-800">Registration Successful!</h2>
                         <p class="text-gray-600 mt-1">Your registration has been completed successfully. Please save your registration details for future reference.</p>
+                        @if(session('registration.student'))
+                            <p class="text-primary font-semibold mt-2">Your Registration Number: <span class="text-xl">{{ session('registration.student')->registration_number }}</span></p>
+                        @elseif(session('registration.registration_number'))
+                            <p class="text-primary font-semibold mt-2">Your Registration Number: <span class="text-xl">{{ session('registration.registration_number') }}</span></p>
+                        @endif
                     </div>
                 </div>
                 
@@ -34,7 +39,7 @@
                         
                         <div>
                             <p class="text-sm text-gray-500">Full Name</p>
-                            <p class="text-base font-medium text-gray-800">{{ session('registration.student')->first_name }} {{ session('registration.student')->last_name }}</p>
+                            <p class="text-base font-medium text-gray-800">{{ session('registration.student')->full_name }}</p>
                         </div>
                         
                         <div>
@@ -49,13 +54,13 @@
                         
                         <div>
                             <p class="text-sm text-gray-500">Program</p>
-                            <p class="text-base font-medium text-gray-800">{{ session('registration.student')->programType->name }}</p>
+                            <p class="text-base font-medium text-gray-800">{{ session('registration.program_type_name') ?? 'Your Selected Program' }}</p>
                         </div>
                         
-                        @if(session('registration.student')->school)
+                        @if(session('registration.school_name'))
                         <div>
                             <p class="text-sm text-gray-500">School</p>
-                            <p class="text-base font-medium text-gray-800">{{ session('registration.student')->school->name }}</p>
+                            <p class="text-base font-medium text-gray-800">{{ session('registration.school_name') }}</p>
                         </div>
                         @endif
                     </div>
@@ -81,9 +86,6 @@
                         </div>
                     </div>
                 </div>
-                    </div>
-                </div>
-                @endif
                 
                 <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-8">
                     <div class="flex">

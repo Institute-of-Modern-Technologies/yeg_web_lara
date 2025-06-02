@@ -31,7 +31,6 @@
                             <h3 class="text-sm font-medium text-green-800">Registration Information</h3>
                             <div class="mt-2 text-sm text-green-700">
                                 <p><strong>Program:</strong> {{ $programType->name }}</p>
-                                @endif
                                 @if(session('registration.fee_amount'))
                                     <p><strong>Fee Amount:</strong> GHC {{ number_format(session('registration.fee_amount'), 2) }}</p>
                                 @endif
@@ -40,7 +39,7 @@
                     </div>
                 </div>
                 
-                <form action="{{ route('student.registration.process.details') }}" method="POST" class="space-y-6">
+                <form action="{{ route('student.registration.process_details') }}" method="POST" class="space-y-6">
                     @csrf
                     
                     <!-- Personal Information -->

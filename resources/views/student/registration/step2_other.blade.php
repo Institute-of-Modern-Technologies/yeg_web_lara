@@ -35,8 +35,8 @@
                                 <div class="mt-2 text-sm text-yellow-700">
                                     <p>
                                         <strong>{{ $programType->name }} Program</strong>:<br>
-                                        Regular fee: GHC450<br>
-                                        Partner school fee: GHC350
+                                        Regular fee<br>
+                                        Partner school fee
                                     </p>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                 </div>
                                 <label for="school_not_yet" class="ml-3 cursor-pointer flex-grow">
                                     <h3 class="font-medium text-gray-800">Not Yet</h3>
-                                    <p class="text-gray-600 text-sm">I'm not from a partner school (Standard fee: GHC450)</p>
+                                    <p class="text-gray-600 text-sm">I'm not from a partner school</p>
                                 </label>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                                 </div>
                                 <label for="school_select" class="ml-3 cursor-pointer flex-grow">
                                     <h3 class="font-medium text-gray-800">Select Partner School</h3>
-                                    <p class="text-gray-600 text-sm">I'm from a partner school (Discounted fee: GHC350)</p>
+                                    <p class="text-gray-600 text-sm">I'm from a partner school</p>
                                 </label>
                             </div>
                         </div>

@@ -21,6 +21,7 @@ class Student extends Model
         'school_id',
         'city',
         'program_type_id',
+        'registration_number',
         'payment_reference',
         'payment_status',
         'status',

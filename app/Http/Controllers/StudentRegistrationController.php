@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\ProgramType;
 use App\Models\School;
 use App\Models\Student;
@@ -131,7 +132,7 @@ class StudentRegistrationController extends Controller
             ->first();
             
         // If no fee found, use a default amount
-        $feeAmount = $fee ? $fee->amount : 450; // Default fee of 450 GHC
+        $feeAmount = $fee ? $fee->amount : 0; // Use dynamic fee from database, or 0 as default
         
         // Check if the school is a partner school
         $school = School::find($schoolId);
@@ -213,48 +214,92 @@ class StudentRegistrationController extends Controller
             'region' => 'required|string|max:255',
         ]);
         
-        // Create a new student record
-        $student = Student::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
+        // Generate a unique registration number for the student
+        $registrationNumber = $this->generateRegistrationNumber();
+        
+        // Create a student object we'll use throughout the method
+        $studentObj = (object)[
+            'registration_number' => $registrationNumber,
+            'full_name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'date_of_birth' => $request->date_of_birth,
-            'gender' => $request->gender,
-            'address' => $request->address,
-            'city' => $request->city,
-            'region' => $request->region,
-            'program_type_id' => session('registration.program_type_id'),
-            'school_id' => session('registration.school_id'),
-            'registration_number' => $this->generateRegistrationNumber(),
-            'status' => 'active',
-        ]);
+        ];
         
-        // Create payment record if payment was made by the student
-        if (session('registration.payer_type') === 'self') {
-            Payment::create([
-                'student_id' => $student->id,
-                'amount' => session('registration.fee_amount'),
-                'payment_reference' => session('registration.payment_reference'),
-                'payment_method' => 'mobile_money',
-                'status' => 'verified',
-                'payment_date' => now(),
+        try {
+            // Create a new student record using the fields that exist in the database
+            DB::table('students')->insert([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'full_name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'date_of_birth' => $request->date_of_birth,
+                'gender' => $request->gender,
+                'address' => $request->address,
+                'city' => $request->city,
+                'region' => $request->region,
+                'program_type_id' => session('registration.program_type_id'),
+                'school_id' => session('registration.school_id') ?? null,
+                'registration_number' => $registrationNumber,
+                'status' => 'active',
+                'payer_type' => session('registration.payer_type') ?? 'individual',
+                'payment_status' => session('registration.payment_status') ?? 'pending',
+                'age' => date_diff(date_create($request->date_of_birth), date_create('today'))->y,
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
-        }
-        // Record school payment (to be paid later)
-        elseif (session('registration.payer_type') === 'school') {
-            Payment::create([
-                'student_id' => $student->id,
-                'amount' => session('registration.fee_amount'),
-                'payment_reference' => 'SCHOOL-' . strtoupper(Str::random(8)),
-                'payment_method' => 'school_payment',
-                'status' => 'pending',
-                'payment_date' => null,
-            ]);
+            
+            // Get the student ID for further processing
+            $studentId = DB::getPdo()->lastInsertId();
+            $studentObj->id = $studentId;
+            
+            // Get program type name for the success page
+            if (session('registration.program_type_id')) {
+                $programType = ProgramType::find(session('registration.program_type_id'));
+                if ($programType) {
+                    session(['registration.program_type_name' => $programType->name]);
+                }
+            }
+            
+            // Get school name for the success page
+            if (session('registration.school_id')) {
+                $school = School::find(session('registration.school_id'));
+                if ($school) {
+                    session(['registration.school_name' => $school->name]);
+                }
+            }
+            
+            // Handle payment creation based on payment type
+            if (session('registration.payer_type') === 'self') {
+                Payment::create([
+                    'student_id' => $studentId,
+                    'amount' => session('registration.fee_amount'),
+                    'payment_method' => 'mobile_money',
+                    'reference_number' => session('registration.payment_reference') ?? 'PAYMENT-' . strtoupper(Str::random(8)),
+                    'status' => 'completed'
+                ]);
+            }
+            // Record school payment (to be paid later)
+            elseif (session('registration.payer_type') === 'school') {
+                Payment::create([
+                    'student_id' => $studentId,
+                    'amount' => session('registration.fee_amount'),
+                    'payment_method' => 'school_payment',
+                    'reference_number' => 'SCHOOL-' . strtoupper(Str::random(8)),
+                    'status' => 'pending'
+                ]);
+            }
+            
+        } catch (\Exception $e) {
+            // Log the error and return a friendly message
+            \Log::error('Student registration error: ' . $e->getMessage());
+            
+            return redirect()->back()->with('error', 'There was a problem with your registration. Please try again or contact support. Error: ' . $e->getMessage());
         }
         
         // Store student info in session for success page
-        session(['registration.student' => $student]);
+        session(['registration.student' => $studentObj]);
+        session(['registration.registration_number' => $registrationNumber]);
         
         // Clear other registration session data
         session()->forget([

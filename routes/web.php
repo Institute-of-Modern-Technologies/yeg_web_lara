@@ -178,6 +178,13 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'destroy' => 'admin.fees.destroy'
     ]);
     Route::patch('/fees/{fee}/toggle-status', ['\App\Http\Controllers\Admin\FeeController', 'toggleStatus'])->name('admin.fees.toggle-status');
+    
+    // Student Management Routes
+    Route::get('/students', ['\App\Http\Controllers\Admin\StudentController', 'index'])->name('admin.students.index');
+    Route::get('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'show'])->name('admin.students.show');
+    Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');
+    Route::put('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'update'])->name('admin.students.update');
+    Route::delete('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'destroy'])->name('admin.students.destroy');
 });
 
 // School Admin Routes
