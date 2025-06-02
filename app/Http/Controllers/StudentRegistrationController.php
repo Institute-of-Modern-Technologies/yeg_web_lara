@@ -75,34 +75,109 @@ class StudentRegistrationController extends Controller
      */
     public function processStep2Other(Request $request)
     {
-        $validated = $request->validate([
-            'school_id' => 'nullable|exists:schools,id',
+        // Debug received data
+        \Log::info('Starting processStep2Other with data:', [
+            'all_input' => $request->all(),
+            'school_selection' => $request->input('school_selection'),
+            'school_id' => $request->input('school_id'),
+            'debug_program_type' => $request->input('debug_program_type'), 
+            'debug_timestamp' => $request->input('debug_timestamp'),
+            'form_url' => $request->fullUrl(),
+            'session_program_type' => session('registration.program_type_id')
         ]);
-        
-        // Store data in session
-        session(['registration.school_id' => $request->school_id]);
-        
-        // Calculate fee based on program type and school
-        $programTypeId = session('registration.program_type_id');
-        $schoolId = $request->school_id;
-        
-        // Try to find a specific fee for this program type and school
-        $fee = Fee::where('program_type_id', $programTypeId)
-            ->where(function($query) use ($schoolId) {
-                $query->where('school_id', $schoolId)
-                      ->orWhereNull('school_id');
-            })
-            ->where('is_active', 1)
-            ->orderBy('school_id', 'desc') // Prioritize school-specific fees
-            ->first();
+
+        try {
+            // Get the program type ID from session
+            $programTypeId = session('registration.program_type_id');
             
-        // If no fee found, use a default amount
-        $feeAmount = $fee ? $fee->amount : 500; // Default fee of 500 GHC
-        
-        // Store fee amount in session
-        session(['registration.fee_amount' => $feeAmount]);
-        
-        return view('student.registration.step3_payment', compact('feeAmount'));
+            // Debug important session data
+            \Log::info('Session state before validation:', [
+                'session_id' => session()->getId(),
+                'program_type_id' => $programTypeId,
+                'previous_school_id' => session('registration.school_id'),
+                'previous_school_selection' => session('registration.school_selection')
+            ]);
+            
+            if (!$programTypeId) {
+                // If program type is missing, redirect to step 1 with an error message
+                \Log::warning('Missing program_type_id in session, redirecting to step 1');
+                return redirect('/students/register')
+                    ->with('error', 'Please select a program type first. Session data appears to be lost.');
+            }
+            
+            // Validate based on school selection
+            $validationRules = [
+                'school_selection' => 'required|in:not_yet,select_school',
+            ];
+            
+            // Only require school_id if select_school is chosen
+            if ($request->school_selection === 'select_school') {
+                $validationRules['school_id'] = 'required|exists:schools,id';
+                \Log::info('School selection is select_school, school_id validation added');
+            }
+            
+            try {
+                \Log::info('Running validation with rules:', $validationRules);
+                $validated = $request->validate($validationRules);
+                \Log::info('Validation passed');
+            } catch (\Illuminate\Validation\ValidationException $ve) {
+                \Log::warning('Validation failed:', ['errors' => $ve->errors()]);
+                throw $ve; // Re-throw to be caught by the outer try-catch
+            }
+            
+            // Store data in session based on selection
+            $schoolId = ($request->school_selection === 'select_school') ? $request->school_id : null;
+            session(['registration.school_id' => $schoolId]);
+            session(['registration.school_selection' => $request->school_selection]);
+            
+            \Log::info('School data saved to session:', [
+                'school_id' => $schoolId,
+                'school_selection' => $request->school_selection
+            ]);
+            
+            // Try to find a specific fee for this program type and school
+            $fee = Fee::where('program_type_id', $programTypeId)
+                ->where(function($query) use ($schoolId) {
+                    $query->where('school_id', $schoolId)
+                        ->orWhereNull('school_id');
+                })
+                ->where('is_active', 1)
+                ->orderBy('school_id', 'desc') // Prioritize school-specific fees
+                ->first();
+                
+            // If no fee found, use a default amount
+            $feeAmount = $fee ? $fee->amount : 500; // Default fee of 500 GHC
+            
+            \Log::info('Fee calculation:', [
+                'fee_found' => (bool)$fee,
+                'fee_amount' => $feeAmount,
+                'fee_id' => $fee ? $fee->id : null
+            ]);
+            
+            // Store fee amount in session
+            session(['registration.fee_amount' => $feeAmount]);
+            
+            // Debug: Log final session values
+            \Log::info('Final session state before redirecting to step3:', [
+                'program_type_id' => session('registration.program_type_id'),
+                'school_id' => session('registration.school_id'),
+                'school_selection' => session('registration.school_selection'),
+                'fee_amount' => session('registration.fee_amount')
+            ]);
+            
+            \Log::info('Proceeding to step3_payment view');
+            return view('student.registration.step3_payment', compact('feeAmount'));
+            
+        } catch (\Exception $e) {
+            \Log::error('Error in processStep2Other:', [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(), 
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withInput()->with('error', 'An error occurred: ' . $e->getMessage());
+        }
     }
     
     /**

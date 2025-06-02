@@ -18,9 +18,14 @@ Route::prefix('students')->name('student.registration.')->group(function () {
     Route::get('/register', [\App\Http\Controllers\StudentRegistrationController::class, 'showStep1'])->name('step1');
     Route::post('/register/step1', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep1'])->name('process_step1');
     
+    // Add a redirect for any GET requests to step1 URL (fixes the method not allowed error)
+    Route::get('/register/step1', function() { return redirect('/students/register'); });
+    
     // Step 2: School Selection (different for In School vs Other program types)
     Route::post('/register/step2-inschool', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep2InSchool'])->name('process_step2_inschool');
     Route::post('/register/step2-other', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep2Other'])->name('process_step2_other');
+    // Direct URL route for step2-other (alternative approach)
+    Route::post('/register/process-step2-other', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep2Other']);
     
     // Step 3: In School - Who is paying?
     Route::post('/register/step3-inschool', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep3InSchool'])->name('process_step3_inschool');

@@ -38,7 +38,7 @@
                 <a href="#" class="btn-primary enroll-btn">Enroll</a>
                 <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                     <div class="py-2">
-                        <a href="{{ route('student.registration.step1') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                        <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                         <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                     </div>
@@ -99,7 +99,7 @@
                             <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
                             <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                                 <div class="py-2">
-                                    <a href="{{ route('student.registration.step1') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                    <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                     <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                                 </div>
@@ -138,7 +138,7 @@
                             <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">{{ $heroSection->button_text }}</a>
                             <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                                 <div class="py-2">
-                                    <a href="{{ route('student.registration.step1') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                    <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                     <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                                 </div>
@@ -252,7 +252,7 @@
                         </button>
                         <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                             <div class="py-2">
-                                <a href="{{ route('student.registration.step1') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
+                                <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                 <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                             </div>
