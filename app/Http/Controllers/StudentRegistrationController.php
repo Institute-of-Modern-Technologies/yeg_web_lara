@@ -10,6 +10,9 @@ use App\Models\Student;
 use App\Models\Payment;
 use App\Models\Fee;
 use Illuminate\Support\Str;
+use App\Models\User;
+use App\Models\UserType;
+use Illuminate\Support\Facades\Hash;
 
 class StudentRegistrationController extends Controller
 {
@@ -327,6 +330,39 @@ class StudentRegistrationController extends Controller
             // Get the student ID for further processing
             $studentId = DB::getPdo()->lastInsertId();
             $studentObj->id = $studentId;
+            
+            // Create a user account for the student
+            try {
+                // Get or create student user type
+                $studentUserType = UserType::firstOrCreate(
+                    ['slug' => 'student'],
+                    ['name' => 'Student', 'description' => 'Regular student account']
+                );
+                
+                // Create username from first name (handle duplicates by adding a random number if needed)
+                $baseUsername = strtolower($request->first_name);
+                $username = $baseUsername;
+                $counter = 1;
+                
+                // Check if username exists
+                while (User::where('username', $username)->exists()) {
+                    $username = $baseUsername . $counter++;
+                }
+                
+                // Create the user
+                User::create([
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'email' => $request->email,
+                    'username' => $username,
+                    'password' => Hash::make('student123'),
+                    'user_type_id' => $studentUserType->id
+                ]);
+                
+                \Log::info('User account created for student: ' . $username);
+            } catch (\Exception $e) {
+                \Log::error('Failed to create user account for student: ' . $e->getMessage());
+                // Don't fail registration if user creation fails
+            }
             
             // Get program type name for the success page
             if (session('registration.program_type_id')) {

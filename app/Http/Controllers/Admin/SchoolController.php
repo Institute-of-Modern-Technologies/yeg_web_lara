@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\School;
+use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SchoolController extends Controller
 {
@@ -155,6 +159,47 @@ class SchoolController extends Controller
         $school->update([
             'status' => $request->status,
         ]);
+        
+        // If school is approved, create a user account for the school
+        if ($request->status === 'approved') {
+            try {
+                // Get or create school admin user type
+                $schoolAdminType = UserType::firstOrCreate(
+                    ['slug' => 'school_admin'],
+                    ['name' => 'School Admin', 'description' => 'School administrator account']
+                );
+                
+                // Create username from school name
+                $baseUsername = Str::slug($school->name);
+                $username = $baseUsername;
+                $counter = 1;
+                
+                // Check if username exists and generate a unique one if needed
+                while (User::where('username', $username)->exists()) {
+                    $username = $baseUsername . $counter++;
+                }
+                
+                // Create the user - generate a placeholder email if none exists
+                $email = $school->email;
+                if (!$email) {
+                    // Generate a placeholder email using the username
+                    $email = $username . '@placeholder.yeg.edu';
+                }
+                
+                User::create([
+                    'name' => $school->name,
+                    'email' => $email,
+                    'username' => $username,
+                    'password' => Hash::make('school123'),
+                    'user_type_id' => $schoolAdminType->id
+                ]);
+                
+                \Log::info('User account created for school: ' . $username);
+            } catch (\Exception $e) {
+                \Log::error('Failed to create user account for school: ' . $e->getMessage());
+                // Continue with school approval even if user creation fails
+            }
+        }
         
         return redirect()->route('admin.schools.index')
             ->with('success', 'School status updated successfully.');
