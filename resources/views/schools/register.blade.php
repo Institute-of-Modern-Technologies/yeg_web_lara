@@ -198,25 +198,15 @@
                             <!-- Carousel items -->
                             <div class="carousel-item active">
                                 <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Educational Technology" class="w-full h-full object-cover">
-                                <div class="carousel-caption">
-                                    <h3 class="font-bold text-lg">Modern Educational Technology</h3>
-                                    <p class="text-sm">Enhancing learning experiences through technology</p>
-                                </div>
+
                             </div>
 
                             <div class="carousel-item">
                                 <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Coding Education" class="w-full h-full object-cover">
-                                <div class="carousel-caption">
-                                    <h3 class="font-bold text-lg">Coding Education</h3>
-                                    <p class="text-sm">Preparing students for the digital future</p>
-                                </div>
+
                             </div>
                             <div class="carousel-item">
                                 <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="IT Skills Development" class="w-full h-full object-cover">
-                                <div class="carousel-caption">
-                                    <h3 class="font-bold text-lg">IT Skills Development</h3>
-                                    <p class="text-sm">Building the foundation for tomorrow's innovators</p>
-                                </div>
                             </div>
                             <!-- Carousel controls -->
                             <div class="absolute top-1/2 left-0 transform -translate-y-1/2 flex justify-between w-full px-4">
@@ -234,26 +224,7 @@
                                 <button class="carousel-indicator w-3 h-3 bg-white bg-opacity-50 rounded-full focus:outline-none"></button>
                             </div>
                             
-                            <!-- Benefits Section (overlay at bottom) -->
-                            <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-80 p-4 text-white">
-                                <h3 class="text-lg font-semibold mb-2 flex items-center">
-                                    <i class="fas fa-star text-secondary mr-2"></i> Why Join Young Experts Group?
-                                </h3>
-                                <ul class="space-y-2 text-sm">
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check-circle text-green-400 mt-1 mr-2"></i>
-                                        <span>Access to cutting-edge IT curriculum</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check-circle text-green-400 mt-1 mr-2"></i>
-                                        <span>Professional development for teachers</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <i class="fas fa-check-circle text-green-400 mt-1 mr-2"></i>
-                                        <span>Modern equipment and resources</span>
-                                    </li>
-                                </ul>
-                            </div>
+
                         </div>
                     </div>
 
