@@ -279,8 +279,8 @@ class StudentRegistrationController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:male,female,other',
             'address' => 'required|string|max:500',
@@ -345,10 +345,17 @@ class StudentRegistrationController extends Controller
                     $username = $baseUsername . $counter++;
                 }
                 
-                // Create the user
+                // Create the user - ensure email is valid or generate a temporary one
+                $userEmail = $request->email;
+                
+                // If email is not provided, create a placeholder email based on username
+                if (empty($userEmail)) {
+                    $userEmail = $username . '@example.com';
+                }
+                
                 User::create([
                     'name' => $request->first_name . ' ' . $request->last_name,
-                    'email' => $request->email,
+                    'email' => $userEmail,
                     'username' => $username,
                     'password' => Hash::make('student123'),
                     'user_type_id' => $studentUserType->id
