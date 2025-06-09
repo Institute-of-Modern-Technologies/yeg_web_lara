@@ -1,7 +1,111 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Student Registration - Young Experts Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e11d48',
+                        secondary: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        /* Hover effects */
+        .hover-grow {
+            transition: all 0.2s ease;
+        }
+        .hover-grow:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
 
-@section('content')
-<div class="bg-gray-50 min-h-screen py-12">
+<body>
+    <header class="bg-white text-gray-800 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="{{ url('/') }}" class="flex items-center">
+                    <span class="text-primary text-xl font-medium">Young</span>
+                    <span class="text-secondary mx-1 text-xl font-medium">Experts</span>
+                    <span class="text-primary text-xl font-medium">Group</span>
+                </a>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" id="mobile-menu-button" class="text-primary hover:text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                <!-- Desktop navigation -->
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="{{ url('/') }}" class="text-gray-700 hover:text-primary flex items-center">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="{{ route('school.register') }}" class="text-gray-700 hover:text-primary flex items-center">
+                        <i class="fas fa-school mr-1"></i> School Registration
+                    </a>
+                    <a href="{{ url('/students/register') }}" class="text-primary border-b-2 border-secondary flex items-center">
+                        <i class="fas fa-user-graduate mr-1"></i> Student Registration
+                    </a>
+                    <a href="{{ url('/about') }}" class="text-gray-700 hover:text-primary flex items-center">
+                        <i class="fas fa-info-circle mr-1"></i> About Us
+                    </a>
+                    <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-primary flex items-center">
+                        <i class="fas fa-envelope mr-1"></i> Contact
+                    </a>
+                    <a href="{{ route('login') }}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Mobile navigation menu (hidden by default) -->
+            <div id="mobile-menu" class="hidden md:hidden mt-3 pb-2 bg-white border-t border-gray-200">
+                <div class="flex flex-col space-y-2">
+                    <a href="{{ url('/') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
+                        <i class="fas fa-home mr-2 w-5 text-center"></i> Home
+                    </a>
+                    <a href="{{ route('school.register') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
+                        <i class="fas fa-school mr-2 w-5 text-center"></i> School Registration
+                    </a>
+                    <a href="{{ url('/students/register') }}" class="text-primary py-2 bg-gray-100 px-2 rounded flex items-center">
+                        <i class="fas fa-user-graduate mr-2 w-5 text-center"></i> Student Registration
+                    </a>
+                    <a href="{{ url('/about') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
+                        <i class="fas fa-info-circle mr-2 w-5 text-center"></i> About Us
+                    </a>
+                    <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
+                        <i class="fas fa-envelope mr-2 w-5 text-center"></i> Contact
+                    </a>
+                    <a href="{{ route('login') }}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center mt-2">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="bg-gray-50 min-h-screen py-8">
+            <!-- Page Title -->
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Student Registration</h1>
+                <p class="text-gray-600">Complete your registration with Young Experts Group</p>
+            </div>
     <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-primary py-6 px-8">
@@ -156,4 +260,30 @@
         </div>
     </div>
 </div>
-@endsection
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-10">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>© {{ date('Y') }} Young Experts Group. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

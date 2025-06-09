@@ -168,8 +168,8 @@ class StudentRegistrationController extends Controller
                 'fee_amount' => session('registration.fee_amount')
             ]);
             
-            \Log::info('Proceeding to step3_payment view');
-            return view('student.registration.step3_payment', compact('feeAmount'));
+            \Log::info('Skipping payment page and going directly to details form');
+            return redirect()->route('student.registration.details');
             
         } catch (\Exception $e) {
             \Log::error('Error in processStep2Other:', [
@@ -221,11 +221,7 @@ class StudentRegistrationController extends Controller
         // Store fee amount in session
         session(['registration.fee_amount' => $feeAmount]);
         
-        if ($request->payer_type === 'self') {
-            return view('student.registration.step3_payment', compact('feeAmount'));
-        }
-        
-        // If school is paying, skip payment
+        // Skip payment page for now and go directly to details form
         return redirect()->route('student.registration.details');
     }
     
