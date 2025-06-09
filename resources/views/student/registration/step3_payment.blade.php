@@ -190,6 +190,9 @@
 </div>
 
 @push('scripts')
+<!-- Include sticky header JavaScript -->
+<script src="{{ asset('js/sticky-header.js') }}"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Handle network selection UI

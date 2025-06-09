@@ -21,6 +21,9 @@
             }
         }
     </script>
+    <!-- Include our custom sticky header CSS -->    
+    <link href="{{ asset('css/sticky-headers.css') }}" rel="stylesheet">
+    
     <style>
         /* Basic resets */
         * {
@@ -32,6 +35,7 @@
         body {
             overflow-x: hidden;
             background-color: #f3f4f6;
+            padding-top: 60px; /* Space for fixed header */
         }
         
         /* Header styling */
@@ -41,9 +45,10 @@
             left: 0;
             right: 0;
             height: 60px;
-            z-index: 50; /* Higher z-index */
+            z-index: 1000; /* Higher z-index to stay on top */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             width: 100%;
+            transition: all 0.3s ease;
         }
         
         /* Sidebar styling */
@@ -55,16 +60,17 @@
             height: calc(100% - 60px); /* Full height minus header */
             width: 256px; /* 16rem */
             background-color: #1f2937;
-            z-index: 40; /* Lower than header */
+            z-index: 990; /* Lower than header but still high */
             overflow-y: auto;
+            transition: transform 0.3s ease;
         }
         
         /* Content area */
         .content-area {
             width: 100%;
-            padding-top: 60px; /* Exact header height */
             min-height: 100vh;
             flex: 1;
+            transition: padding 0.3s ease;
         }
         
         @media (min-width: 768px) {
@@ -679,6 +685,9 @@
 
     <!-- Include Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    
+    <!-- Sticky Header JS -->
+    <script src="{{ asset('js/sticky-header.js') }}"></script>
     <style>
         .animate-fadeIn {
             animation: fadeIn 0.3s ease-in-out;

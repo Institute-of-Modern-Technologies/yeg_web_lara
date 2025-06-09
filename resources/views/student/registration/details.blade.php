@@ -35,8 +35,8 @@
     </style>
 </head>
 
-<body>
-    <header class="bg-white text-gray-800 shadow-md">
+<body class="has-sticky-header">
+    <header class="bg-white text-gray-800 shadow-md sticky-header">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <a href="{{ url('/') }}" class="flex items-center">

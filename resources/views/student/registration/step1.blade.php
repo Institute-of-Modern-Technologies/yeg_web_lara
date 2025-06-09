@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Student Registration - Young Experts Group</title>
+    <link href="{{ asset('css/sticky-headers.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -82,8 +83,8 @@
         }
     </style>
 </head>
-<body>
-    <header class="bg-white text-gray-800 shadow-md">
+<body class="has-sticky-header">
+    <header class="bg-white text-gray-800 shadow-md sticky-header">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <a href="{{ url('/') }}" class="flex items-center">

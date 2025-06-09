@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Header Navigation -->
-    <header class="bg-white py-4 px-6 flex justify-between items-center shadow-sm">
+    <header class="bg-white py-4 px-6 flex justify-between items-center shadow-sm sticky-header">
         <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center">
             <span class="logo-young text-xl font-medium">Young</span>

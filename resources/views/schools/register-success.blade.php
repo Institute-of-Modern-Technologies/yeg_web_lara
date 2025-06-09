@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    <link href="{{ asset('css/sticky-headers.css') }}" rel="stylesheet">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -27,8 +28,8 @@
         }
     </style>
 </head>
-<body>
-    <header class="bg-primary text-white shadow-md">
+<body class="has-sticky-header">
+    <header class="bg-primary text-white shadow-md sticky-header">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <a href="{{ url('/') }}" class="flex items-center">
