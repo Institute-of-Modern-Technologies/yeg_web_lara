@@ -14,7 +14,7 @@ class AddIsActiveToProgramTypesTable extends Migration
     public function up()
     {
         Schema::table('program_types', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('name');
+            $table->boolean('is_active')->default(true);
         });
     }
 

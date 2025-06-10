@@ -27,6 +27,8 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'username' => fake()->unique()->userName(),
+            'user_type_id' => 1, // Default to super admin, you can modify this as needed
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
