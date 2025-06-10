@@ -12,6 +12,11 @@ Route::get('/schools/register', [\App\Http\Controllers\SchoolRegistrationControl
 Route::post('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'register'])->name('school.register.submit');
 Route::get('/schools/register/success', [\App\Http\Controllers\SchoolRegistrationController::class, 'showSuccess'])->name('school.register.success');
 
+// Teacher Registration Routes
+Route::get('/teachers/register', [\App\Http\Controllers\TeacherRegistrationController::class, 'showRegistrationForm'])->name('teacher.register');
+Route::post('/teachers/register', [\App\Http\Controllers\TeacherRegistrationController::class, 'submitRegistration'])->name('teacher.register.submit');
+Route::get('/teachers/register/success', [\App\Http\Controllers\TeacherRegistrationController::class, 'showSuccessPage'])->name('teacher.register.success');
+
 // Student Registration Routes
 Route::prefix('students')->name('student.registration.')->group(function () {
     // Step 1: Program Type Selection
@@ -195,6 +200,18 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');
     Route::put('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'update'])->name('admin.students.update');
     Route::delete('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'destroy'])->name('admin.students.destroy');
+    
+    // School Logo Management Routes
+    Route::resource('school-logos', '\App\Http\Controllers\Admin\SchoolLogoController')->names([
+        'index' => 'admin.school-logos.index',
+        'create' => 'admin.school-logos.create',
+        'store' => 'admin.school-logos.store',
+        'edit' => 'admin.school-logos.edit',
+        'update' => 'admin.school-logos.update',
+        'destroy' => 'admin.school-logos.destroy'
+    ]);
+    Route::post('/school-logos/update-order', ['\App\Http\Controllers\Admin\SchoolLogoController', 'updateOrder'])->name('admin.school-logos.update-order');
+    Route::patch('/school-logos/{id}/toggle-active', ['\App\Http\Controllers\Admin\SchoolLogoController', 'toggleActive'])->name('admin.school-logos.toggle-active');
 });
 
 // School Admin Routes

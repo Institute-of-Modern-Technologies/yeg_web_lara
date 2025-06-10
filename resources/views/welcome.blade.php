@@ -39,7 +39,7 @@
                 <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                     <div class="py-2">
                         <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                        <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                         <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                             <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                                 <div class="py-2">
                                     <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                    <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                     <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@
                             <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                                 <div class="py-2">
                                     <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                    <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                     <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                                 </div>
                             </div>
@@ -253,7 +253,7 @@
                         <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
                             <div class="py-2">
                                 <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
+                                <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
                                 <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
                             </div>
                         </div>
@@ -979,7 +979,7 @@
     </section>
 
     <!-- Partnered Schools Marquee Section -->
-    <section id="partners" class="py-16 bg-white">
+    <section id="partners" class="py-16">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-12">
@@ -991,54 +991,39 @@
                 </p>
             </div>
             
-            <!-- School Logos Marquee - Better Implementation -->
-            <div class="logos-slider-container">
-                <div class="logos-slider">
-                    <!-- First set of logos -->
-                    <div class="logos-slide">
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+1" alt="School 1">
+            <!-- School Logos Marquee - Dynamic Implementation -->
+            @php
+                $schoolLogos = App\Models\SchoolLogo::where('is_active', true)
+                    ->orderBy('display_order')
+                    ->get();
+            @endphp
+            
+            @if($schoolLogos->count() > 0)
+                <div class="logos-slider-container" style="background: transparent; box-shadow: none;">
+                    <div class="logos-slider">
+                        <!-- First set of logos -->
+                        <div class="logos-slide">
+                            @foreach($schoolLogos as $logo)
+                                <div class="logo-item" style="background: transparent; box-shadow: none;">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" style="max-height: 100px; object-fit: contain;">
+                                </div>
+                            @endforeach
                         </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+2" alt="School 2">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+3" alt="School 3">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+4" alt="School 4">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+5" alt="School 5">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+6" alt="School 6">
-                        </div>
-                    </div>
-                    
-                    <!-- Duplicate for seamless scrolling -->
-                    <div class="logos-slide">
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+1" alt="School 1">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+2" alt="School 2">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+3" alt="School 3">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+4" alt="School 4">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+5" alt="School 5">
-                        </div>
-                        <div class="logo-item">
-                            <img src="https://placehold.co/200x200/e2e8f0/1e293b?text=School+6" alt="School 6">
+                        
+                        <!-- Duplicate for seamless scrolling -->
+                        <div class="logos-slide">
+                            @foreach($schoolLogos as $logo)
+                                <div class="logo-item" style="background: transparent; box-shadow: none;">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" style="max-height: 100px; object-fit: contain;">
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <!-- Fallback if no logos are available -->
+                <p class="text-center text-gray-500 italic">Partner school logos will be displayed here.</p>
+            @endif
         </div>
     </section>
 

@@ -194,6 +194,11 @@
                                     <span>Partner Schools</span>
                                 </a>
                                 
+                                <a href="{{ route('admin.school-logos.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-images w-5 h-5 mr-3"></i>
+                                    <span>School Logos Marquee</span>
+                                </a>
+                                
                                 <a href="{{ route('admin.students.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
                                     <i class="fas fa-user-graduate w-5 h-5 mr-3"></i>
                                     <span>Students</span>
