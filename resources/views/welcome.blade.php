@@ -441,7 +441,7 @@
                 <!-- Right Column - Illustration -->
                 <div class="flex justify-center items-center relative">
                     <div class="relative">
-                        <img src="https://img.freepik.com/free-vector/people-asking-questions-illustration_23-2148910989.jpg" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
+                        <img src="{{ asset('images/clipart.png') }}" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
                         <!-- Question Marks -->
                         <div class="absolute -top-4 right-12 text-3xl text-orange-400">?</div>
                         <div class="absolute top-12 -left-4 text-3xl text-orange-400">?</div>
@@ -900,9 +900,7 @@
                 <!-- Coding -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
-                            <i class="fas fa-code text-blue-500 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/coding.png') }}" alt="Coding" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Coding</h3>
                     <p class="text-gray-600 text-sm">
@@ -913,9 +911,7 @@
                 <!-- Digital Marketing -->
                 <div class="text-center">
                     <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-orange-200 rounded-md flex items-center justify-center border-2 border-orange-300">
-                            <i class="fas fa-bullhorn text-orange-500 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/digital-marketing.png') }}" alt="Digital Marketing" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Digital Marketing</h3>
                     <p class="text-gray-600 text-sm">
@@ -926,9 +922,7 @@
                 <!-- Graphics Design -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
-                            <i class="fas fa-palette text-blue-500 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/graphic-designing.png') }}" alt="Graphics Design" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Graphics Design</h3>
                     <p class="text-gray-600 text-sm">
@@ -939,9 +933,7 @@
                 <!-- Entrepreneurship -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
-                            <i class="fas fa-chart-line text-blue-500 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/Enterpreneurship.png') }}" alt="Entrepreneurship" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Entrepreneurship</h3>
                     <p class="text-gray-600 text-sm">
@@ -952,9 +944,7 @@
                 <!-- Artificial Intelligence Basics -->
                 <div class="text-center">
                     <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-yellow-200 rounded-md flex items-center justify-center border-2 border-yellow-300">
-                            <i class="fas fa-brain text-yellow-600 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Artificial Intelligence Basics</h3>
                     <p class="text-gray-600 text-sm">
@@ -965,9 +955,7 @@
                 <!-- Creativity Workshops -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center border-2 border-blue-300">
-                            <i class="fas fa-lightbulb text-blue-500 text-xl"></i>
-                        </div>
+                        <img src="{{ asset('images/creativity-workshop.png') }}" alt="Creativity Workshops" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Creativity Workshops</h3>
                     <p class="text-gray-600 text-sm">
