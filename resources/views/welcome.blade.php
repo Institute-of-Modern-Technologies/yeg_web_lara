@@ -14,9 +14,9 @@
         <nav class="hidden md:block">
             <ul class="flex space-x-8">
                 <li><a href="#hero-section" class="nav-link font-medium">Home</a></li>
-                <li><a href="#about-us" class="nav-link font-medium">About</a></li>
+                <li><a href="#programs" class="nav-link font-medium">About</a></li>
                 <li><a href="#our-stages" class="nav-link font-medium">Stages</a></li>
-                <li><a href="#programs" class="nav-link font-medium">Programs</a></li>
+                <li><a href="#about-us" class="nav-link font-medium">Programs</a></li>
                 <li><a href="#faq" class="nav-link font-medium">FAQ'S</a></li>
             </ul>
         </nav>
@@ -47,19 +47,19 @@
             
             <!-- Social Media Icons -->
             <div class="hidden md:flex space-x-3">
-                <a href="#" class="social-icon text-gray-600 hover:text-primary">
+                <a href="mailto:contact@youngexpertsgroup.com" class="social-icon text-gray-600 hover:text-primary">
                     <i class="fa-regular fa-envelope"></i>
                 </a>
-                <a href="#" class="social-icon text-gray-600 hover:text-blue-600">
+                <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-blue-600">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" class="social-icon text-gray-600 hover:text-red-600">
+                <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="social-icon text-gray-600 hover:text-red-600">
                     <i class="fab fa-youtube"></i>
                 </a>
-                <a href="#" class="social-icon text-gray-600 hover:text-pink-500">
+                <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-pink-500">
                     <i class="fab fa-tiktok"></i>
                 </a>
-                <a href="#" class="social-icon text-gray-600 hover:text-pink-600">
+                <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-pink-600">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
@@ -1531,16 +1531,19 @@
             
             <!-- Social Media Icons -->
             <div class="flex justify-center space-x-6 py-8">
-                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                <a href="mailto:contact@youngexpertsgroup.com" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                    <i class="fa-regular fa-envelope"></i>
+                </a>
+                <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                     <i class="fab fa-youtube"></i>
                 </a>
-                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                     <i class="fab fa-tiktok"></i>
                 </a>
-                <a href="#" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
