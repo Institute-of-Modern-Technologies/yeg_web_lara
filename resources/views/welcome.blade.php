@@ -239,11 +239,84 @@
                     
                     <!-- Video Element -->
                     <div class="mb-6 mt-6 rounded-md overflow-hidden shadow-md">
-                        <video class="w-full h-auto" controls poster="{{ asset('images/laptop.jpg') }}">
-                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <div class="relative">
+                            <div id="youtube-player" class="w-full aspect-video"></div>
+                            <!-- Custom Controls -->
+                            <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-center gap-4 transition-opacity duration-300">
+                                <button id="play-pause-btn" class="text-white hover:text-gray-200 focus:outline-none">
+                                    <i class="fas fa-pause"></i>
+                                </button>
+                                <button id="mute-btn" class="text-white hover:text-gray-200 focus:outline-none">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                    
+                    @section('scripts')
+                    @parent
+                    <!-- YouTube API and Control Script -->
+                    <script>
+                        // Load YouTube API
+                        var tag = document.createElement('script');
+                        tag.src = "https://www.youtube.com/iframe_api";
+                        var firstScriptTag = document.getElementsByTagName('script')[0];
+                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                        
+                        var player;
+                        var isPlaying = true;
+                        var isMuted = false;
+                        
+                        function onYouTubeIframeAPIReady() {
+                            player = new YT.Player('youtube-player', {
+                                height: '100%',
+                                width: '100%',
+                                videoId: 'x_kUqKoTZR8',
+                                playerVars: {
+                                    'autoplay': 1,
+                                    'controls': 0,
+                                    'showinfo': 0,
+                                    'rel': 0,
+                                    'loop': 1,
+                                    'playlist': 'x_kUqKoTZR8',
+                                    'modestbranding': 1,
+                                    'mute': 0
+                                },
+                                events: {
+                                    'onReady': onPlayerReady
+                                }
+                            });
+                        }
+                        
+                        function onPlayerReady(event) {
+                            event.target.playVideo();
+                            
+                            // Set up play/pause button
+                            document.getElementById('play-pause-btn').addEventListener('click', function() {
+                                if (isPlaying) {
+                                    player.pauseVideo();
+                                    this.innerHTML = '<i class="fas fa-play"></i>';
+                                } else {
+                                    player.playVideo();
+                                    this.innerHTML = '<i class="fas fa-pause"></i>';
+                                }
+                                isPlaying = !isPlaying;
+                            });
+                            
+                            // Set up mute button
+                            document.getElementById('mute-btn').addEventListener('click', function() {
+                                if (isMuted) {
+                                    player.unMute();
+                                    this.innerHTML = '<i class="fas fa-volume-up"></i>';
+                                } else {
+                                    player.mute();
+                                    this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                                }
+                                isMuted = !isMuted;
+                            });
+                        }
+                    </script>
+                    @endsection
                     
                     <div class="relative inline-block group">
                         <button class="bg-neon-pink text-white px-4 py-2 rounded-md hover:bg-opacity-90 inline-flex items-center">
