@@ -30,17 +30,40 @@
             <a href="/login" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
                 <i class="fas fa-user mr-2"></i> Login
             </a>
-            <a href="/schools/register" class="hidden md:block px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition flex items-center">
-                <i class="fas fa-school mr-2"></i> School Registration
-            </a>
             @endauth
-            <div class="relative hidden md:block group">
-                <a href="#" class="btn-primary enroll-btn">Enroll</a>
-                <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+            <!-- Modern Registration Button with Dropdown -->
+            <div class="relative hidden md:block">
+                <button id="registerDropdownButton" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-md shadow-sm transition-all duration-300 flex items-center space-x-2">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register Now</span>
+                    <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                <div id="registerDropdownMenu" class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
                     <div class="py-2">
-                        <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                        <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
-                        <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                        <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                            <p class="text-sm font-semibold text-gray-700">Register as:</p>
+                        </div>
+                        <a href="/students/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                            <i class="fas fa-user-graduate mr-3 text-blue-500"></i>
+                            <div>
+                                <p class="font-medium">Student</p>
+                                <p class="text-xs text-gray-500">Join our learning programs</p>
+                            </div>
+                        </a>
+                        <a href="/teachers/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                            <i class="fas fa-chalkboard-teacher mr-3 text-green-500"></i>
+                            <div>
+                                <p class="font-medium">Trainer</p>
+                                <p class="text-xs text-gray-500">Become a YEG instructor</p>
+                            </div>
+                        </a>
+                        <a href="/schools/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                            <i class="fas fa-school mr-3 text-purple-500"></i>
+                            <div>
+                                <p class="font-medium">School</p>
+                                <p class="text-xs text-gray-500">Partner with Young Experts</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -95,13 +118,38 @@
                         <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md">
                             <span class="text-white">Nurturing Future Innovators</span>
                         </h2>
-                        <div class="relative inline-block group">
-                            <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">Join Us Today</a>
-                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                        <div class="relative inline-block">
+                            <button class="heroRegisterBtn bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Join Us Today</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div class="heroDropdownMenu absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
                                 <div class="py-2">
-                                    <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                    <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
-                                    <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                                    <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-700">Register as:</p>
+                                    </div>
+                                    <a href="/students/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-user-graduate mr-3 text-blue-500"></i>
+                                        <div>
+                                            <p class="font-medium">Student</p>
+                                            <p class="text-xs text-gray-500">Join our learning programs</p>
+                                        </div>
+                                    </a>
+                                    <a href="/teachers/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-chalkboard-teacher mr-3 text-green-500"></i>
+                                        <div>
+                                            <p class="font-medium">Trainer</p>
+                                            <p class="text-xs text-gray-500">Become a YEG instructor</p>
+                                        </div>
+                                    </a>
+                                    <a href="/schools/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-school mr-3 text-purple-500"></i>
+                                        <div>
+                                            <p class="font-medium">School</p>
+                                            <p class="text-xs text-gray-500">Partner with Young Experts</p>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -134,13 +182,38 @@
                         </h2>
                         @endif
                         @if($heroSection->button_text)
-                        <div class="relative inline-block group">
-                            <a href="#" class="btn-primary inline-block text-lg px-6 py-3 rounded-md shadow-lg">{{ $heroSection->button_text }}</a>
-                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
+                        <div class="relative inline-block">
+                            <button class="heroRegisterBtn bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">
+                                <i class="fas fa-user-plus"></i>
+                                <span>{{ $heroSection->button_text }}</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div class="heroDropdownMenu absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
                                 <div class="py-2">
-                                    <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                    <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
-                                    <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
+                                    <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-700">Register as:</p>
+                                    </div>
+                                    <a href="/students/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-user-graduate mr-3 text-blue-500"></i>
+                                        <div>
+                                            <p class="font-medium">Student</p>
+                                            <p class="text-xs text-gray-500">Join our learning programs</p>
+                                        </div>
+                                    </a>
+                                    <a href="/teachers/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-chalkboard-teacher mr-3 text-green-500"></i>
+                                        <div>
+                                            <p class="font-medium">Trainer</p>
+                                            <p class="text-xs text-gray-500">Become a YEG instructor</p>
+                                        </div>
+                                    </a>
+                                    <a href="/schools/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-school mr-3 text-purple-500"></i>
+                                        <div>
+                                            <p class="font-medium">School</p>
+                                            <p class="text-xs text-gray-500">Partner with Young Experts</p>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -486,10 +559,42 @@
                             </p>
                         </div>
                         
-                        <!-- Register Button -->
-                        <button class="w-full bg-cyan-400 text-white py-3 rounded-md mt-4 flex items-center justify-center">
-                            <i class="fas fa-arrow-circle-right mr-2"></i> Register Now <i class="fas fa-arrow-circle-right ml-2"></i>
-                        </button>
+                        <!-- Register Button with Dropdown -->
+                        <div class="relative">
+                            <button id="happeningsRegisterBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white py-3 rounded-md mt-4 flex items-center justify-center space-x-2 transition-all duration-300">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Register Now</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                            </button>
+                            <div id="happeningsDropdownMenu" class="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
+                                <div class="py-2">
+                                    <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-700">Register as:</p>
+                                    </div>
+                                    <a href="/students/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-user-graduate mr-3 text-blue-500"></i>
+                                        <div>
+                                            <p class="font-medium">Student</p>
+                                            <p class="text-xs text-gray-500">Join our learning programs</p>
+                                        </div>
+                                    </a>
+                                    <a href="/teachers/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-chalkboard-teacher mr-3 text-green-500"></i>
+                                        <div>
+                                            <p class="font-medium">Trainer</p>
+                                            <p class="text-xs text-gray-500">Become a YEG instructor</p>
+                                        </div>
+                                    </a>
+                                    <a href="/schools/register" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 transition-colors duration-200">
+                                        <i class="fas fa-school mr-3 text-purple-500"></i>
+                                        <div>
+                                            <p class="font-medium">School</p>
+                                            <p class="text-xs text-gray-500">Partner with Young Experts</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1561,6 +1666,67 @@
 
 @section('scripts')
     <script>
+        // Registration dropdowns functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Helper function to handle dropdown functionality
+            function setupDropdown(buttonId, menuId, buttonSelector) {
+                const button = buttonId ? document.getElementById(buttonId) : buttonSelector;
+                const menu = buttonId ? document.getElementById(menuId) : buttonSelector && buttonSelector.nextElementSibling;
+                const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
+                
+                if (button && menu) {
+                    // Toggle dropdown on button click
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.classList.toggle('hidden');
+                        if (chevronIcon) {
+                            chevronIcon.classList.toggle('rotate-180');
+                        }
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(event) {
+                        if (!button.contains(event.target) && !menu.contains(event.target)) {
+                            menu.classList.add('hidden');
+                            if (chevronIcon) {
+                                chevronIcon.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Setup all dropdowns
+            setupDropdown('registerDropdownButton', 'registerDropdownMenu');
+            setupDropdown('happeningsRegisterBtn', 'happeningsDropdownMenu');
+            
+            // Handle hero section dropdown
+            const heroButtons = document.querySelectorAll('.heroRegisterBtn');
+            heroButtons.forEach(button => {
+                const menu = button.nextElementSibling;
+                const chevron = button.querySelector('.fa-chevron-down');
+                
+                if (button && menu) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.classList.toggle('hidden');
+                        if (chevron) {
+                            chevron.classList.toggle('rotate-180');
+                        }
+                    });
+                    
+                    document.addEventListener('click', function(event) {
+                        if (!button.contains(event.target) && !menu.contains(event.target)) {
+                            menu.classList.add('hidden');
+                            if (chevron) {
+                                chevron.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
         // Toggle FAQ accordion items
         function toggleFaq(element) {
             // Get the answer panel (next sibling after the question)
