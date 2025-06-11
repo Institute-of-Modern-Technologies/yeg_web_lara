@@ -1,6 +1,34 @@
 @extends('admin.dashboard')
 
+<!-- Add SweetAlert2 in the head to ensure it's loaded early -->
+@push('head')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
+
 @section('content')
+<script>
+// Define confirmDelete function globally
+function confirmDelete(id, title) {
+    console.log('Confirming delete for:', id, title);
+    
+    Swal.fire({
+        title: 'Delete Hero Section?',
+        text: `Are you sure you want to delete "${title}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log('Delete confirmed, submitting form...');
+            document.getElementById(`delete-form-${id}`).submit();
+        }
+    });
+}
+</script>
 <div class="p-6">
     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
         <h1 class="text-2xl font-bold text-gray-900 mb-2 md:mb-0">Hero Section Management</h1>
@@ -96,9 +124,13 @@
                                 <a href="{{ route('admin.hero-sections.edit', $section->id) }}" class="p-2 text-blue-500 hover:text-blue-700" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button class="p-2 text-red-500 hover:text-red-700" title="Delete" onclick="deleteHeroSection({{ $section->id }}, '{{ $section->title }}')">
+                                <button type="button" onclick="confirmDelete({{ $section->id }}, '{{ $section->title }}')" class="p-2 text-red-500 hover:text-red-700" title="Delete">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
+                                <form id="delete-form-{{ $section->id }}" method="POST" action="{{ route('admin.hero-sections.destroy', $section->id) }}" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -111,6 +143,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+<!-- SweetAlert2 is already loaded in head -->
 <script>
     // Initialize drag and drop functionality
     document.addEventListener('DOMContentLoaded', function() {
@@ -169,58 +202,7 @@
         });
     }
     
-    // Delete hero section
-    function deleteHeroSection(id, title) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `Do you want to delete the hero section "${title}"?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Send DELETE request
-                fetch(`{{ url('admin/hero-sections') }}/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire(
-                            'Deleted!',
-                            data.message,
-                            'success'
-                        ).then(() => {
-                            // Reload page to refresh list
-                            window.location.reload();
-                        });
-                    } else {
-                        Swal.fire(
-                            'Error!',
-                            data.message,
-                            'error'
-                        );
-                    }
-                })
-                .catch(error => {
-                    Swal.fire(
-                        'Error!',
-                        'There was a problem deleting the hero section. Please try again.',
-                        'error'
-                    );
-                    console.error('Error:', error);
-                });
-            }
-        });
-    }
+    // confirmDelete function is now defined globally above
 </script>
 @endpush
 @endsection

@@ -195,22 +195,34 @@ class HeroSectionController extends Controller
     {
         // Check if user is authorized to manage hero sections
         if (Auth::user()->user_type_id != 1) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+            if (request()->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized access'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized access');
         }
         
         $heroSection = HeroSection::findOrFail($id);
         
         // Delete image file if it exists
-        if ($heroSection->image_path && Storage::disk('public')->exists($heroSection->image_path)) {
-            Storage::disk('public')->delete($heroSection->image_path);
+        if ($heroSection->image_path) {
+            $imagePath = public_path('storage/' . $heroSection->image_path);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
         
         $heroSection->delete();
         
-        return response()->json([
-            'success' => true, 
-            'message' => 'Hero section deleted successfully!'
-        ]);
+        // Handle both AJAX and regular form submissions
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true, 
+                'message' => 'Hero section deleted successfully!'
+            ]);
+        }
+        
+        return redirect()->route('admin.hero-sections.index')
+            ->with('success', 'Hero section deleted successfully!');
     }
     
     /**
