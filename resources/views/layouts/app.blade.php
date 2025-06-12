@@ -3,7 +3,26 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Young Experts Group') }}</title>
+    <!-- Complete favicon implementation for maximum size -->    
+    <link rel="icon" href="{{ asset('images/favicon.png') }}?v=3" type="image/png" sizes="512x512">
+    <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}?v=3" sizes="512x512">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}?v=3" type="image/png">
+    
+    <!-- Force browser to reload favicon with cache busting -->
+    <script>
+    // This forces browsers to reload the favicon
+    (function() {
+        var link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+        }
+        link.href = '{{ asset("images/favicon.png") }}?v=' + new Date().getTime();
+    })();
+    </script>
+    
+    <title>YEG</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
