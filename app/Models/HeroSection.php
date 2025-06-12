@@ -20,9 +20,12 @@ class HeroSection extends Model
         'is_active',
         'display_order',
         'text_color',
+        'title_color',
+        'subtitle_color',
         'overlay_color',
         'overlay_opacity',
-        'text_position'
+        'text_position',
+        'brand_text'
     ];
 
     /**

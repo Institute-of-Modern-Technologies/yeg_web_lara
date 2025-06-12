@@ -46,8 +46,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Title -->
                         <div class="col-span-1">
-                            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
                         </div>
 
                         <!-- Display Order -->
@@ -62,6 +62,13 @@
                     <div class="mt-4">
                         <label for="subtitle" class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
                         <textarea name="subtitle" id="subtitle" rows="2" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">{{ old('subtitle') }}</textarea>
+                    </div>
+                    
+                    <!-- Brand Text -->
+                    <div class="mt-4">
+                        <label for="brand_text" class="block text-sm font-medium text-gray-700 mb-1">Brand Text</label>
+                        <input type="text" name="brand_text" id="brand_text" value="{{ old('brand_text', 'Young Experts Group') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                        <p class="mt-1 text-xs text-gray-500">Optional branded text displayed in highlighted color. Default: "Young Experts Group"</p>
                     </div>
 
                     <!-- Status -->
@@ -119,23 +126,64 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-                        <!-- Text Position -->
-                        <div>
-                            <label for="text_position" class="block text-sm font-medium text-gray-700 mb-1">Text Position</label>
-                            <select name="text_position" id="text_position" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-                                <option value="top" {{ old('text_position') == 'top' ? 'selected' : '' }}>Top</option>
-                                <option value="middle" {{ old('text_position') == 'middle' ? 'selected' : '' }}>Middle</option>
-                                <option value="bottom" {{ old('text_position') == 'bottom' || old('text_position') == null ? 'selected' : '' }}>Bottom</option>
-                            </select>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
+                        <h3 class="font-medium text-gray-800 mb-4">Text Styling</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                            <!-- Text Position -->
+                            <div>
+                                <label for="text_position" class="block text-sm font-medium text-gray-700 mb-1">Text Position</label>
+                                <select name="text_position" id="text_position" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                                    <option value="top" {{ old('text_position') == 'top' ? 'selected' : '' }}>Top</option>
+                                    <option value="middle" {{ old('text_position') == 'middle' ? 'selected' : '' }}>Middle</option>
+                                    <option value="bottom" {{ old('text_position') == 'bottom' || old('text_position') == null ? 'selected' : '' }}>Bottom</option>
+                                </select>
+                            </div>
                         </div>
                         
-                        <!-- Text Color -->
-                        <div>
-                            <label for="text_color" class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
-                            <div class="flex items-center">
-                                <input type="color" name="text_color" id="text_color" value="{{ old('text_color', '#ffffff') }}" class="h-8 w-8 mr-2 border-0 rounded p-0">
-                                <input type="text" value="{{ old('text_color', '#ffffff') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="text_color_hex" oninput="document.getElementById('text_color').value = this.value">
+                        <!-- Colors Section -->
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Text Colors</h4>
+                            
+                            <!-- Title Color -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label for="title_color" class="block text-xs text-gray-500 mb-1">Title Color</label>
+                                    <div class="flex items-center">
+                                        <input type="color" name="title_color" id="title_color" value="{{ old('title_color', '#ffffff') }}" class="h-8 w-8 mr-2 border-0 rounded p-0">
+                                        <input type="text" value="{{ old('title_color', '#ffffff') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="title_color_hex" oninput="document.getElementById('title_color').value = this.value">
+                                    </div>
+                                </div>
+                                
+                                <!-- Subtitle Color -->
+                                <div>
+                                    <label for="subtitle_color" class="block text-xs text-gray-500 mb-1">Subtitle Color</label>
+                                    <div class="flex items-center">
+                                        <input type="color" name="subtitle_color" id="subtitle_color" value="{{ old('subtitle_color', '#ffffff') }}" class="h-8 w-8 mr-2 border-0 rounded p-0">
+                                        <input type="text" value="{{ old('subtitle_color', '#ffffff') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="subtitle_color_hex" oninput="document.getElementById('subtitle_color').value = this.value">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Brand Text Color & Default Text Color -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="brand_text_color" class="block text-xs text-gray-500 mb-1">Brand Text Color</label>
+                                    <div class="flex items-center">
+                                        <input type="color" name="brand_text_color" id="brand_text_color" value="{{ old('brand_text_color', '#ffcb05') }}" class="h-8 w-8 mr-2 border-0 rounded p-0">
+                                        <input type="text" value="{{ old('brand_text_color', '#ffcb05') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="brand_text_color_hex" oninput="document.getElementById('brand_text_color').value = this.value">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Default: Yellow (#ffcb05)</p>
+                                </div>
+                                
+                                <!-- Default Text Color -->
+                                <div>
+                                    <label for="text_color" class="block text-xs text-gray-500 mb-1">Default Text Color</label>
+                                    <div class="flex items-center">
+                                        <input type="color" name="text_color" id="text_color" value="{{ old('text_color', '#ffffff') }}" class="h-8 w-8 mr-2 border-0 rounded p-0">
+                                        <input type="text" value="{{ old('text_color', '#ffffff') }}" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" id="text_color_hex" oninput="document.getElementById('text_color').value = this.value">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -200,14 +248,29 @@
         opacityRange.addEventListener('input', function() {
             opacityValue.textContent = this.value;
         });
-
-        // Sync color inputs
-        document.getElementById('text_color').addEventListener('input', function() {
-            document.getElementById('text_color_hex').value = this.value;
-        });
         
-        document.getElementById('overlay_color').addEventListener('input', function() {
-            document.getElementById('overlay_color_hex').value = this.value;
+        // Setup color picker syncing
+        function setupColorPicker(colorId, hexId) {
+            const colorPicker = document.getElementById(colorId);
+            const hexInput = document.getElementById(hexId);
+            
+            if (colorPicker && hexInput) {
+                colorPicker.addEventListener('input', function() {
+                    hexInput.value = this.value;
+                });
+                
+                hexInput.addEventListener('input', function() {
+                    colorPicker.value = this.value;
+                });
+            }
+        }
+        
+        // Setup all color pickers
+        setupColorPicker('text_color', 'text_color_hex');
+        setupColorPicker('title_color', 'title_color_hex');
+        setupColorPicker('subtitle_color', 'subtitle_color_hex');
+        setupColorPicker('brand_text_color', 'brand_text_color_hex');
+        setupColorPicker('overlay_color', 'overlay_color_hex');
         });
     });
 </script>

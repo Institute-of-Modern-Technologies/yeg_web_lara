@@ -51,7 +51,7 @@ class HeroSectionController extends Controller
         
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'button_text' => 'nullable|string|max:50',
@@ -59,6 +59,8 @@ class HeroSectionController extends Controller
             'is_active' => 'boolean',
             'display_order' => 'integer|min:0',
             'text_color' => 'nullable|string|max:50',
+            'title_color' => 'nullable|string|max:50',
+            'subtitle_color' => 'nullable|string|max:50',
             'overlay_color' => 'nullable|string|max:50',
             'overlay_opacity' => 'nullable|numeric|min:0|max:1',
         ]);
@@ -79,17 +81,21 @@ class HeroSectionController extends Controller
         }
         
         // Create new hero section
-        HeroSection::create([
+        $heroSection = HeroSection::create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image_path' => $imagePath,
             'button_text' => $request->button_text,
             'button_link' => $request->button_link,
-            'is_active' => $request->has('is_active'),
-            'display_order' => $request->display_order ?? 0,
-            'text_color' => $request->text_color ?? '#ffffff',
+            'is_active' => $request->has('is_active') ? 1 : 0,
+            'display_order' => $request->display_order,
+            'text_color' => $request->text_color,
+            'title_color' => $request->title_color,
+            'subtitle_color' => $request->subtitle_color,
+            'brand_text' => $request->brand_text,
+            'brand_text_color' => $request->brand_text_color ?? '#ffcb05',
             'overlay_color' => $request->overlay_color,
-            'overlay_opacity' => $request->overlay_opacity ?? 0.5,
+            'overlay_opacity' => $request->overlay_opacity,
             'text_position' => $request->text_position ?? 'bottom',
         ]);
         
@@ -135,16 +141,20 @@ class HeroSectionController extends Controller
         
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'button_text' => 'nullable|string|max:50',
             'button_link' => 'nullable|string|max:255',
             'is_active' => 'boolean',
             'display_order' => 'integer|min:0',
             'text_color' => 'nullable|string|max:50',
+            'title_color' => 'nullable|string|max:50',
+            'subtitle_color' => 'nullable|string|max:50',
+            'brand_text' => 'nullable|string|max:255',
+            'brand_text_color' => 'nullable|string|max:50',
             'overlay_color' => 'nullable|string|max:50',
             'overlay_opacity' => 'nullable|numeric|min:0|max:1',
+            'text_position' => 'nullable|string|in:top,middle,bottom',
         ]);
         
         if ($validator->fails()) {
@@ -175,11 +185,15 @@ class HeroSectionController extends Controller
         $heroSection->subtitle = $request->subtitle;
         $heroSection->button_text = $request->button_text;
         $heroSection->button_link = $request->button_link;
-        $heroSection->is_active = $request->has('is_active');
-        $heroSection->display_order = $request->display_order ?? 0;
-        $heroSection->text_color = $request->text_color ?? '#ffffff';
+        $heroSection->is_active = $request->has('is_active') ? 1 : 0;
+        $heroSection->display_order = $request->display_order;
+        $heroSection->text_color = $request->text_color;
+        $heroSection->title_color = $request->title_color;
+        $heroSection->subtitle_color = $request->subtitle_color;
+        $heroSection->brand_text = $request->brand_text;
+        $heroSection->brand_text_color = $request->brand_text_color ?? '#ffcb05';
         $heroSection->overlay_color = $request->overlay_color;
-        $heroSection->overlay_opacity = $request->overlay_opacity ?? 0.5;
+        $heroSection->overlay_opacity = $request->overlay_opacity;
         $heroSection->text_position = $request->text_position ?? 'bottom';
         
         $heroSection->save();
