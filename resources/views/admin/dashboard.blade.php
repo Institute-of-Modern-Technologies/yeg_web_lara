@@ -62,7 +62,62 @@
             background-color: #1f2937;
             z-index: 990; /* Lower than header but still high */
             overflow-y: auto;
+            transition: all 0.3s ease;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #sidebar.collapsed .sidebar-link-text,
+        #sidebar.collapsed .sidebar-accordion-content,
+        #sidebar.collapsed .sidebar-section-header {
+            display: none;
+        }
+        
+        /* Collapsed sidebar */
+        #sidebar.collapsed {
+            width: 70px;
+        }
+        
+        /* Sidebar accordion styling */
+        .sidebar-accordion-item {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        /* Section headers - consistent styling */
+        .sidebar-section-header {
+            padding-top: 1rem;
+            padding-bottom: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-top: 1px solid rgba(107, 114, 128, 0.3);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #9CA3AF;
+            letter-spacing: 0.05em;
+        }
+        
+        .sidebar-accordion-button {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .sidebar-accordion-content.open {
+            max-height: 1000px; /* Arbitrary large value */
+        }
+        
+        /* Rotate icon when accordion is open */
+        .sidebar-accordion-button .rotate-icon {
             transition: transform 0.3s ease;
+        }
+        
+        .sidebar-accordion-button.active .rotate-icon {
+            transform: rotate(180deg);
         }
         
         /* Content area */
@@ -77,6 +132,11 @@
             .content-area {
                 padding-left: 256px; /* Exact sidebar width */
                 width: calc(100% - 0px); /* Full width minus 0 (to take up all remaining space) */
+                transition: padding-left 0.3s ease;
+            }
+            
+            .sidebar-collapsed .content-area {
+                padding-left: 70px; /* Match collapsed sidebar width */
             }
         }
         
@@ -96,6 +156,11 @@
                         <!-- Mobile menu button -->
                         <button id="mobile-menu-button" class="md:hidden mr-4 text-white focus:outline-none">
                             <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Desktop sidebar toggle button -->
+                        <button id="sidebar-toggle" class="hidden md:flex mr-4 text-white focus:outline-none hover:text-secondary transition-colors">
+                            <i class="fas fa-bars-staggered text-xl"></i>
                         </button>
                         
                         <a href="{{ url('/') }}" class="flex items-center">
@@ -150,92 +215,141 @@
         <aside class="transform -translate-x-full md:translate-x-0 transition-transform duration-300" id="sidebar">
             <div class="h-full flex flex-col pt-0"> <!-- No top padding needed since sidebar starts below header -->
                 <!-- Navigation -->
-                <div class="px-4 py-6">
-                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</span>
+                <div class="px-4 py-5">
+                    <!-- Dashboard Link - Always visible -->
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-white hover:bg-gray-800 mb-6 bg-gradient-to-r from-primary/20 to-transparent border-l-2 border-secondary">
+                        <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                        <span class="sidebar-link-text">Dashboard</span>
+                    </a>
                     
-                    <nav class="mt-4 space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                            <i class="fas fa-users w-5 h-5 mr-3"></i>
-                            <span>Users</span>
-                        </a>
-                        
-                        <!-- Advertisement Section -->
-                        <div class="mt-6 pt-6 border-t border-gray-700">
-                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Advertisement</span>
+                    <div class="sidebar-section-header px-4 mt-0 pt-0 border-0">Main Navigation</div>
+                    
+                    <nav class="space-y-3">
+                        <!-- Users Accordion -->
+                        <div class="sidebar-accordion-item">
+                            <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-users w-5 h-5 mr-3"></i>
+                                    <span class="sidebar-link-text">Users</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs rotate-icon"></i>
+                            </button>
                             
-                            <div class="mt-3 space-y-1">
-                                <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-image w-5 h-5 mr-3"></i>
-                                    <span>Hero Sections</span>
+                            <div class="sidebar-accordion-content pl-4">
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                    <i class="fas fa-circle text-xs w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">All Users</span>
+                                </a>
+                                @if(Auth::user()->user_type_id == 1)
+                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-circle text-xs w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">User Types</span>
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <!-- Section Header -->
+                        <div class="sidebar-section-header px-4">Advertisement</div>
+                        
+                        <!-- Advertisement Accordion -->
+                        <div class="sidebar-accordion-item">
+                            <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-bullhorn w-5 h-5 mr-3"></i>
+                                    <span class="sidebar-link-text">Advertisement</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs rotate-icon"></i>
+                            </button>
+                            
+                            <div class="sidebar-accordion-content pl-4">
+                                <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                    <i class="fas fa-image w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Hero Sections</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.events.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-calendar-alt w-5 h-5 mr-3"></i>
-                                    <span>Events</span>
+                                <a href="{{ route('admin.events.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-calendar-alt w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Events</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-newspaper w-5 h-5 mr-3"></i>
-                                    <span>Happenings</span>
+                                <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-newspaper w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Happenings</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-quote-left w-5 h-5 mr-3"></i>
-                                    <span>Testimonials</span>
+                                <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-quote-left w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Testimonials</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-school w-5 h-5 mr-3"></i>
-                                    <span>Partner Schools</span>
+                                <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-school w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Partner Schools</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.school-logos.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-images w-5 h-5 mr-3"></i>
-                                    <span>School Logos Marquee</span>
-                                </a>
-                                
-                                <a href="{{ route('admin.students.index') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-user-graduate w-5 h-5 mr-3"></i>
-                                    <span>Students</span>
+                                <a href="{{ route('admin.school-logos.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-images w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">School Logos</span>
                                 </a>
                             </div>
                         </div>
                         
-                        <!-- Setups Section -->
-                        <div class="mt-6 pt-6 border-t border-gray-700">
-                            <div x-data="{ open: false }">
-                                <button @click="open = !open" class="w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-cog w-5 h-5 mr-3"></i>
-                                        <span>Setups</span>
-                                    </div>
-                                    <i class="fas" :class="open ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
-                                </button>
-                                
-                                <div x-show="open" class="mt-2 space-y-1 pl-12">
-                                    <a href="{{ route('admin.program-types.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                        <i class="fas fa-list-alt w-5 h-5 mr-3"></i>
-                                        <span>Program Types</span>
-                                    </a>
-                                    <a href="{{ route('admin.schools.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                        <i class="fas fa-school w-5 h-5 mr-3"></i>
-                                        <span>Schools</span>
-                                    </a>
-                                    <a href="{{ route('admin.fees.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                        <i class="fas fa-money-bill-wave w-5 h-5 mr-3"></i>
-                                        <span>Program Fees</span>
-                                    </a>
-                                    <a href="{{ route('admin.students.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                        <i class="fas fa-user-graduate w-5 h-5 mr-3"></i>
-                                        <span>Students</span>
-                                    </a>
-                                    <!-- More setup items can be added here -->
+                        <!-- Section Header -->
+                        <div class="sidebar-section-header px-4">Participants</div>
+                        
+                        <!-- Participants Accordion -->
+                        <div class="sidebar-accordion-item">
+                            <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-graduate w-5 h-5 mr-3"></i>
+                                    <span class="sidebar-link-text">Participants</span>
                                 </div>
+                                <i class="fas fa-chevron-down text-xs rotate-icon"></i>
+                            </button>
+                            
+                            <div class="sidebar-accordion-content pl-4">
+                                <a href="{{ route('admin.students.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                    <i class="fas fa-user-graduate w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Students</span>
+                                </a>
+                                
+                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-chalkboard-teacher w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Trainers</span>
+                                    <!-- Route not created yet: admin.trainers.index -->
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Header -->
+                        <div class="sidebar-section-header px-4">System Setup</div>
+                        
+                        <!-- Setups Accordion -->
+                        <div class="sidebar-accordion-item">
+                            <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                <div class="flex items-center">
+                                    <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                                    <span class="sidebar-link-text">Setups</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs rotate-icon"></i>
+                            </button>
+                            
+                            <div class="sidebar-accordion-content pl-4">
+                                <a href="{{ route('admin.program-types.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                    <i class="fas fa-list-alt w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Program Types</span>
+                                </a>
+                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-school w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Schools</span>
+                                    <!-- Route not created yet: admin.schools.index -->
+                                </a>
+                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                    <i class="fas fa-money-bill-wave w-4 mr-2"></i>
+                                    <span class="sidebar-link-text">Program Fees</span>
+                                    <!-- Route not created yet: admin.fees.index -->
+                                </a>
                             </div>
                         </div>
                         
@@ -245,22 +359,47 @@
                 
                 <!-- Super Admin Only Section -->
                 @if(Auth::user()->user_type_id == 1)
-                <div class="px-4 py-6 border-t border-gray-700">
-                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Super Admin</span>
-                    
-                    <nav class="mt-4 space-y-1">
-                        <a href="#" class="flex items-center py-2.5 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white" id="add-user-btn">
-                            <i class="fas fa-user-plus w-5 h-5 mr-3"></i>
-                            <span>Create New User</span>
-                        </a>
-                        <!-- Other admin features will be added as implemented -->
-                    </nav>
+                <div class="px-4 pt-2 pb-1 border-t border-gray-700">
+                    <!-- Section Header -->
+                    <div class="sidebar-section-header px-0 mt-0 pt-2 border-0">Administration</div>
+                    <!-- System Settings Accordion -->
+                    <div class="sidebar-accordion-item">
+                        <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                            <div class="flex items-center">
+                                <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+                                <span class="sidebar-link-text">Super Admin</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs rotate-icon"></i>
+                        </button>
+                        
+                        <div class="sidebar-accordion-content pl-4">
+                            <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1" onclick="openUserModal(); return false;">
+                                <i class="fas fa-user-plus w-4 mr-2"></i>
+                                <span class="sidebar-link-text">Create New User</span>
+                            </a>
+                            <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <i class="fas fa-cogs w-4 mr-2"></i>
+                                <span class="sidebar-link-text">System Settings</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 @endif
                 
-                <!-- Bottom section - placeholder for future content -->
-                <div class="mt-auto px-4 py-6 border-t border-gray-700">
-                    <!-- Support links will be added when implemented -->
+                <!-- Bottom section with helpful links -->
+                <div class="mt-auto px-4 py-4 border-t border-gray-700 opacity-90">
+                    <div class="text-center">
+                        <span class="text-xs font-semibold text-gray-500">Young Experts Group Admin</span>
+                        <div class="text-xs text-gray-600 mt-1">© 2025</div>
+                        <div class="flex justify-center mt-2 space-x-2">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fas fa-question-circle"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -337,7 +476,7 @@
                         </div>
 
                         <!-- Users Table -->
-                        <div class="overflow-x-auto">
+                        <div class="overflow-y-auto flex-grow scroll-smooth" style="max-height: calc(100vh - 60px);">
                             @php
                                 $paginatedUsers = \App\Models\User::paginate(5);
                             @endphp
@@ -691,6 +830,74 @@
     <!-- Include Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     
+    <!-- Sidebar Accordion and Toggle JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sidebar toggle
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const bodyElement = document.body;
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    bodyElement.classList.toggle('sidebar-collapsed');
+                    
+                    // Store the user preference
+                    const isCollapsed = sidebar.classList.contains('collapsed');
+                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                });
+                
+                // Check for saved preference
+                const savedCollapsed = localStorage.getItem('sidebar-collapsed');
+                if (savedCollapsed === 'true') {
+                    sidebar.classList.add('collapsed');
+                    bodyElement.classList.add('sidebar-collapsed');
+                }
+            }
+            
+            // Initialize accordion functionality
+            const accordionButtons = document.querySelectorAll('.sidebar-accordion-button');
+            
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Toggle active class for styling
+                    this.classList.toggle('active');
+                    
+                    // Toggle content visibility
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('open');
+                    
+                    // Store accordion state
+                    const accordionId = this.closest('.sidebar-accordion-item').dataset.id || 
+                                       Array.from(document.querySelectorAll('.sidebar-accordion-button')).indexOf(this);
+                    const isOpen = content.classList.contains('open');
+                    localStorage.setItem(`accordion-${accordionId}`, isOpen);
+                });
+                
+                // Check for saved accordion state and open if needed
+                const accordionItem = button.closest('.sidebar-accordion-item');
+                const accordionId = accordionItem.dataset.id || 
+                                 Array.from(document.querySelectorAll('.sidebar-accordion-button')).indexOf(button);
+                const savedState = localStorage.getItem(`accordion-${accordionId}`);
+                
+                if (savedState === 'true') {
+                    button.classList.add('active');
+                    button.nextElementSibling.classList.add('open');
+                }
+            });
+            
+            // Automatically open the first accordion by default if none are open
+            if (accordionButtons.length > 0) {
+                const anyOpen = Array.from(accordionButtons).some(btn => btn.classList.contains('active'));
+                if (!anyOpen && accordionButtons[0]) {
+                    accordionButtons[0].classList.add('active');
+                    accordionButtons[0].nextElementSibling.classList.add('open');
+                }
+            }
+        });
+    </script>
+    
     <!-- Sticky Header JS -->
     <script src="{{ asset('js/sticky-header.js') }}"></script>
     <style>
@@ -754,13 +961,26 @@
         window.addEventListener('load', function() {
             console.log('Page fully loaded');
             
-            // Mobile menu toggle
-            const sidebar = document.getElementById('sidebar');
+            // Mobile menu toggle - This is now handled in the sidebar accordion script
+            // But we keep this for backward compatibility
             const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.getElementById('sidebar');
             
-            if (mobileMenuButton) {
+            if (mobileMenuButton && sidebar) {
                 mobileMenuButton.addEventListener('click', function() {
                     sidebar.classList.toggle('-translate-x-full');
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(event) {
+                    const isMobile = window.innerWidth < 768;
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isClickInsideButton = mobileMenuButton.contains(event.target);
+                    
+                    if (isMobile && !isClickInsideSidebar && !isClickInsideButton && 
+                        !sidebar.classList.contains('-translate-x-full')) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
                 });
             }
             
