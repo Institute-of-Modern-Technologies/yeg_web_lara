@@ -225,28 +225,12 @@
                     <div class="sidebar-section-header px-4 mt-0 pt-0 border-0">Main Navigation</div>
                     
                     <nav class="space-y-3">
-                        <!-- Users Accordion -->
-                        <div class="sidebar-accordion-item">
-                            <button class="sidebar-accordion-button w-full flex items-center justify-between py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
-                                <div class="flex items-center">
-                                    <i class="fas fa-users w-5 h-5 mr-3"></i>
-                                    <span class="sidebar-link-text">Users</span>
-                                </div>
-                                <i class="fas fa-chevron-down text-xs rotate-icon"></i>
-                            </button>
-                            
-                            <div class="sidebar-accordion-content pl-4">
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
-                                    <i class="fas fa-circle text-xs w-4 mr-2"></i>
-                                    <span class="sidebar-link-text">All Users</span>
-                                </a>
-                                @if(Auth::user()->user_type_id == 1)
-                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
-                                    <i class="fas fa-circle text-xs w-4 mr-2"></i>
-                                    <span class="sidebar-link-text">User Types</span>
-                                </a>
-                                @endif
-                            </div>
+                        <!-- Users - Direct Link -->
+                        <div class="sidebar-item mb-1">
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                                <span class="sidebar-link-text">Users</span>
+                            </a>
                         </div>
                         
                         <!-- Section Header -->
