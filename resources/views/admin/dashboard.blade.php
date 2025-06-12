@@ -814,6 +814,98 @@
     <!-- Include Alpine.js -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     
+    <!-- Global Image Preview Handler -->
+    <script>
+        // Initialize universal image preview handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Global image preview handler initialized');
+            
+            // Find all image inputs
+            const imageInputs = document.querySelectorAll('input[type="file"][accept*="image"]');
+            
+            // Attach preview handler to each image input
+            imageInputs.forEach(input => {
+                console.log('Found image input:', input.id || 'unnamed input');
+                
+                // Find the closest preview container
+                // Look for either a container with ID matching [inputId]-preview or a container with ID image-preview
+                const inputId = input.id;
+                let previewContainer = inputId ? document.getElementById(inputId + '-preview') : null;
+                
+                if (!previewContainer) {
+                    // Check for a container with id="image-preview" in the same form or parent container
+                    const form = input.closest('form') || input.parentElement;
+                    if (form) {
+                        previewContainer = form.querySelector('#image-preview');
+                    }
+                }
+                
+                if (previewContainer) {
+                    console.log('Found preview container for:', inputId || 'unnamed input');
+                    
+                    // Add change event listener
+                    input.addEventListener('change', function() {
+                        console.log('Image input changed:', inputId || 'unnamed input');
+                        
+                        if (this.files && this.files[0]) {
+                            const file = this.files[0];
+                            console.log('Selected file:', file.name);
+                            
+                            // Clear any existing content and create new image
+                            previewContainer.innerHTML = '';
+                            const img = document.createElement('img');
+                            
+                            // Add appropriate classes (try to keep original styling)
+                            // Check if we're in the advertisement section (testimonials, events, hero-sections)
+                            const isAdSection = window.location.pathname.includes('/admin/testimonials') || 
+                                                window.location.pathname.includes('/admin/events') || 
+                                                window.location.pathname.includes('/admin/hero-sections') ||
+                                                window.location.pathname.includes('/admin/partner-schools') ||
+                                                window.location.pathname.includes('/admin/happenings');
+                            
+                            if (isAdSection) {
+                                // Advertisement section images should be rectangular with rounded corners
+                                img.className = 'mx-auto h-32 object-cover rounded';
+                            } else if (inputId === 'profile_photo') {
+                                // Profile photos should be circular
+                                img.className = 'mx-auto h-32 w-32 object-cover rounded-full';
+                            } else {
+                                // Default styling
+                                img.className = 'mx-auto h-32 object-cover rounded';
+                            }
+                            img.alt = 'Preview';
+                            
+                            // Add to container
+                            previewContainer.appendChild(img);
+                            
+                            // Create file reader
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                img.src = e.target.result;
+                                
+                                // Force show the preview container
+                                previewContainer.classList.remove('hidden');
+                                previewContainer.style.display = 'block';
+                                console.log('Preview should now be visible');
+                            };
+                            
+                            // Handle errors
+                            reader.onerror = function() {
+                                console.error('Error reading file:', file.name);
+                                previewContainer.innerHTML = '<p class="text-red-500">Error previewing image</p>';
+                            };
+                            
+                            // Read the image file
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                } else {
+                    console.log('No preview container found for:', inputId || 'unnamed input');
+                }
+            });
+        });
+    </script>
+    
     <!-- Sidebar Accordion and Toggle JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {

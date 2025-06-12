@@ -164,10 +164,13 @@
                 const file = this.files[0];
                 const reader = new FileReader();
                 
+                // Get the existing img element
+                const previewImg = mediaPreview.querySelector('img');
+                
                 if (file.type.includes('image')) {
                     // For image files
                     reader.onload = function(e) {
-                        mediaPreview.querySelector('img').src = e.target.result;
+                        previewImg.src = e.target.result;
                         mediaPreview.classList.remove('hidden');
                     };
                     reader.readAsDataURL(file);
@@ -176,7 +179,7 @@
                     mediaTypeSelect.value = 'video';
                     
                     // Show a video thumbnail placeholder
-                    mediaPreview.querySelector('img').src = 'https://via.placeholder.com/150?text=Video';
+                    previewImg.src = 'https://via.placeholder.com/150?text=Video';
                     mediaPreview.classList.remove('hidden');
                 }
             }
