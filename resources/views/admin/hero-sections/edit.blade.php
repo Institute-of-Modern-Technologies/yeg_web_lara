@@ -68,8 +68,8 @@
                     <!-- Brand Text -->
                     <div class="mt-4">
                         <label for="brand_text" class="block text-sm font-medium text-gray-700 mb-1">Brand Text</label>
-                        <input type="text" name="brand_text" id="brand_text" value="{{ old('brand_text', $heroSection->brand_text ?? 'Young Experts Group') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-                        <p class="mt-1 text-xs text-gray-500">Optional branded text displayed in highlighted color. Default: "Young Experts Group"</p>
+                        <input type="text" name="brand_text" id="brand_text" value="{{ old('brand_text', $heroSection->brand_text) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                        <p class="mt-1 text-xs text-gray-500">Optional branded text displayed in highlighted color (leave empty for no brand text).</p>
                     </div>
 
                     <!-- Status -->

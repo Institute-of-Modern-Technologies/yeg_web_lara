@@ -101,7 +101,7 @@
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
-                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Young Experts Group" class="w-full h-full object-cover">
+                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover">
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -110,7 +110,6 @@
             <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
                 <div class="container-fluid px-0">
                     <div class="max-w-2xl text-center py-6 px-8">
-                        <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg">
                             <span class="text-white">Get </span>
                             <span class="text-secondary">CAREER-READY</span>
@@ -171,16 +170,7 @@
             <!-- Text Content -->
             <div class="relative h-full flex {{ $heroSection->text_position == 'top' ? 'items-start pt-32' : ($heroSection->text_position == 'middle' ? 'items-center' : 'items-end pb-16') }} justify-start pl-8 md:pl-16 lg:pl-24">
                 <div class="container-fluid px-0">
-                    <div class="max-w-2xl text-center py-6 px-8" style="{{ app(\App\Services\HeroSectionService::class)->generateHeroStyles($heroSection) }}">
-                        <span class="inline-block text-secondary font-semibold text-base px-4 py-1 rounded-full bg-white/10 mb-3 shadow-sm">Young Experts Group</span>
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg" style="color: {{ $heroSection->text_color }}">
-                            {{ $heroSection->title }}
-                        </h1>
-                        @if($heroSection->subtitle)
-                        <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md" style="color: {{ $heroSection->text_color }}">
-                            {{ $heroSection->subtitle }}
-                        </h2>
-                        @endif
+                    <x-hero-section-text :heroSection="$heroSection" />
                         @if($heroSection->button_text)
                         <div class="relative inline-block">
                             <button class="heroRegisterBtn bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">

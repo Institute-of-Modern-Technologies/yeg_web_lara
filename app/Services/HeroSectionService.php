@@ -22,18 +22,50 @@ class HeroSectionService
      * Generate CSS styles for a hero section
      * 
      * @param \App\Models\HeroSection $heroSection
-     * @return string
+     * @return array
      */
     public function generateHeroStyles(HeroSection $heroSection)
     {
-        $styles = [];
+        $styles = [
+            'default' => [],
+            'title' => [],
+            'subtitle' => [],
+            'brand_text' => []
+        ];
         
-        // Text color
+        // Default text color
         if ($heroSection->text_color) {
-            $styles[] = "color: {$heroSection->text_color}";
+            $styles['default'][] = "color: {$heroSection->text_color}";
         }
         
-        return implode('; ', $styles);
+        // Title color
+        if ($heroSection->title_color) {
+            $styles['title'][] = "color: {$heroSection->title_color}";
+        } else if ($heroSection->text_color) {
+            $styles['title'][] = "color: {$heroSection->text_color}";
+        }
+        
+        // Subtitle color
+        if ($heroSection->subtitle_color) {
+            $styles['subtitle'][] = "color: {$heroSection->subtitle_color}";
+        } else if ($heroSection->text_color) {
+            $styles['subtitle'][] = "color: {$heroSection->text_color}";
+        }
+        
+        // Brand text color
+        if ($heroSection->brand_text_color) {
+            $styles['brand_text'][] = "color: {$heroSection->brand_text_color}";
+        } else {
+            // Default yellow for brand text if not specified
+            $styles['brand_text'][] = "color: #ffcb05";
+        }
+        
+        return [
+            'default' => implode('; ', $styles['default']),
+            'title' => implode('; ', $styles['title']),
+            'subtitle' => implode('; ', $styles['subtitle']),
+            'brand_text' => implode('; ', $styles['brand_text'])
+        ];
     }
 
     /**
