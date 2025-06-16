@@ -109,6 +109,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/hero-sections/update-order', [
         '\App\Http\Controllers\HeroSectionController', 'updateOrder'
     ])->name('admin.hero-sections.update-order');
+    Route::patch('/hero-sections/{id}/toggle-active', [
+        '\App\Http\Controllers\HeroSectionController', 'toggleActive'
+    ])->name('admin.hero-sections.toggle-active');
     
     // Event Management Routes
     Route::resource('events', '\App\Http\Controllers\EventController')->names([
@@ -122,6 +125,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/events/update-order', [
         '\App\Http\Controllers\EventController', 'updateOrder'
     ])->name('admin.events.update-order');
+    Route::patch('/events/{id}/toggle-active', [
+        '\App\Http\Controllers\EventController', 'toggleActive'
+    ])->name('admin.events.toggle-active');
     
     // Happening Management Routes
     Route::resource('happenings', '\App\Http\Controllers\HappeningController')->names([
@@ -135,6 +141,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/happenings/update-order', [
         '\App\Http\Controllers\HappeningController', 'updateOrder'
     ])->name('admin.happenings.update-order');
+    Route::patch('/happenings/{id}/toggle-active', [
+        '\App\Http\Controllers\HappeningController', 'toggleActive'
+    ])->name('admin.happenings.toggle-active');
     
     // Testimonial Management Routes
     Route::resource('testimonials', '\App\Http\Controllers\TestimonialController')->names([
@@ -148,6 +157,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/testimonials/update-order', [
         '\App\Http\Controllers\TestimonialController', 'updateOrder'
     ])->name('admin.testimonials.update-order');
+    Route::patch('/testimonials/{id}/toggle-active', [
+        '\App\Http\Controllers\TestimonialController', 'toggleActive'
+    ])->name('admin.testimonials.toggle-active');
     
     // Partner School Management Routes
     Route::resource('partner-schools', '\App\Http\Controllers\PartnerSchoolController')->names([
@@ -161,6 +173,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/partner-schools/update-order', [
         '\App\Http\Controllers\PartnerSchoolController', 'updateOrder'
     ])->name('admin.partner-schools.update-order');
+    Route::patch('/partner-schools/{id}/toggle-active', [
+        '\App\Http\Controllers\PartnerSchoolController', 'toggleActive'
+    ])->name('admin.partner-schools.toggle-active');
     
     // Program Types Management Routes
     Route::resource('program-types', '\App\Http\Controllers\Admin\ProgramTypeController')->names([

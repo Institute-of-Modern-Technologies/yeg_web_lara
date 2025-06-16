@@ -1,5 +1,11 @@
 @extends('admin.dashboard')
 
+<!-- Add SweetAlert2 and jQuery in the head to ensure they're loaded early -->
+@push('head')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endpush
+
 @section('content')
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
@@ -40,7 +46,7 @@
         <div class="p-6">
             <ul id="sortable-events" class="space-y-4">
                 @foreach($events as $event)
-                <li class="border border-gray-200 rounded-lg overflow-hidden event-item" data-id="{{ $event->id }}">
+                <li class="border border-gray-200 rounded-lg overflow-hidden event-item {{ !$event->is_active ? 'opacity-50' : '' }}" data-id="{{ $event->id }}">
                     <div class="flex flex-col md:flex-row md:items-center p-4 bg-white">
                         <!-- Drag Handle -->
                         <div class="flex-shrink-0 mr-4 cursor-move drag-handle">
@@ -65,17 +71,19 @@
                             <h3 class="text-lg font-semibold text-gray-800">{{ $event->title }}</h3>
                             <p class="text-gray-600 text-sm line-clamp-2">{{ $event->description }}</p>
                             <div class="mt-2 flex flex-wrap gap-2">
-                                @if($event->is_active)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span class="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                                    Active
-                                </span>
-                                @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <span class="h-2 w-2 rounded-full bg-gray-500 mr-1"></span>
-                                    Inactive
-                                </span>
-                                @endif
+                                <!-- Toggle switch for active status -->
+                                <div class="flex items-center mr-2">
+                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" 
+                                            class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
+                                            id="toggle-{{$event->id}}" 
+                                            data-id="{{$event->id}}"
+                                            {{ $event->is_active ? 'checked' : '' }}
+                                        >
+                                        <label for="toggle-{{$event->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                    <span class="status-label text-sm font-medium text-gray-900">{{ $event->is_active ? 'Active' : 'Inactive' }}</span>
+                                </div>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: {{ $event->level_color }}20; color: {{ $event->level_color }}">
                                     {{ $event->level ?? 'All Levels' }}
                                 </span>
@@ -125,6 +133,81 @@
                 }
             });
         }
+        
+        // Add event listeners to toggle switches with direct AJAX
+        document.querySelectorAll('.toggle-active').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const id = this.getAttribute('data-id');
+                const isActive = this.checked;
+                const eventItem = this.closest('.event-item');
+                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
+                const originalStatus = !isActive; // Store original status in case we need to revert
+                
+                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                
+                // Update UI immediately for better user experience
+                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                
+                if (!isActive) {
+                    eventItem.classList.add('opacity-50');
+                } else {
+                    eventItem.classList.remove('opacity-50');
+                }
+                
+                // Send AJAX request using the Fetch API
+                fetch(`/admin/events/${id}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        is_active: isActive ? 1 : 0
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    
+                    // Show success notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Status updated successfully',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Revert UI changes on error
+                    this.checked = originalStatus;
+                    statusLabel.textContent = originalStatus ? 'Active' : 'Inactive';
+                    
+                    if (originalStatus) {
+                        eventItem.classList.remove('opacity-50');
+                    } else {
+                        eventItem.classList.add('opacity-50');
+                    }
+                    
+                    // Show error notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update status. Please try again.'
+                    });
+                });
+            });
+        });
         
         // Update event order via AJAX
         function updateEventOrder() {

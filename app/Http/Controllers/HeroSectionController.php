@@ -265,4 +265,45 @@ class HeroSectionController extends Controller
         
         return response()->json(['success' => true, 'message' => 'Order updated successfully']);
     }
+    
+    /**
+     * Toggle the active status of a hero section.
+     */
+    public function toggleActive(Request $request, string $id)
+    {
+        // Check if user is authorized
+        if (Auth::user()->user_type_id != 1) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized access'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $heroSection = HeroSection::findOrFail($id);
+        
+        // Set the status explicitly based on request or toggle if not provided
+        if ($request->has('is_active_value')) {
+            $heroSection->is_active = $request->input('is_active_value') == '1';
+        } else if ($request->has('is_active')) {
+            $heroSection->is_active = $request->input('is_active') == '1';
+        } else {
+            $heroSection->is_active = !$heroSection->is_active;
+        }
+        
+        $heroSection->save();
+        
+        $message = $heroSection->is_active ? 'Hero section activated' : 'Hero section deactivated';
+        
+        // Return JSON response for AJAX requests
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $heroSection->is_active,
+                'message' => $message
+            ]);
+        }
+        
+        // Return redirect for form submissions
+        return redirect()->back()->with('success', $message);
+    }
 }

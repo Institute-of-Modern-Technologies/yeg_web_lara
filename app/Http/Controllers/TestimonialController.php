@@ -216,4 +216,43 @@ class TestimonialController extends Controller
         
         return response()->json(['success' => true]);
     }
+    
+    /**
+     * Toggle the active status of a testimonial.
+     */
+    public function toggleActive(Request $request, string $id)
+    {
+        // Check if user is authorized
+        if (Auth::user()->user_type_id != 1) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized access'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $testimonial = Testimonial::findOrFail($id);
+        
+        // Set the status explicitly based on request or toggle if not provided
+        if ($request->has('is_active')) {
+            $testimonial->is_active = $request->input('is_active') == '1';
+        } else {
+            $testimonial->is_active = !$testimonial->is_active;
+        }
+        
+        $testimonial->save();
+        
+        $message = $testimonial->is_active ? 'Testimonial activated' : 'Testimonial deactivated';
+        
+        // Return JSON response for AJAX requests
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $testimonial->is_active,
+                'message' => $message
+            ]);
+        }
+        
+        // Return redirect for form submissions
+        return redirect()->back()->with('success', $message);
+    }
 }

@@ -1,5 +1,10 @@
 @extends('admin.dashboard')
 
+<!-- Add SweetAlert2 in the head to ensure it's loaded early -->
+@push('head')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
+
 @section('content')
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
@@ -40,7 +45,7 @@
         <div class="p-6">
             <ul id="sortable-schools" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($partnerSchools as $school)
-                <li class="border border-gray-200 rounded-lg overflow-hidden school-item" data-id="{{ $school->id }}">
+                <li class="border border-gray-200 rounded-lg overflow-hidden school-item {{ !$school->is_active ? 'opacity-50' : '' }}" data-id="{{ $school->id }}">
                     <div class="flex flex-col p-4 bg-white h-full">
                         <!-- Drag Handle and Status -->
                         <div class="flex justify-between items-center mb-3">
@@ -50,17 +55,19 @@
                                 </span>
                             </div>
                             <div>
-                                @if($school->is_active)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span class="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                                    Active
-                                </span>
-                                @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <span class="h-2 w-2 rounded-full bg-gray-500 mr-1"></span>
-                                    Inactive
-                                </span>
-                                @endif
+                                <!-- Toggle Switch for Active Status -->
+                                <div class="flex items-center">
+                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox" 
+                                            class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
+                                            id="toggle-{{$school->id}}" 
+                                            data-id="{{$school->id}}"
+                                            {{ $school->is_active ? 'checked' : '' }}
+                                        >
+                                        <label for="toggle-{{$school->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    </div>
+                                    <span class="status-label text-sm font-medium text-gray-900">{{ $school->is_active ? 'Active' : 'Inactive' }}</span>
+                                </div>
                             </div>
                         </div>
                         
@@ -124,6 +131,81 @@
                 }
             });
         }
+        
+        // Add event listeners to toggle switches with direct AJAX
+        document.querySelectorAll('.toggle-active').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const id = this.getAttribute('data-id');
+                const isActive = this.checked;
+                const schoolItem = this.closest('.school-item');
+                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
+                const originalStatus = !isActive; // Store original status in case we need to revert
+                
+                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                
+                // Update UI immediately for better user experience
+                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                
+                if (!isActive) {
+                    schoolItem.classList.add('opacity-50');
+                } else {
+                    schoolItem.classList.remove('opacity-50');
+                }
+                
+                // Send AJAX request using the Fetch API
+                fetch(`/admin/partner-schools/${id}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        is_active: isActive ? 1 : 0
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    
+                    // Show success notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Status updated successfully',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Revert UI changes on error
+                    this.checked = originalStatus;
+                    statusLabel.textContent = originalStatus ? 'Active' : 'Inactive';
+                    
+                    if (originalStatus) {
+                        schoolItem.classList.remove('opacity-50');
+                    } else {
+                        schoolItem.classList.add('opacity-50');
+                    }
+                    
+                    // Show error notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update status. Please try again.'
+                    });
+                });
+            });
+        });
         
         // Update school order via AJAX
         function updateSchoolOrder() {

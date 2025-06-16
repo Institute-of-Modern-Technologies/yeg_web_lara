@@ -208,4 +208,45 @@ class PartnerSchoolController extends Controller
         
         return response()->json(['success' => true]);
     }
+    
+    /**
+     * Toggle the active status of a partner school.
+     */
+    public function toggleActive(Request $request, string $id)
+    {
+        // Check if user is authorized
+        if (Auth::user()->user_type_id != 1) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized access'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $partnerSchool = PartnerSchool::findOrFail($id);
+        
+        // Set the status explicitly based on request or toggle if not provided
+        if ($request->has('is_active_value')) {
+            $partnerSchool->is_active = $request->input('is_active_value') == '1';
+        } else if ($request->has('is_active')) {
+            $partnerSchool->is_active = $request->input('is_active') == '1';
+        } else {
+            $partnerSchool->is_active = !$partnerSchool->is_active;
+        }
+        
+        $partnerSchool->save();
+        
+        $message = $partnerSchool->is_active ? 'Partner school activated' : 'Partner school deactivated';
+        
+        // Return JSON response for AJAX requests
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $partnerSchool->is_active,
+                'message' => $message
+            ]);
+        }
+        
+        // Return redirect for form submissions
+        return redirect()->back()->with('success', $message);
+    }
 }

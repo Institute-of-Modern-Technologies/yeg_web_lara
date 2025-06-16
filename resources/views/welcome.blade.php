@@ -1,6 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        /* Style for active navigation links */
+        .nav-link.active {
+            color: #ff6b6b; /* Using neon-pink/primary color for active state */
+            position: relative;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ff6b6b;
+            border-radius: 2px;
+        }
+    </style>
     <!-- Header Navigation -->
     <header class="bg-white py-4 px-6 flex justify-between items-center shadow-sm sticky-header">
         <!-- Logo -->
@@ -13,11 +31,11 @@
         <!-- Navigation Links -->
         <nav class="hidden md:block">
             <ul class="flex space-x-8">
-                <li><a href="#hero-section" class="nav-link font-medium">Home</a></li>
-                <li><a href="#programs" class="nav-link font-medium">About</a></li>
-                <li><a href="#our-stages" class="nav-link font-medium">Stages</a></li>
-                <li><a href="#about-us" class="nav-link font-medium">Programs</a></li>
-                <li><a href="#faq" class="nav-link font-medium">FAQ'S</a></li>
+                <li><a href="#hero-section" class="nav-link font-medium active" data-section="hero-section">Home</a></li>
+                <li><a href="#programs" class="nav-link font-medium" data-section="programs">About</a></li>
+                <li><a href="#our-stages" class="nav-link font-medium" data-section="our-stages">Stages</a></li>
+                <li><a href="#about-us" class="nav-link font-medium" data-section="about-us">Programs</a></li>
+                <li><a href="#faq" class="nav-link font-medium" data-section="faq">FAQ'S</a></li>
             </ul>
         </nav>
                 <!-- Right Side - Login, Enroll Button and Social Icons -->
@@ -318,6 +336,56 @@
                     
                     @section('scripts')
                     @parent
+                    <!-- Active Navigation Link Script -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Get all sections that we want to track
+                            const sections = document.querySelectorAll('section[id]');
+                            
+                            // Get all navigation links
+                            const navLinks = document.querySelectorAll('.nav-link');
+                            
+                            // Add active class to clicked nav links
+                            navLinks.forEach(link => {
+                                link.addEventListener('click', function(e) {
+                                    // Remove active class from all links
+                                    navLinks.forEach(link => link.classList.remove('active'));
+                                    
+                                    // Add active class to clicked link
+                                    this.classList.add('active');
+                                });
+                            });
+                            
+                            // Function to update active link based on scroll position
+                            function updateActiveLink() {
+                                // Get current scroll position
+                                let scrollPosition = window.scrollY;
+                                
+                                // Check each section to see if it's in view
+                                sections.forEach(section => {
+                                    const sectionTop = section.offsetTop - 100;
+                                    const sectionHeight = section.offsetHeight;
+                                    const sectionId = section.getAttribute('id');
+                                    
+                                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                                        // Remove active class from all links
+                                        navLinks.forEach(link => link.classList.remove('active'));
+                                        
+                                        // Add active class to corresponding link
+                                        const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+                                        if (activeLink) activeLink.classList.add('active');
+                                    }
+                                });
+                            }
+                            
+                            // Listen for scroll events
+                            window.addEventListener('scroll', updateActiveLink);
+                            
+                            // Initial call to set active link on page load
+                            updateActiveLink();
+                        });
+                    </script>
+                    
                     <!-- YouTube API and Control Script -->
                     <script>
                         // Load YouTube API

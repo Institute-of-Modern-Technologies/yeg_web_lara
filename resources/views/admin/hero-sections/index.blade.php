@@ -77,7 +77,7 @@ function confirmDelete(id, title) {
             @else
                 <div id="hero-sections-list" class="space-y-6">
                     @foreach($heroSections as $section)
-                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow" data-id="{{ $section->id }}">
+                    <div class="bg-gray-50 rounded-lg overflow-hidden hero-section-item {{ !$section->is_active ? 'opacity-50' : '' }}" data-id="{{ $section->id }}">
                         <div class="flex flex-col md:flex-row md:items-center">
                             <!-- Drag Handle and Order -->
                             <div class="flex items-center md:mr-4 mb-3 md:mb-0">
@@ -99,17 +99,19 @@ function confirmDelete(id, title) {
                                 <h3 class="text-lg font-semibold text-gray-800">{{ $section->title }}</h3>
                                 <p class="text-gray-600 text-sm line-clamp-2">{{ $section->subtitle }}</p>
                                 <div class="mt-2 flex flex-wrap gap-2">
-                                    @if($section->is_active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <span class="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                                        Active
-                                    </span>
-                                    @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        <span class="h-2 w-2 rounded-full bg-gray-500 mr-1"></span>
-                                        Inactive
-                                    </span>
-                                    @endif
+                                    <!-- Toggle Switch for Active Status -->
+                                    <div class="flex items-center">
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" 
+                                                class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
+                                                id="toggle-{{$section->id}}" 
+                                                data-id="{{$section->id}}"
+                                                {{ $section->is_active ? 'checked' : '' }}
+                                            >
+                                            <label for="toggle-{{$section->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                        <span class="status-label text-sm font-medium text-gray-900">{{ $section->is_active ? 'Active' : 'Inactive' }}</span>
+                                    </div>
                                     @if($section->button_text)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         <i class="fas fa-link text-xs mr-1"></i>
@@ -157,6 +159,81 @@ function confirmDelete(id, title) {
                 }
             });
         }
+        
+        // Add event listeners to toggle switches with AJAX
+        document.querySelectorAll('.toggle-active').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const id = this.getAttribute('data-id');
+                const isActive = this.checked;
+                const heroCard = this.closest('.hero-section-item');
+                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
+                const originalStatus = !isActive; // Store original status in case we need to revert
+                
+                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                
+                // Update UI immediately for better user experience
+                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                
+                if (!isActive) {
+                    heroCard.classList.add('opacity-50');
+                } else {
+                    heroCard.classList.remove('opacity-50');
+                }
+                
+                // Send AJAX request using the Fetch API
+                fetch(`/admin/hero-sections/${id}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        is_active: isActive ? 1 : 0
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    
+                    // Show success notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Status updated successfully',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Revert UI changes on error
+                    this.checked = originalStatus;
+                    statusLabel.textContent = originalStatus ? 'Active' : 'Inactive';
+                    
+                    if (originalStatus) {
+                        heroCard.classList.remove('opacity-50');
+                    } else {
+                        heroCard.classList.add('opacity-50');
+                    }
+                    
+                    // Show error notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update status. Please try again.'
+                    });
+                });
+            });
+        });
     });
     
     // Update the order of hero sections

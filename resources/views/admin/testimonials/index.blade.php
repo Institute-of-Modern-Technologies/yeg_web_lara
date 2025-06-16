@@ -40,7 +40,7 @@
         <div class="p-6">
             <ul id="sortable-testimonials" class="space-y-4">
                 @foreach($testimonials as $testimonial)
-                <li class="border border-gray-200 rounded-lg overflow-hidden testimonial-item" data-id="{{ $testimonial->id }}">
+                <li class="border border-gray-200 rounded-lg overflow-hidden testimonial-item {{ !$testimonial->is_active ? 'opacity-50' : '' }}" data-id="{{ $testimonial->id }}">
                     <div class="flex flex-col md:flex-row md:items-center p-4 bg-white">
                         <!-- Drag Handle -->
                         <div class="flex-shrink-0 mr-4 cursor-move drag-handle">
@@ -69,17 +69,17 @@
                             </div>
                             <p class="text-gray-600 text-sm line-clamp-2">{{ $testimonial->getShortContent(150) }}</p>
                             <div class="mt-2">
-                                @if($testimonial->is_active)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span class="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                                    Active
-                                </span>
-                                @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <span class="h-2 w-2 rounded-full bg-gray-500 mr-1"></span>
-                                    Inactive
-                                </span>
-                                @endif
+                                        <!-- Toggle Switch for Active Status -->
+                                        <div class="flex items-center mr-3">
+                            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
+                                    id="toggle-{{$testimonial->id}}" 
+                                    data-id="{{$testimonial->id}}" 
+                                    {{ $testimonial->is_active ? 'checked' : '' }}>
+                                <label for="toggle-{{$testimonial->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                            <span class="status-label text-sm font-medium text-gray-700">{{ $testimonial->is_active ? 'Active' : 'Inactive' }}</span>
+                        </div>
                             </div>
                         </div>
                         
@@ -120,6 +120,81 @@
                 }
             });
         }
+        
+        // Add event listeners to toggle switches with direct AJAX
+        document.querySelectorAll('.toggle-active').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const id = this.getAttribute('data-id');
+                const isActive = this.checked;
+                const testimonialItem = this.closest('.testimonial-item');
+                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
+                const originalStatus = !isActive; // Store original status in case we need to revert
+                
+                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                
+                // Update UI immediately for better user experience
+                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                
+                if (!isActive) {
+                    testimonialItem.classList.add('opacity-50');
+                } else {
+                    testimonialItem.classList.remove('opacity-50');
+                }
+                
+                // Send AJAX request using the Fetch API
+                fetch(`/admin/testimonials/${id}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        is_active: isActive ? 1 : 0
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    
+                    // Show success notification
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message || 'Status updated successfully',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Revert UI changes on error
+                    this.checked = originalStatus;
+                    statusLabel.textContent = originalStatus ? 'Active' : 'Inactive';
+                    
+                    if (originalStatus) {
+                        testimonialItem.classList.remove('opacity-50');
+                    } else {
+                        testimonialItem.classList.add('opacity-50');
+                    }
+                    
+                    // Show error notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update status. Please try again.'
+                    });
+                });
+            });
+        });
         
         // Update testimonial order via AJAX
         function updateTestimonialOrder() {

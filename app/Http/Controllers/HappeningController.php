@@ -222,4 +222,39 @@ class HappeningController extends Controller
         
         return response()->json(['success' => true]);
     }
+    
+    /**
+     * Toggle the active status of a happening.
+     */
+    public function toggleActive(Request $request, string $id)
+    {
+        // Check if user is authorized
+        if (Auth::user()->user_type_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 403);
+        }
+        
+        $happening = Happening::findOrFail($id);
+        
+        // Check if we received an explicit is_active value
+        if ($request->has('is_active')) {
+            $happening->is_active = $request->boolean('is_active');
+        } else {
+            // Otherwise toggle the current value
+            $happening->is_active = !$happening->is_active;
+        }
+        
+        $happening->save();
+        
+        // Handle different response types
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $happening->is_active,
+                'message' => $happening->is_active ? 'Happening activated' : 'Happening deactivated'
+            ]);
+        }
+        
+        // For traditional form submissions, redirect back with a flash message
+        return redirect()->back()->with('success', $happening->is_active ? 'Happening activated' : 'Happening deactivated');
+    }
 }

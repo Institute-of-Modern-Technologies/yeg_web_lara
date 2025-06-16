@@ -227,7 +227,7 @@
                     <nav class="space-y-3">
                         <!-- Users - Direct Link -->
                         <div class="sidebar-item mb-1">
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center py-2.5 px-4 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }} transition-colors">
                                 <i class="fas fa-users w-5 h-5 mr-3"></i>
                                 <span class="sidebar-link-text">Users</span>
                             </a>
@@ -247,32 +247,32 @@
                             </button>
                             
                             <div class="sidebar-accordion-content pl-4">
-                                <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                <a href="{{ route('admin.hero-sections.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.hero-sections.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} mt-1">
                                     <i class="fas fa-image w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Hero Sections</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.events.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.events.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.events.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-calendar-alt w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Events</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.happenings.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.happenings.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-newspaper w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Happenings</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.testimonials.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.testimonials.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-quote-left w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Testimonials</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.partner-schools.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.partner-schools.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-school w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Partner Schools</span>
                                 </a>
                                 
-                                <a href="{{ route('admin.school-logos.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.school-logos.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.school-logos.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-images w-4 mr-2"></i>
                                     <span class="sidebar-link-text">School Logos</span>
                                 </a>
@@ -293,7 +293,7 @@
                             </button>
                             
                             <div class="sidebar-accordion-content pl-4">
-                                <a href="{{ route('admin.students.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                <a href="{{ route('admin.students.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.students.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} mt-1">
                                     <i class="fas fa-user-graduate w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Students</span>
                                 </a>
@@ -320,14 +320,13 @@
                             </button>
                             
                             <div class="sidebar-accordion-content pl-4">
-                                <a href="{{ route('admin.program-types.index') }}" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white mt-1">
+                                <a href="{{ route('admin.program-types.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.program-types.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} mt-1">
                                     <i class="fas fa-list-alt w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Program Types</span>
                                 </a>
-                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.schools.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.schools.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-school w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Schools</span>
-                                    <!-- Route not created yet: admin.schools.index -->
                                 </a>
                                 <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
                                     <i class="fas fa-money-bill-wave w-4 mr-2"></i>
@@ -909,6 +908,19 @@
     <!-- Sidebar Accordion and Toggle JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto-expand the accordion containing the active link
+            const activeLink = document.querySelector('.sidebar-accordion-content a.bg-gray-800');
+            if (activeLink) {
+                const parentAccordion = activeLink.closest('.sidebar-accordion-content');
+                if (parentAccordion) {
+                    parentAccordion.classList.add('open');
+                    const accordionButton = parentAccordion.previousElementSibling;
+                    if (accordionButton && accordionButton.classList.contains('sidebar-accordion-button')) {
+                        accordionButton.classList.add('active');
+                    }
+                }
+            }
+            
             // Initialize sidebar toggle
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');

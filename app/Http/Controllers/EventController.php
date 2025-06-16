@@ -204,7 +204,7 @@ class EventController extends Controller
      */
     public function updateOrder(Request $request)
     {
-        // Check if user is authorized to manage events
+        // Check if user is authorized
         if (Auth::user()->user_type_id != 1) {
             return response()->json(['error' => 'Unauthorized access'], 403);
         }
@@ -220,5 +220,42 @@ class EventController extends Controller
         }
         
         return response()->json(['success' => true]);
+    }
+    
+    /**
+     * Toggle the active status of an event.
+     */
+    public function toggleActive(Request $request, string $id)
+    {
+        if (Auth::user()->user_type_id != 1) {
+            if ($request->expectsJson() || $request->wantsJson()) {
+                return response()->json(['error' => 'Unauthorized access'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized access');
+        }
+        
+        $event = Event::findOrFail($id);
+        
+        // Check if we received an explicit is_active value
+        if ($request->has('is_active')) {
+            $event->is_active = $request->input('is_active') == '1' || $request->input('is_active') === true || $request->input('is_active') === 1;
+        } else {
+            // Otherwise toggle the current value
+            $event->is_active = !$event->is_active;
+        }
+        
+        $event->save();
+        
+        // Handle different response types
+        if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $event->is_active,
+                'message' => $event->is_active ? 'Event activated' : 'Event deactivated'
+            ]);
+        }
+        
+        // For traditional form submissions, redirect back with a flash message
+        return redirect()->back()->with('success', $event->is_active ? 'Event activated' : 'Event deactivated');
     }
 }

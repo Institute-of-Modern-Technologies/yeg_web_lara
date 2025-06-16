@@ -1,5 +1,10 @@
 @extends('admin.dashboard')
 
+<!-- Add SweetAlert2 in the head to ensure it's loaded early -->
+@push('head')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@endpush
+
 @section('content')
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
@@ -40,7 +45,7 @@
         <div class="p-6">
             <ul id="sortable-happenings" class="space-y-4">
                 @foreach($happenings as $happening)
-                <li class="border border-gray-200 rounded-lg overflow-hidden happening-item" data-id="{{ $happening->id }}">
+                <div class="bg-white p-4 rounded-lg shadow-md flex md:flex-row flex-col md:items-center gap-4 happening-item {{ !$happening->is_active ? 'opacity-50' : '' }}" data-id="{{ $happening->id }}">
                     <div class="flex flex-col md:flex-row md:items-center p-4 bg-white">
                         <!-- Drag Handle -->
                         <div class="flex-shrink-0 mr-4 cursor-move drag-handle">
@@ -65,17 +70,23 @@
                             <h3 class="text-lg font-semibold text-gray-800">{{ $happening->title }}</h3>
                             <p class="text-gray-600 text-sm line-clamp-2">{{ $happening->getShortContent(150) }}</p>
                             <div class="mt-2 flex flex-wrap gap-2">
-                                @if($happening->is_active)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <span class="h-2 w-2 rounded-full bg-green-500 mr-1"></span>
-                                    Active
-                                </span>
-                                @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <span class="h-2 w-2 rounded-full bg-gray-500 mr-1"></span>
-                                    Inactive
-                                </span>
-                                @endif
+                                <!-- Toggle Switch for Active Status -->
+                                <div class="flex items-center">
+                                    <form action="{{ route('admin.happenings.toggle-active', $happening->id) }}" method="POST" class="toggle-form">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                            <input type="checkbox" 
+                                                class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
+                                                id="toggle-{{$happening->id}}" 
+                                                name="is_active"
+                                                {{ $happening->is_active ? 'checked' : '' }}
+                                            >
+                                            <label for="toggle-{{$happening->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                        </div>
+                                    </form>
+                                    <span class="status-label text-sm font-medium text-gray-900">{{ $happening->is_active ? 'Active' : 'Inactive' }}</span>
+                                </div>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     <i class="far fa-user mr-1"></i>
                                     {{ $happening->author_name ?? 'Unknown' }}
@@ -130,6 +141,37 @@
                 }
             });
         }
+        
+        // Add event listeners to toggle switches with form submission
+        document.querySelectorAll('.toggle-active').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const form = this.closest('.toggle-form');
+                const isActive = this.checked;
+                const happeningCard = this.closest('.happening-item');
+                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
+                
+                console.log('Toggle clicked, submitting form...');
+                
+                // Update UI immediately
+                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                
+                if (!isActive) {
+                    happeningCard.classList.add('opacity-50');
+                } else {
+                    happeningCard.classList.remove('opacity-50');
+                }
+                
+                // Create and append a hidden field for is_active
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'is_active';
+                hiddenInput.value = isActive ? '1' : '0';
+                form.appendChild(hiddenInput);
+                
+                // Submit the form with traditional form submission
+                form.submit();
+            });
+        });
         
         // Update happening order via AJAX
         function updateHappeningOrder() {
