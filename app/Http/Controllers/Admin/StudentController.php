@@ -64,6 +64,62 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    /**
+     * Show the form for creating a new student.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $schools = School::where('status', 'approved')->orderBy('name')->get();
+        $programTypes = ProgramType::where('is_active', true)->orderBy('name')->get();
+        
+        return view('admin.students.create', compact('schools', 'programTypes'));
+    }
+    
+    /**
+     * Store a newly created student in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'age' => 'required|integer|min:1|max:100',
+            'email' => 'nullable|email|max:255|unique:students,email',
+            'phone' => 'nullable|string|max:20',
+            'parent_contact' => 'required|string|max:20',
+            'city' => 'required|string|max:255',
+            'school_id' => 'required|exists:schools,id',
+            'program_type_id' => 'required|exists:program_types,id',
+        ]);
+        
+        // Generate a unique registration number
+        $registrationNumber = 'YEG' . date('y') . str_pad(Student::count() + 1, 5, '0', STR_PAD_LEFT);
+        
+        // Create the student data array with all required fields
+        $studentData = [
+            'full_name' => $request->full_name,
+            'age' => $request->age,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'parent_contact' => $request->parent_contact,
+            'city' => $request->city,
+            'school_id' => $request->school_id,
+            'program_type_id' => $request->program_type_id,
+            'registration_number' => $registrationNumber,
+            'status' => 'active'
+        ];
+        
+        // Create the student
+        $student = Student::create($studentData);
+        
+        return redirect()->route('admin.students.show', $student->id)
+            ->with('success', 'Student added successfully with registration number: ' . $registrationNumber);
+    }
+    
     public function edit($id)
     {
         $student = Student::findOrFail($id);
@@ -85,18 +141,15 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:students,email,' . $student->id,
-            'phone' => 'required|string|max:20',
-            'gender' => 'nullable|string|in:male,female,other',
-            'date_of_birth' => 'nullable|date',
-            'address' => 'nullable|string|max:255',
+            'full_name' => 'required|string|max:255',
+            'age' => 'required|integer|min:1|max:100',
+            'email' => 'nullable|email|max:255|unique:students,email,' . $student->id,
+            'phone' => 'nullable|string|max:20',
+            'parent_contact' => 'required|string|max:20',
             'city' => 'required|string|max:255',
-            'region' => 'nullable|string|max:255',
             'school_id' => 'required|exists:schools,id',
             'program_type_id' => 'required|exists:program_types,id',
-            'status' => 'required|string|in:active,inactive',
+            'status' => 'required|string|in:active,inactive,completed',
         ]);
         
         $student->update($validated);

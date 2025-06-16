@@ -211,6 +211,8 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     
     // Student Management Routes
     Route::get('/students', ['\App\Http\Controllers\Admin\StudentController', 'index'])->name('admin.students.index');
+    Route::get('/students/create', ['\App\Http\Controllers\Admin\StudentController', 'create'])->name('admin.students.create');
+    Route::post('/students', ['\App\Http\Controllers\Admin\StudentController', 'store'])->name('admin.students.store');
     Route::get('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'show'])->name('admin.students.show');
     Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');
     Route::put('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'update'])->name('admin.students.update');

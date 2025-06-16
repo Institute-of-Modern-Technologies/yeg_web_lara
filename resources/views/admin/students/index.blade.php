@@ -2,10 +2,29 @@
 
 @section('content')
 <div class="p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Students Management</h1>
+        <a href="{{ route('admin.students.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            <span>Add New Student</span>
+        </a>
+    </div>
+    
+    @if(session('success'))
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+        <p>{{ session('success') }}</p>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+        <p>{{ session('error') }}</p>
+    </div>
+    @endif
 
 <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div class="p-6 bg-primary">
-        <h1 class="text-2xl font-bold text-white">Students Management</h1>
+        <h1 class="text-xl font-bold text-white">Student Records</h1>
         <p class="text-white text-opacity-80">View and manage student records</p>
     </div>
     
@@ -118,27 +137,20 @@
                                 {{ $student->created_at->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                                    <button @click="open = !open" class="text-gray-500 hover:text-gray-800 focus:outline-none">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                        </svg>
+                                <div class="flex justify-end space-x-3">
+                                    <a href="{{ route('admin.students.show', $student->id) }}" class="text-blue-600 hover:text-blue-900" title="View Student">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="text-blue-600 hover:text-blue-900" title="Edit Student">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button onclick="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900" title="Delete Student">
+                                        <i class="fas fa-trash-alt"></i>
                                     </button>
-                                     <div x-show="open" class="absolute right-0 mt-2 w-auto bg-white rounded-md shadow-lg py-1 z-50" style="display: none;">
-                                        <a href="{{ route('admin.students.show', $student->id) }}" class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100" title="View Student">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.students.edit', $student->id) }}" class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100" title="Edit Student">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button onclick="confirmDelete({{ $student->id }})" class="block w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100" title="Delete Student">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <form id="delete-form-{{ $student->id }}" action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="hidden">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-                                    </div>
+                                    <form id="delete-form-{{ $student->id }}" action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 </div>
                             </td>
                         </tr>
