@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\School;
 use App\Models\ProgramType;
+use Illuminate\Support\Facades\DB;
+use App\Imports\StudentsImport;
+use App\Exports\StudentsExport;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class StudentController extends Controller
 {
@@ -178,5 +183,164 @@ class StudentController extends Controller
         
         return redirect()->route('admin.students.index')
             ->with('success', 'Student deleted successfully.');
+    }
+    
+    /**
+     * Remove multiple students from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'exists:students,id'
+        ]);
+        
+        $studentIds = $request->student_ids;
+        $successCount = 0;
+        $failCount = 0;
+        
+        // Begin transaction
+        DB::beginTransaction();
+        
+        try {
+            foreach ($studentIds as $id) {
+                $student = Student::with('payments')->find($id);
+                
+                if (!$student) {
+                    continue;
+                }
+                
+                // Skip students with payment records
+                if ($student->payments->count() > 0) {
+                    $failCount++;
+                    continue;
+                }
+                
+                $student->delete();
+                $successCount++;
+            }
+            
+            // Commit the transaction
+            DB::commit();
+            
+            if ($failCount > 0) {
+                $message = $successCount . ' student(s) deleted successfully. ' . $failCount . ' student(s) could not be deleted due to existing payment records.';
+                return redirect()->route('admin.students.index')->with('warning', $message);
+            } else {
+                return redirect()->route('admin.students.index')->with('success', $successCount . ' student(s) deleted successfully.');
+            }
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of error
+            DB::rollBack();
+            return redirect()->route('admin.students.index')->with('error', 'An error occurred while deleting students: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Show the form for importing students.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showImportForm()
+    {
+        $schools = School::orderBy('name')->get();
+        $programTypes = ProgramType::where('is_active', true)->orderBy('name')->get();
+        
+        return view('admin.students.import', compact('schools', 'programTypes'));
+    }
+    
+    /**
+     * Process the CSV import of students.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048',
+        ]);
+        
+        // Store the uploaded file
+        $path = $request->file('csv_file')->store('temp');
+        $fullPath = Storage::path($path);
+        
+        // Create column mapping if provided
+        $columnMap = [];
+        $mappingFields = ['full_name', 'age', 'phone', 'email', 'parent_contact', 
+                        'city', 'school_id', 'program_type_id', 'status'];
+        
+        foreach ($mappingFields as $field) {
+            if ($request->has('map_' . $field) && !empty($request->input('map_' . $field))) {
+                $columnMap[$request->input('map_' . $field)] = $field;
+            }
+        }
+        
+        try {
+            // Process the import
+            $import = new StudentsImport();
+            $result = $import->import($fullPath, $columnMap);
+            
+            // Clean up the temp file
+            Storage::delete($path);
+            
+            // Success message with details
+            if ($result['skipped'] > 0) {
+                $message = $result['processed'] . ' students imported successfully. ' . $result['skipped'] . ' records were skipped due to errors.';
+                session(['import_errors' => $result['errors']]);
+                return redirect()->route('admin.students.index')->with('warning', $message);
+            } else {
+                return redirect()->route('admin.students.index')
+                    ->with('success', $result['processed'] . ' students imported successfully!');
+            }
+            
+        } catch (\Exception $e) {
+            // Clean up on error
+            Storage::delete($path);
+            Log::error('Student import failed: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('admin.students.showImportForm')
+                ->with('error', 'Import failed: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Export students as CSV.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function export(Request $request)
+    {
+        // Get filter values
+        $filters = [
+            'school_id' => $request->input('school_id'),
+            'program_type_id' => $request->input('program_type_id'),
+            'status' => $request->input('status')
+        ];
+        
+        try {
+            $export = new StudentsExport();
+            $csv = $export->export($filters);
+            
+            $filename = 'students_export_' . date('Y-m-d_His') . '.csv';
+            
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Pragma' => 'public',
+                'Expires' => '0'
+            ];
+            
+            return response($csv, 200, $headers);
+            
+        } catch (\Exception $e) {
+            Log::error('Student export failed: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Export failed: ' . $e->getMessage());
+        }
     }
 }

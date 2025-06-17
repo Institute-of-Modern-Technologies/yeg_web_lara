@@ -114,6 +114,58 @@
 
     <!-- Hero Section with Carousel -->
     <section id="hero-section" class="hero-section relative overflow-hidden min-h-[600px] md:min-h-[700px] bg-primary">
+        <style>
+            /* Smooth carousel transitions */
+            .carousel-item {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+                z-index: 1;
+            }
+            
+            .carousel-item.active {
+                opacity: 1;
+                visibility: visible;
+                z-index: 2;
+            }
+            
+            /* Enhanced carousel dot styling */
+            .carousel-dot {
+                width: 12px;
+                height: 12px;
+                background-color: rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.4s ease;
+                border: 2px solid transparent;
+            }
+            
+            .carousel-dot:hover {
+                transform: scale(1.2);
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+            
+            .carousel-dot.active {
+                background-color: white;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+                transform: scale(1.1);
+            }
+            
+            /* Smooth button hover effects */
+            .carousel-prev, .carousel-next {
+                transition: all 0.3s ease;
+            }
+            
+            .carousel-prev:hover, .carousel-next:hover {
+                transform: translateY(-50%) scale(1.1);
+                background-color: rgba(255, 255, 255, 0.5);
+            }
+        </style>
         @if($heroSections->isEmpty())
         <!-- Default Hero Section (Shown when no hero sections are configured) -->
         <div class="carousel-item active" id="default-slide">
@@ -233,7 +285,7 @@
         @endforeach
         
         <!-- Carousel Controls -->
-        <div class="carousel-controls absolute bottom-6 w-full flex justify-center space-x-3 z-10">
+        <div class="carousel-controls absolute bottom-6 w-full flex justify-center space-x-4 z-10">
             @foreach($heroSections as $index => $heroSection)
             <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}" data-slide="slide-{{ $heroSection->id }}"></div>
             @endforeach
@@ -1806,17 +1858,32 @@
         }
 
         $(document).ready(function() {
-            // Hero Carousel functionality
+            // Hero Carousel functionality with smooth transitions
             $('.carousel-dot').click(function() {
+                if (isTransitioning) return; // Prevent rapid clicking
+                
+                isTransitioning = true;
+                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+                
                 const slideId = $(this).data('slide');
-                $('.carousel-item').removeClass('active');
-                $('#' + slideId).addClass('active');
+                
+                // Update dots immediately
                 $('.carousel-dot').removeClass('active');
                 $(this).addClass('active');
+                
+                // Smoothly transition between slides
+                $('.carousel-item').removeClass('active');
+                $('#' + slideId).addClass('active');
             });
             
             // Hero Carousel Navigation Arrows
             $('.carousel-prev').click(function() {
+                // Don't proceed if a transition is already happening
+                if (isTransitioning) return;
+                
+                isTransitioning = true;
+                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+                
                 const activeDot = $('.carousel-dot.active');
                 let prevDot = activeDot.prev('.carousel-dot');
                 
@@ -1825,11 +1892,23 @@
                     prevDot = $('.carousel-dot:last');
                 }
                 
-                // Trigger click on the dot to show the corresponding slide
-                prevDot.click();
+                // Update dots immediately
+                $('.carousel-dot').removeClass('active');
+                prevDot.addClass('active');
+                
+                // Get slide ID and update slides with smooth transition
+                const slideId = prevDot.data('slide');
+                $('.carousel-item').removeClass('active');
+                $('#' + slideId).addClass('active');
             });
             
             $('.carousel-next').click(function() {
+                // Don't proceed if a transition is already happening
+                if (isTransitioning) return;
+                
+                isTransitioning = true;
+                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+                
                 const activeDot = $('.carousel-dot.active');
                 let nextDot = activeDot.next('.carousel-dot');
                 
@@ -1838,17 +1917,26 @@
                     nextDot = $('.carousel-dot:first');
                 }
                 
-                // Trigger click on the dot to show the corresponding slide
-                nextDot.click();
+                // Update dots immediately
+                $('.carousel-dot').removeClass('active');
+                nextDot.addClass('active');
+                
+                // Get slide ID and update slides with smooth transition
+                const slideId = nextDot.data('slide');
+                $('.carousel-item').removeClass('active');
+                $('#' + slideId).addClass('active');
             });
             
-            // Auto-rotate carousel every 5 seconds
+            // Auto-rotate carousel every 6 seconds with smooth transitions
             let carouselInterval;
+            let isTransitioning = false;
             
             function startCarouselAutoplay() {
                 carouselInterval = setInterval(function() {
-                    $('.carousel-next').click();
-                }, 5000);
+                    if (!isTransitioning && $('.carousel-item').length > 1) {
+                        $('.carousel-next').click();
+                    }
+                }, 6000);
             }
             
             function stopCarouselAutoplay() {
@@ -1861,10 +1949,18 @@
             }
             
             // Pause autoplay when user interacts with carousel
+            $('.carousel-dot, .carousel-prev, .carousel-next').on('mouseenter', function() {
+                stopCarouselAutoplay();
+            }).on('mouseleave', function() {
+                // Restart autoplay shortly after user stops interaction
+                setTimeout(startCarouselAutoplay, 2000);
+            });
+            
+            // Also handle click events to reset the timer
             $('.carousel-dot, .carousel-prev, .carousel-next').on('click', function() {
                 stopCarouselAutoplay();
-                // Restart autoplay after user interaction (after 10 seconds)
-                setTimeout(startCarouselAutoplay, 10000);
+                // Restart autoplay after user interaction
+                setTimeout(startCarouselAutoplay, 6000);
             });
             
             // Category toggle functionality for FAQs
