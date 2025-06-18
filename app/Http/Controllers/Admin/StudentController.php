@@ -253,12 +253,12 @@ class StudentController extends Controller
     }
     
     /**
-     * Process the CSV import of students.
+     * Validate the uploaded CSV file and show school matching form.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function import(Request $request)
+    public function validateImport(Request $request)
     {
         $request->validate([
             'csv_file' => 'required|file|mimes:csv,txt|max:2048',
@@ -280,16 +280,98 @@ class StudentController extends Controller
         }
         
         try {
-            // Process the import
+            // Extract unique school names from CSV
             $import = new StudentsImport();
-            $result = $import->import($fullPath, $columnMap);
+            $schoolsData = $import->extractUniqueSchools($fullPath, $columnMap);
             
+            // Store necessary data in session for next step
+            session([
+                'import_file_path' => $path,
+                'import_column_map' => $columnMap,
+                'import_schools' => $schoolsData['schools'],
+                'import_csv_data' => $schoolsData['preview']
+            ]);
+            
+            // If no schools to match, go directly to final import
+            if (empty($schoolsData['schools'])) {
+                return redirect()->route('admin.students.import.process');
+            }
+            
+            // Get all available schools for dropdown selection
+            $availableSchools = School::orderBy('name')->get();
+            
+            return view('admin.students.match-schools', [
+                'csvSchools' => $schoolsData['schools'],
+                'availableSchools' => $availableSchools,
+                'csvPreview' => $schoolsData['preview']
+            ]);
+            
+        } catch (\Exception $e) {
             // Clean up the temp file
             Storage::delete($path);
+            
+            // Error message
+            return redirect()->route('admin.students.import')
+                ->with('error', 'CSV validation failed: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Process school matching selections.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function matchSchools(Request $request)
+    {
+        // Validate
+        $request->validate([
+            'school_mapping' => 'required|array',
+        ]);
+        
+        // Store school mapping in session
+        session(['import_school_mapping' => $request->school_mapping]);
+        
+        return redirect()->route('admin.students.import.process');
+    }
+    
+    /**
+     * Process the final import after school matching.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function processImport()
+    {
+        // Retrieve session data
+        $path = session('import_file_path');
+        $columnMap = session('import_column_map');
+        $schoolMapping = session('import_school_mapping', []);
+        
+        if (empty($path)) {
+            return redirect()->route('admin.students.import')
+                ->with('error', 'Import session expired. Please upload the CSV file again.');
+        }
+        
+        $fullPath = Storage::path($path);
+        
+        try {
+            // Process the final import with school mapping
+            $import = new StudentsImport();
+            $result = $import->import($fullPath, $columnMap, $schoolMapping);
+            
+            // Clean up the temp file and session data
+            Storage::delete($path);
+            session()->forget(['import_file_path', 'import_column_map', 'import_schools', 
+                            'import_school_mapping', 'import_csv_data']);
             
             // Success message with details
             if ($result['skipped'] > 0) {
                 $message = $result['processed'] . ' students imported successfully. ' . $result['skipped'] . ' records were skipped due to errors.';
+                
+                if (!empty($result['warnings'])) {
+                    session(['import_warnings' => $result['warnings']]);
+                }
+                
                 session(['import_errors' => $result['errors']]);
                 return redirect()->route('admin.students.index')->with('warning', $message);
             } else {
@@ -298,10 +380,11 @@ class StudentController extends Controller
             }
             
         } catch (\Exception $e) {
-            // Clean up on error
+            // Clean up the temp file
             Storage::delete($path);
-            Log::error('Student import failed: ' . $e->getMessage(), ['exception' => $e]);
-            return redirect()->route('admin.students.showImportForm')
+            
+            // Error message
+            return redirect()->route('admin.students.import')
                 ->with('error', 'Import failed: ' . $e->getMessage());
         }
     }

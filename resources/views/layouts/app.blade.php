@@ -49,10 +49,50 @@
     @yield('styles')
 </head>
 <body class="antialiased">
+    @include('partials._navigation')
+    
     @yield('content')
+    
+    @include('partials._footer')
     
     <!-- Sticky Header JS -->
     <script src="{{ asset('js/sticky-header.js') }}"></script>
+    
+    <!-- Registration Dropdown Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Helper function to handle dropdown functionality
+            function setupDropdown(buttonId, menuId) {
+                const button = document.getElementById(buttonId);
+                const menu = document.getElementById(menuId);
+                const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
+                
+                if (button && menu) {
+                    // Toggle dropdown on button click
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        menu.classList.toggle('hidden');
+                        if (chevronIcon) {
+                            chevronIcon.classList.toggle('rotate-180');
+                        }
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(event) {
+                        if (!button.contains(event.target) && !menu.contains(event.target)) {
+                            menu.classList.add('hidden');
+                            if (chevronIcon) {
+                                chevronIcon.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Setup dropdown
+            setupDropdown('registerDropdownButton', 'registerDropdownMenu');
+        });
+    </script>
     
     @yield('scripts')
 </body>

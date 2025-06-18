@@ -4,8 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
 // School Registration Routes
 Route::get('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'showRegistrationForm'])->name('school.register');
@@ -215,7 +217,9 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/students', ['\App\Http\Controllers\Admin\StudentController', 'store'])->name('admin.students.store');
     Route::delete('/students/bulk-destroy', ['\App\Http\Controllers\Admin\StudentController', 'bulkDestroy'])->name('admin.students.bulk-destroy');
     Route::get('/students/import', ['\App\Http\Controllers\Admin\StudentController', 'showImportForm'])->name('admin.students.import');
-    Route::post('/students/import', ['\App\Http\Controllers\Admin\StudentController', 'import'])->name('admin.students.import.process');
+    Route::post('/students/import', ['\App\Http\Controllers\Admin\StudentController', 'validateImport'])->name('admin.students.import.validate');
+    Route::post('/students/import/match-schools', ['\App\Http\Controllers\Admin\StudentController', 'matchSchools'])->name('admin.students.import.match_schools');
+    Route::post('/students/import/process', ['\App\Http\Controllers\Admin\StudentController', 'processImport'])->name('admin.students.import.process');
     Route::get('/students/export', ['\App\Http\Controllers\Admin\StudentController', 'export'])->name('admin.students.export');
     Route::get('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'show'])->name('admin.students.show');
     Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');

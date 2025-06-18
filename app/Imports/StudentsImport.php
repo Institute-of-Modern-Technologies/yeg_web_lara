@@ -14,26 +14,90 @@ class StudentsImport
 {
     protected $headerRow;
     protected $columnMap = [];
+    protected $schoolMapping = [];
     // All fields are now optional for import
     protected $schoolCache = [];
     protected $programTypeCache = [];
     protected $processedCount = 0;
     protected $skippedCount = 0;
     protected $errorMessages = [];
+    protected $warningMessages = [];
 
+    /**
+     * Extract unique school names from the CSV file for matching.
+     *
+     * @param string $filePath
+     * @param array $columnMapping Optional column mapping
+     * @return array Unique school names and preview data
+     */
+    public function extractUniqueSchools($filePath, $columnMapping = [])
+    {
+        // Store column mapping
+        $this->columnMap = $columnMapping;
+        
+        try {
+            // Read CSV file
+            $csv = Reader::createFromPath($filePath, 'r');
+            $csv->setHeaderOffset(0);
+            $records = $csv->getRecords();
+            
+            $uniqueSchools = [];
+            $preview = [];
+            $rowCount = 0;
+            
+            // Process each record to extract school names
+            foreach ($records as $record) {
+                $rowCount++;
+                
+                // Convert record to student data format
+                $studentData = $this->mapRecordFields($record);
+                
+                // Get school name
+                if (!empty($studentData['school_id']) && !is_numeric($studentData['school_id'])) {
+                    $schoolName = trim($studentData['school_id']);
+                    if (!empty($schoolName) && !in_array($schoolName, $uniqueSchools)) {
+                        $uniqueSchools[] = $schoolName;
+                    }
+                }
+                
+                // Add to preview (only first 5 rows)
+                if ($rowCount <= 5) {
+                    $preview[] = $studentData;
+                }
+                
+                // Limit to first 100 rows for efficiency
+                if ($rowCount >= 100) {
+                    break;
+                }
+            }
+            
+            return [
+                'schools' => $uniqueSchools,
+                'preview' => $preview
+            ];
+            
+        } catch (\Exception $e) {
+            Log::error('CSV school extraction error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
     /**
      * Process the imported CSV file.
      *
      * @param string $filePath
      * @param array $columnMap
+     * @param array $schoolMapping Optional mapping of school names to IDs
      * @return array
      */
-    public function import($filePath, $columnMap = [])
+    public function import($filePath, $columnMap = [], $schoolMapping = [])
     {
         $this->columnMap = $columnMap;
+        $this->schoolMapping = $schoolMapping;
         $this->processedCount = 0;
         $this->skippedCount = 0;
         $this->errorMessages = [];
+        $this->warningMessages = [];
         
         // Load CSV
         $csv = Reader::createFromPath($filePath, 'r');
@@ -56,7 +120,8 @@ class StudentsImport
         return [
             'processed' => $this->processedCount,
             'skipped' => $this->skippedCount,
-            'errors' => $this->errorMessages
+            'errors' => $this->errorMessages,
+            'warnings' => $this->warningMessages
         ];
     }
     
@@ -69,16 +134,33 @@ class StudentsImport
      */
     protected function processRecord($record, $rowNumber)
     {
-        // Map CSV columns to database fields
-        $studentData = $this->mapRecordFields($record);
+        // Debug the raw record
+        Log::info("Processing row {$rowNumber}", ['raw_record' => $record]);
         
-        // Validate required fields
+        // Convert record to student data format
+        $studentData = $this->mapRecordFields($record);
+        Log::info("After mapping", ['mapped_data' => $studentData]);
+        
+        // Validate data
         $validator = $this->validateStudentData($studentData, $rowNumber);
         
         if ($validator->fails()) {
             $this->skippedCount++;
             $this->errorMessages[] = "Row {$rowNumber}: " . implode(', ', $validator->errors()->all());
             return;
+        }
+        
+        // Explicitly check for parent_contact mapping issues
+        // If we have any field that might be a contact but wasn't mapped correctly
+        foreach ($record as $key => $value) {
+            $keyLower = strtolower($key);
+            if ((str_contains($keyLower, 'parent') || str_contains($keyLower, 'contact') || 
+                str_contains($keyLower, 'phone') || str_contains($keyLower, 'tel') || 
+                str_contains($keyLower, 'mobile') || str_contains($keyLower, 'guardian')) && 
+                !empty($value) && !isset($studentData['parent_contact'])) {
+                $studentData['parent_contact'] = $value;
+                Log::info("Found potential parent contact in column: {$key}", ['value' => $value]);
+            }
         }
         
         // Process school_id and program_type_id (might be names in the import file)
@@ -167,13 +249,23 @@ class StudentsImport
             'fullname' => 'full_name',
             'student_name' => 'full_name',
             'studentname' => 'full_name',
+            'parent_contact' => 'parent_contact',
             'parent_phone' => 'parent_contact',
             'parent_number' => 'parent_contact',
             'parent_mobile' => 'parent_contact',
+            'parent' => 'parent_contact',
+            'contact' => 'parent_contact',
             'guardian_contact' => 'parent_contact',
+            'guardian' => 'parent_contact',
+            'phone' => 'phone',
+            'telephone' => 'phone',
+            'mobile' => 'phone',
             'school' => 'school_id',
+            'school_name' => 'school_id',
+            'school_id' => 'school_id',
             'program' => 'program_type_id',
             'program_type' => 'program_type_id',
+            'program_name' => 'program_type_id',
         ];
         
         return $mappings[$normalized] ?? $normalized;
@@ -212,30 +304,92 @@ class StudentsImport
      */
     protected function resolveRelationships($data)
     {
+        // Debug what's coming in
+        Log::info("Resolving relationships for data", $data);
+        
         // Resolve school_id (might be a name in the import)
         if (isset($data['school_id']) && !is_numeric($data['school_id'])) {
             $schoolName = trim($data['school_id']);
-            $data['school_id'] = $this->findSchoolIdByName($schoolName);
+            Log::info("Attempting to resolve school name: '{$schoolName}'");
+            
+            // First check if we have a mapping for this school name from the dropdown selection
+            if (!empty($this->schoolMapping) && isset($this->schoolMapping[$schoolName])) {
+                $schoolId = $this->schoolMapping[$schoolName];
+                Log::info("Using user-selected school mapping for '{$schoolName}': ID {$schoolId}");
+                $data['school_id'] = $schoolId;
+            } else {
+                // No mapping provided, try to find by exact name first
+                $school = School::where('name', 'like', $schoolName)->first();
+                
+                if ($school) {
+                    Log::info("Found exact school match: {$school->name} (ID: {$school->id})");
+                    $data['school_id'] = $school->id;
+                } else {
+                    // Try fuzzy match as a fallback
+                    $schoolId = $this->findSchoolIdByName($schoolName);
+                    
+                    if ($schoolId) {
+                        Log::info("Found fuzzy school match with ID: {$schoolId}");
+                        $data['school_id'] = $schoolId;
+                    } else {
+                        // At this point we couldn't match the school
+                        Log::info("Could not match school: '{$schoolName}'");
+                        $this->warningMessages[] = "School name not found: '{$schoolName}'. Creating a new school record.";
+                        
+                        // Create a new school with this name
+                        try {
+                            $newSchool = School::create([
+                                'name' => $schoolName,
+                                'status' => 'active'
+                            ]);
+                            $data['school_id'] = $newSchool->id;
+                            Log::info("Created new school with name '{$schoolName}' and ID {$newSchool->id}");
+                        } catch (\Exception $e) {
+                            Log::error("Failed to create new school: {$e->getMessage()}");
+                            // Fall back to default school
+                            $firstSchool = School::first();
+                            if ($firstSchool) {
+                                $data['school_id'] = $firstSchool->id;
+                                $this->warningMessages[] = "Could not create new school '{$schoolName}'. Using {$firstSchool->name} as default."; 
+                            }
+                        }
+                    }
+                }
+            }
         }
         
-        // If school_id is missing or couldn't be resolved, set a default
+        // If school_id is still missing after all attempts, set a default
         if (empty($data['school_id'])) {
-            // Get the first school as default
-            $firstSchool = array_values($this->schoolCache);
-            $data['school_id'] = $firstSchool[0] ?? null;
+            $firstSchool = School::first();
+            if ($firstSchool) {
+                $data['school_id'] = $firstSchool->id;
+                Log::info("Using default school: {$firstSchool->name} (ID: {$firstSchool->id})");
+            }
         }
         
         // Resolve program_type_id (might be a name in the import)
         if (isset($data['program_type_id']) && !is_numeric($data['program_type_id'])) {
             $programTypeName = trim($data['program_type_id']);
-            $data['program_type_id'] = $this->findProgramTypeIdByName($programTypeName);
+            $programType = ProgramType::where('name', 'like', $programTypeName)->first();
+            
+            if ($programType) {
+                $data['program_type_id'] = $programType->id;
+            } else {
+                // Try fuzzy match
+                $programTypeId = $this->findProgramTypeIdByName($programTypeName);
+                if ($programTypeId) {
+                    $data['program_type_id'] = $programTypeId;
+                }
+            }
         }
         
         // If program_type_id is missing or couldn't be resolved, set a default
         if (empty($data['program_type_id'])) {
-            // Get the first program type as default
-            $firstProgramType = array_values($this->programTypeCache);
-            $data['program_type_id'] = $firstProgramType[0] ?? null;
+            $firstProgramType = ProgramType::first();
+            if ($firstProgramType) {
+                $data['program_type_id'] = $firstProgramType->id;
+                Log::info("Using default program type: {$firstProgramType->name}");
+            }
         }
         
         return $data;
@@ -248,10 +402,19 @@ class StudentsImport
      */
     protected function cacheSchools()
     {
+        $this->schoolCache = [];
         $schools = School::select('id', 'name')->get();
+        
         foreach ($schools as $school) {
+            // Store with lowercase for case-insensitive matching
             $this->schoolCache[strtolower($school->name)] = $school->id;
         }
+        
+        // Sort the school cache by key length (descending) to ensure longer names are matched first
+        // This improves matching for schools with similar names
+        uksort($this->schoolCache, function($a, $b) {
+            return strlen($b) - strlen($a);
+        });
     }
     
     /**
@@ -268,14 +431,58 @@ class StudentsImport
     }
     
     /**
-     * Find school ID by name.
+     * Find school ID by name with fuzzy matching.
      *
      * @param string $name
      * @return int|null
      */
     protected function findSchoolIdByName($name)
     {
-        return $this->schoolCache[strtolower($name)] ?? null;
+        if (empty($name)) {
+            return null;
+        }
+
+        // Print to debug log to see what's being attempted to match
+        Log::info("Trying to match school name: '{$name}'");
+        Log::info("Available schools: ", $this->schoolCache);
+
+        // Exact match first (case insensitive)
+        $nameLower = strtolower(trim($name));
+        if (isset($this->schoolCache[$nameLower])) {
+            Log::info("Found exact match for school: {$name}");
+            return $this->schoolCache[$nameLower];
+        }
+        
+        // Try partial matches
+        foreach ($this->schoolCache as $schoolName => $id) {
+            // Check for partial matches in either direction
+            if (str_contains($nameLower, $schoolName) || str_contains($schoolName, $nameLower)) {
+                Log::info("Found partial match for school '{$name}': '{$schoolName}'");
+                return $id;
+            }
+        }
+        
+        // Try more aggressive fuzzy matching - using similar_text for approximate matching
+        $bestMatch = null;
+        $highestPercent = 0;
+        
+        foreach ($this->schoolCache as $schoolName => $id) {
+            similar_text($nameLower, $schoolName, $percent);
+            if ($percent > 80 && $percent > $highestPercent) { // At least 80% similarity
+                $highestPercent = $percent;
+                $bestMatch = $id;
+            }
+        }
+        
+        if ($bestMatch) {
+            Log::info("Found fuzzy match for school '{$name}' with {$highestPercent}% similarity");
+            return $bestMatch;
+        }
+        
+        // If no match found, log this for debugging
+        Log::info("School name not found: '{$name}'", ['available_schools' => array_keys($this->schoolCache)]);
+        
+        return null;
     }
     
     /**
