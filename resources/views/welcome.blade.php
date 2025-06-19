@@ -1019,12 +1019,14 @@
                             @endif
                         </div>
                         <div class="p-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-xl font-bold text-primary">{{ $event->title }}</h3>
-                                <span class="text-xs px-2 py-1 rounded-full" style="background-color: {{ $event->level_color }}; color: {{ $event->level_color == '#ffffff' ? '#000000' : '#ffffff' }};">
+                            <!-- Level Badge (Above Title) -->
+                            <div class="mb-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded inline-block whitespace-nowrap text-center font-medium tracking-wide transform transition-transform hover:scale-105" style="background-color: {{ $event->level_color }}; color: {{ $event->level_color == '#ffffff' ? '#000000' : '#ffffff' }}; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                                     {{ $event->level ?? 'All Levels' }}
                                 </span>
                             </div>
+                            <!-- Event Title -->
+                            <h3 class="text-xl font-bold text-primary mb-1">{{ $event->title }}</h3>
                             <p class="text-gray-600 text-sm mb-4">
                                 {{ $event->getShortDescription(100) }}
                             </p>
