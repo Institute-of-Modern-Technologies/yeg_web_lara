@@ -11,7 +11,7 @@
     <nav class="hidden md:block">
         <ul class="flex space-x-8">
             <li><a href="#hero-section" class="nav-link font-medium active" data-section="hero-section">Home</a></li>
-            <li><a href="#programs" class="nav-link font-medium" data-section="programs">About</a></li>
+            <li><a href="#about" class="nav-link font-medium" data-section="about">About</a></li>
             <li><a href="#our-stages" class="nav-link font-medium" data-section="our-stages">Stages</a></li>
             <li><a href="#about-us" class="nav-link font-medium" data-section="about-us">Programs</a></li>
             <li><a href="#faq" class="nav-link font-medium" data-section="faq">FAQ'S</a></li>

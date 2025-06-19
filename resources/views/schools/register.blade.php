@@ -139,12 +139,6 @@
                     <a href="{{ url('/students/register') }}" class="text-gray-700 hover:text-primary flex items-center">
                         <i class="fas fa-user-graduate mr-1"></i> Student Registration
                     </a>
-                    <a href="{{ url('/about') }}" class="text-gray-700 hover:text-primary flex items-center">
-                        <i class="fas fa-info-circle mr-1"></i> About Us
-                    </a>
-                    <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-primary flex items-center">
-                        <i class="fas fa-envelope mr-1"></i> Contact
-                    </a>
                     <a href="{{ route('login') }}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center">
                         <i class="fas fa-sign-in-alt mr-1"></i> Login
                     </a>
@@ -161,12 +155,6 @@
                     </a>
                     <a href="{{ url('/students/register') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
                         <i class="fas fa-user-graduate mr-2 w-5 text-center"></i> Student Registration
-                    </a>
-                    <a href="{{ url('/about') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
-                        <i class="fas fa-info-circle mr-2 w-5 text-center"></i> About Us
-                    </a>
-                    <a href="{{ url('/contact') }}" class="text-gray-700 hover:text-primary py-2 flex items-center">
-                        <i class="fas fa-envelope mr-2 w-5 text-center"></i> Contact
                     </a>
                     <a href="{{ route('login') }}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center mt-2">
                         <i class="fas fa-sign-in-alt mr-1"></i> Login

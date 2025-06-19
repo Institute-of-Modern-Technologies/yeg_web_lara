@@ -228,7 +228,7 @@
     </section>
 
     <!-- Welcome Section -->
-    <section id="programs" class="py-16 bg-gray-50">
+    <section id="about" class="py-16 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-bold mb-4">Welcome</h2>

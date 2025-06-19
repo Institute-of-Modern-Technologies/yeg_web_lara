@@ -76,8 +76,6 @@
                 <div class="hidden md:flex space-x-6">
                     <a href="{{ url('/') }}" class="text-gray-600 hover:text-primary transition-colors">Home</a>
                     <a href="#" class="text-gray-600 hover:text-primary transition-colors">Programs</a>
-                    <a href="#" class="text-gray-600 hover:text-primary transition-colors">About Us</a>
-                    <a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact</a>
                 </div>
                 
                 <!-- Mobile menu button -->
@@ -92,8 +90,6 @@
             <div id="mobile-menu" class="md:hidden hidden mt-2 py-2 bg-white rounded-lg shadow-lg">
                 <a href="{{ url('/') }}" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Home</a>
                 <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Programs</a>
-                <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">About Us</a>
-                <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Contact</a>
             </div>
         </div>
     </header>
