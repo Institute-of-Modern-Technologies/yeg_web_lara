@@ -1019,10 +1019,32 @@
                             @endif
                         </div>
                         <div class="p-4">
-                            <!-- Level Badge (Above Title) -->
+                            <!-- Enhanced Level Badge (Above Title) -->
                             <div class="mb-2">
-                                <span class="text-[10px] px-2 py-0.5 rounded inline-block whitespace-nowrap text-center font-medium tracking-wide transform transition-transform hover:scale-105" style="background-color: {{ $event->level_color }}; color: {{ $event->level_color == '#ffffff' ? '#000000' : '#ffffff' }}; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                                    {{ $event->level ?? 'All Levels' }}
+                                @php
+                                    // Determine icon based on level
+                                    $levelIcon = 'fa-layer-group';
+                                    $level = $event->level ?? 'All Levels';
+                                    
+                                    if (stripos($level, 'basic') !== false || stripos($level, 'beginner') !== false) {
+                                        $levelIcon = 'fa-seedling';
+                                    } elseif (stripos($level, 'intermediate') !== false) {
+                                        $levelIcon = 'fa-chart-line';
+                                    } elseif (stripos($level, 'advanced') !== false) {
+                                        $levelIcon = 'fa-crown';
+                                    } elseif (stripos($level, 'master') !== false) {
+                                        $levelIcon = 'fa-award';
+                                    }
+                                    
+                                    // Generate gradient based on level color
+                                    $baseColor = $event->level_color ?? '#6366f1';
+                                    $textColor = $baseColor == '#ffffff' ? '#000000' : '#ffffff';
+                                @endphp
+                                
+                                <span class="text-[10px] px-3 py-1 rounded-full inline-flex items-center gap-1 whitespace-nowrap font-semibold tracking-wide transform transition-all duration-300 hover:scale-105 hover:shadow-md" 
+                                      style="background: linear-gradient(145deg, {{ $baseColor }}, {{ $baseColor }}cc); color: {{ $textColor }}; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                                    <i class="fas {{ $levelIcon }} mr-1 text-[8px]"></i>
+                                    {{ $level }}
                                 </span>
                             </div>
                             <!-- Event Title -->

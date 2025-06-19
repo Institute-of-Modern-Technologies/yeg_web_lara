@@ -58,39 +58,20 @@
     <!-- Sticky Header JS -->
     <script src="{{ asset('js/sticky-header.js') }}"></script>
     
-    <!-- Registration Dropdown Script -->
+    <!-- Mobile Menu Toggle Script (No longer needed for registration dropdown) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Helper function to handle dropdown functionality
-            function setupDropdown(buttonId, menuId) {
-                const button = document.getElementById(buttonId);
-                const menu = document.getElementById(menuId);
-                const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
-                
-                if (button && menu) {
-                    // Toggle dropdown on button click
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        menu.classList.toggle('hidden');
-                        if (chevronIcon) {
-                            chevronIcon.classList.toggle('rotate-180');
-                        }
-                    });
-                    
-                    // Close dropdown when clicking outside
-                    document.addEventListener('click', function(event) {
-                        if (!button.contains(event.target) && !menu.contains(event.target)) {
-                            menu.classList.add('hidden');
-                            if (chevronIcon) {
-                                chevronIcon.classList.remove('rotate-180');
-                            }
-                        }
-                    });
-                }
-            }
+            // Mobile menu toggle could go here if needed
+            console.log('Scripts loaded successfully');
             
-            // Setup dropdown
-            setupDropdown('registerDropdownButton', 'registerDropdownMenu');
+            // Add click support for the register button (in addition to hover)
+            const registerButton = document.getElementById('registerButton');
+            if (registerButton) {
+                registerButton.addEventListener('click', function(e) {
+                    // This helps with mobile devices
+                    e.preventDefault();
+                });
+            }
         });
     </script>
     

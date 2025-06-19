@@ -30,14 +30,14 @@
         </a>
         @endauth
         
-        <!-- Modern Registration Button with Dropdown -->
-        <div class="relative hidden md:block">
-            <button id="registerDropdownButton" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-md shadow-sm transition-all duration-300 flex items-center space-x-2">
+        <!-- Registration Button with Pure CSS Dropdown -->
+        <div class="group relative hidden md:block">
+            <button id="registerButton" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-md shadow-sm transition-all duration-300 flex items-center space-x-2">
                 <i class="fas fa-user-plus"></i>
                 <span>Register Now</span>
-                <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                <i class="fas fa-chevron-down text-xs transition-transform duration-300 group-hover:rotate-180"></i>
             </button>
-            <div id="registerDropdownMenu" class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
+            <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out" style="z-index: 9999;">
                 <div class="py-2">
                     <div class="px-4 py-2 bg-gray-50 border-b border-gray-100">
                         <p class="text-sm font-semibold text-gray-700">Register as:</p>
