@@ -16,24 +16,35 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
     <meta property="og:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
-    <meta property="og:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('images/favicon.png') }}">
+    <meta property="og:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('favicon-large.png') }}">
     
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
     <meta name="twitter:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
-    <meta name="twitter:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('images/favicon.png') }}">
+    <meta name="twitter:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('favicon-large.png') }}">
     
-    <!-- Enhanced Favicon Implementation -->
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="196x196">
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="32x32">
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="16x16">
-    <link rel="apple-touch-icon" href="{{ asset('images/favicon.png') }}">
-    <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
-    <meta name="msapplication-TileImage" content="{{ asset('images/favicon.png') }}">
+    <!-- Enhanced Favicon Implementation using Largest Available Files -->
+    <!-- Primary favicon for most modern browsers (use existing large favicon) -->
+    <link rel="icon" href="{{ asset('favicon-large.png') }}" type="image/png">
+    
+    <!-- Backup favicon.ico format for maximum browser compatibility -->
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    
+    <!-- Apple Touch Icons (use the largest available) -->
+    <link rel="apple-touch-icon" href="{{ asset('favicon-large.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{ asset('favicon-large.png') }}">
+    
+    <!-- Microsoft Tile with largest icon -->
+    <meta name="msapplication-TileImage" content="{{ asset('favicon-large.png') }}">
     <meta name="msapplication-TileColor" content="#c50000">
+    
+    <!-- Force favicon to be displayed larger -->
+    <link rel="icon" href="{{ asset('favicon-large.png') }}" sizes="any">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
     <meta name="theme-color" content="#c50000">
 
     <!-- Fonts -->
