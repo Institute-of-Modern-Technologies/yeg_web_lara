@@ -6,7 +6,13 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 
+// Public routes (no auth required)
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
+
+// Make event details publicly accessible with a clearly named public route
+Route::get('/event-details/{id}', [EventController::class, 'publicShow'])->name('events.public.show');
+
+// Original event route (might have auth middleware applied somewhere)
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
 // School Registration Routes

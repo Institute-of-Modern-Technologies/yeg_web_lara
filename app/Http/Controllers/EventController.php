@@ -10,10 +10,30 @@ use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    
     /**
      * Display a single event to public users.
      */
     public function show(string $id)
+    {
+        // Get the event by ID
+        $event = Event::findOrFail($id);
+        
+        // Get related/similar events (excluding current event)
+        $relatedEvents = Event::active()
+            ->where('id', '!=', $event->id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+        
+        return view('events.show', compact('event', 'relatedEvents'));
+    }
+    
+    /**
+     * Public method to display event details without authentication.
+     * This is identical to the show method but explicitly marked as public.
+     */
+    public function publicShow(string $id)
     {
         // Get the event by ID
         $event = Event::findOrFail($id);

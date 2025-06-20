@@ -1058,7 +1058,7 @@
                                 @else
                                     <span class="text-sm text-gray-500">Coming soon</span>
                                 @endif
-                                <a href="{{ route('events.show', $event->id) }}" class="text-sm text-primary hover:text-primary-dark flex items-center">
+                                <a href="{{ route('events.public.show', $event->id) }}" class="text-sm text-primary hover:text-primary-dark flex items-center">
                                     Learn more 
                                     <i class="fas fa-chevron-right ml-1 text-xs"></i>
                                 </a>
