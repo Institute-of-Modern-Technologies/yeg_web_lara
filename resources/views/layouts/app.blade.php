@@ -4,12 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Primary Meta Tags for SEO -->
+    <!-- Primary Meta Tags for Enhanced SEO -->
     <title>{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}</title>
     <meta name="title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
     <meta name="description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
-    <meta name="keywords" content="{{ isset($metaKeywords) ? $metaKeywords : 'coding for kids, robotics, young entrepreneurs, digital skills, technology education, youth innovation, STEM, tech workshops, school programs' }}">
+    <meta name="keywords" content="{{ isset($metaKeywords) ? $metaKeywords : 'coding for kids, robotics, young entrepreneurs, digital skills, technology education, youth innovation, STEM, tech workshops, school programs, Nigeria tech education, Africa tech skills' }}">
     <meta name="author" content="Young Experts Group">
+    
+    <!-- Additional SEO Meta Tags -->
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="geo.region" content="NG">
+    <meta name="geo.placename" content="Nigeria">
     
     <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website">
@@ -25,7 +33,7 @@
     <meta name="twitter:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
     <meta name="twitter:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('favicon-large.png') }}">
     
-    <!-- Large Favicon Implementation using existing favicon from images folder -->
+    <!-- Enhanced Large Favicon Implementation using existing favicon from images folder -->
     <link rel="icon" href="{{ asset('images/favicon.png') }}?v={{ rand(1000,9999) }}" sizes="512x512">
     
     <!-- Force favicon to display as large as possible -->
@@ -37,16 +45,66 @@
         }
     </style>
     
+    <!-- Security Headers for SEO and Protection -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <!-- Social Media and SEO Verification -->
+    <meta property="og:site_name" content="Young Experts Group">
+    <meta property="og:locale" content="en_NG">
+    <link rel="alternate" hreflang="en" href="{{ url()->current() }}">
+    
+    <!-- Browser Config for SEO and Mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
     <!-- Web App Manifest -->
     <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
     <meta name="theme-color" content="#c50000">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSON-LD Structured Data for Enhanced SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Young Experts Group",
+      "url": "{{ url('/') }}",
+      "logo": "{{ asset('images/favicon.png') }}",
+      "description": "Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "Nigeria"
+      },
+      "offers": {
+        "@type": "Offer",
+        "category": "Technology Education Programs"
+      },
+      "areaServed": "Nigeria",
+      "sameAs": [
+        "https://www.facebook.com/youngexpertsgroup",
+        "https://www.youtube.com/shorts/x_kUqKoTZR8",
+        "https://www.tiktok.com/@youngexpertsgroup",
+        "https://www.instagram.com/youngexpertsgroup"
+      ]
+    }
+    </script>
+
+    <!-- Resource Hints for Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://code.jquery.com" crossorigin>
+    
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    
+    <!-- Fonts with Display Swap for Faster Rendering -->
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS with async loading -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
         tailwind.config = {
             theme: {

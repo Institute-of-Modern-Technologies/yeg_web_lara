@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    <!-- Homepage -->
+    <url>
+        <loc>https://youngexpertsgroup.com/</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>1.0</priority>
+        <changefreq>weekly</changefreq>
+    </url>
+    
+    <!-- Events Page -->
+    <url>
+        <loc>https://youngexpertsgroup.com/events</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.8</priority>
+        <changefreq>weekly</changefreq>
+    </url>
+    
+    <!-- About Us -->
+    <url>
+        <loc>https://youngexpertsgroup.com/about</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.8</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    
+    <!-- Registration Pages -->
+    <url>
+        <loc>https://youngexpertsgroup.com/students/register</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.9</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://youngexpertsgroup.com/trainers/register</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.9</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://youngexpertsgroup.com/schools/register</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.9</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    
+    <!-- Login -->
+    <url>
+        <loc>https://youngexpertsgroup.com/login</loc>
+        <lastmod>2025-06-20T13:00:00+00:00</lastmod>
+        <priority>0.7</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+</urlset>
