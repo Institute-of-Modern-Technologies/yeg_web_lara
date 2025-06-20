@@ -1077,7 +1077,7 @@
             <!-- View All Button -->
             <div class="text-center mt-10">
                 @if($events->isNotEmpty())
-                <a href="{{ route('events.show', $events->first()->id) }}" class="inline-block bg-primary text-white py-3 px-6 rounded-md hover:bg-primary-dark transition duration-300">
+                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-block bg-primary text-white py-3 px-6 rounded-md hover:bg-primary-dark transition duration-300">
                     View All Events 
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>
