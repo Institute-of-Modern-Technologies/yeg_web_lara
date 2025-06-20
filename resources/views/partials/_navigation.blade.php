@@ -1,5 +1,5 @@
 <!-- Header Navigation -->
-<header class="bg-white py-4 px-6 flex justify-between items-center shadow-sm sticky-header relative z-20">
+<header class="bg-white py-4 px-6 flex justify-between items-center shadow-md fixed top-0 left-0 right-0 w-full z-50">
     <div class="container mx-auto flex justify-between items-center">
         <!-- Left Side - Logo and Desktop Navigation -->
         <div class="flex items-center">
@@ -105,8 +105,8 @@
 <!-- Mobile Menu Overlay -->
 <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
 
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-4/5 max-w-xs bg-gradient-to-br from-white to-gray-50 shadow-2xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto border-l border-gray-100">
+<!-- Mobile Menu (positioned correctly with fixed header) -->
+<div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-4/5 max-w-xs bg-gradient-to-br from-white to-gray-50 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto border-l border-gray-100">
     <div class="p-5">
         <!-- Mobile Menu Header -->
         <div class="flex items-center justify-between mb-8 bg-gradient-to-r from-purple-600 to-blue-500 -m-5 p-5 shadow-md relative">

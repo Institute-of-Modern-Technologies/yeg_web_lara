@@ -25,23 +25,17 @@
     <meta name="twitter:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
     <meta name="twitter:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('favicon-large.png') }}">
     
-    <!-- Enhanced Favicon Implementation using Largest Available Files -->
-    <!-- Primary favicon for most modern browsers (use existing large favicon) -->
-    <link rel="icon" href="{{ asset('favicon-large.png') }}" type="image/png">
+    <!-- Large Favicon Implementation using existing favicon from images folder -->
+    <link rel="icon" href="{{ asset('images/favicon.png') }}?v={{ rand(1000,9999) }}" sizes="512x512">
     
-    <!-- Backup favicon.ico format for maximum browser compatibility -->
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    
-    <!-- Apple Touch Icons (use the largest available) -->
-    <link rel="apple-touch-icon" href="{{ asset('favicon-large.png') }}">
-    <link rel="apple-touch-icon-precomposed" href="{{ asset('favicon-large.png') }}">
-    
-    <!-- Microsoft Tile with largest icon -->
-    <meta name="msapplication-TileImage" content="{{ asset('favicon-large.png') }}">
-    <meta name="msapplication-TileColor" content="#c50000">
-    
-    <!-- Force favicon to be displayed larger -->
-    <link rel="icon" href="{{ asset('favicon-large.png') }}" sizes="any">
+    <!-- Force favicon to display as large as possible -->
+    <style>
+        /* Force browsers to display favicon at maximum possible size */
+        link[rel="icon"] {
+            width: 64px !important; 
+            height: 64px !important;
+        }
+    </style>
     
     <!-- Web App Manifest -->
     <link rel="manifest" href="{{ asset('favicon/site.webmanifest') }}">
@@ -81,6 +75,18 @@
     @yield('styles')
 </head>
 <body class="antialiased">
+    <!-- Add custom styling for fixed header padding -->
+    <style>
+        body {
+            padding-top: 76px; /* Height of the navbar + some extra padding */
+        }
+        /* Ensure mobile menus appear properly with fixed header */
+        #mobile-menu {
+            top: 76px;
+            height: calc(100vh - 76px);
+        }
+    </style>
+
     @include('partials._navigation')
     
     @yield('content')

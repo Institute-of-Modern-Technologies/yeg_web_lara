@@ -531,7 +531,7 @@
                         
                         <!-- Stats 1 -->
                         <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">2000</h2>
+                            <h2 class="text-4xl font-bold text-purple-800">500</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF STUDENTS<br>
                                 <span class="text-xs normal-case">learning with</span><br>
