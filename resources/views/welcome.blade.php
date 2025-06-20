@@ -270,7 +270,7 @@
                                     <i class="fas fa-pause"></i>
                                 </button>
                                 <button id="mute-btn" class="text-white hover:text-gray-200 focus:outline-none">
-                                    <i class="fas fa-volume-up"></i>
+                                    <i class="fas fa-volume-mute"></i>
                                 </button>
                             </div>
                         </div>
@@ -338,7 +338,7 @@
                         
                         var player;
                         var isPlaying = true;
-                        var isMuted = false;
+                        var isMuted = true; // Start as muted
                         
                         function onYouTubeIframeAPIReady() {
                             player = new YT.Player('youtube-player', {
@@ -353,7 +353,7 @@
                                     'loop': 1,
                                     'playlist': 'x_kUqKoTZR8',
                                     'modestbranding': 1,
-                                    'mute': 0
+                                    'mute': 1 // Start muted by default
                                 },
                                 events: {
                                     'onReady': onPlayerReady

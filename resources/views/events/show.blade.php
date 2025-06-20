@@ -5,9 +5,23 @@
         /* Hero section styles */
         .event-hero {
             position: relative;
-            height: 70vh;
-            min-height: 400px;
+            height: 85vh;
+            min-height: 600px;
             overflow: hidden;
+        }
+        
+        /* Modern animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .text-shadow-lg {
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
         
         /* Badge styles */
@@ -110,13 +124,17 @@
                     </video>
                 </div>
             @endif
-            <!-- Overlay for better text visibility -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+            <!-- Modern layered overlay for better text visibility -->
+            <div class="absolute inset-0 bg-gradient-to-br from-black via-black/70 to-transparent opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-70"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent opacity-85 backdrop-blur-sm"></div>
+            <!-- Accent color strip -->
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-blue-500 to-neon-pink"></div>
         </div>
         
-        <!-- Hero Content -->
+        <!-- Hero Content - Modernized -->
         <div class="container mx-auto px-6 relative h-full flex flex-col justify-end pb-16">
-            <div class="max-w-3xl text-white">
+            <div class="max-w-3xl text-white backdrop-blur-sm bg-gradient-to-r from-black/50 to-transparent p-6 rounded-lg border-l-4 border-purple-600 animate-fadeIn">
                 <!-- Event Badges -->
                 <div class="flex flex-wrap gap-3 mb-4">
                     @if($event->level)
@@ -135,10 +153,10 @@
                 </div>
                 
                 <!-- Event Title -->
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow-lg">{{ $event->title }}</h1>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300 drop-shadow-md">{{ $event->title }}</h1>
                 
                 <!-- Event Brief -->
-                <p class="text-lg mb-6 text-gray-100">Empowering the next generation of innovators and leaders through engaging educational programs.</p>
+                <p class="text-lg mb-6 text-gray-100 drop-shadow-md leading-relaxed">{{ $event->short_description ?? 'Empowering the next generation of innovators and leaders through engaging educational programs.' }}</p>
                 
                 <!-- Call to Action Buttons -->
                 <div class="flex flex-wrap gap-3">
@@ -319,40 +337,7 @@
                             </a>
                         </div>
                     </div>
-                    
-                    <!-- Calendar/Schedule Widget -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div class="border-b border-gray-200">
-                            <h3 class="text-lg font-bold p-4">Upcoming Sessions</h3>
-                        </div>
-                        <div class="p-4">
-                            <div class="space-y-3">
-                                <!-- Session 1 -->
-                                <div class="flex items-start">
-                                    <div class="bg-purple-100 text-purple-600 rounded-md min-w-[45px] h-12 flex flex-col items-center justify-center mr-3">
-                                        <span class="text-xs font-medium">JUL</span>
-                                        <span class="font-bold">15</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-medium text-gray-800">Orientation Day</h4>
-                                        <p class="text-sm text-gray-500">10:00 AM - 12:00 PM</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Session 2 -->
-                                <div class="flex items-start">
-                                    <div class="bg-blue-100 text-blue-600 rounded-md min-w-[45px] h-12 flex flex-col items-center justify-center mr-3">
-                                        <span class="text-xs font-medium">JUL</span>
-                                        <span class="font-bold">22</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-medium text-gray-800">First Workshop</h4>
-                                        <p class="text-sm text-gray-500">2:00 PM - 4:30 PM</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

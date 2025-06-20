@@ -3,6 +3,28 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Primary Meta Tags for SEO -->
+    <title>{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}</title>
+    <meta name="title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
+    <meta name="description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
+    <meta name="keywords" content="{{ isset($metaKeywords) ? $metaKeywords : 'coding for kids, robotics, young entrepreneurs, digital skills, technology education, youth innovation, STEM, tech workshops, school programs' }}">
+    <meta name="author" content="Young Experts Group">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
+    <meta property="og:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
+    <meta property="og:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('images/favicon.png') }}">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ isset($metaTitle) ? $metaTitle : 'Young Experts Group - Technology, Entrepreneurship & Creativity Skills for Youth' }}">
+    <meta name="twitter:description" content="{{ isset($metaDescription) ? $metaDescription : 'Young Experts Group partners with schools to provide innovative, engaging, and practical tech learning experiences that prepare students for a digital future.' }}">
+    <meta name="twitter:image" content="{{ isset($metaImage) ? asset($metaImage) : asset('images/favicon.png') }}">
+    
     <!-- Enhanced Favicon Implementation -->
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="196x196">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" sizes="96x96">
@@ -13,7 +35,6 @@
     <meta name="msapplication-TileImage" content="{{ asset('images/favicon.png') }}">
     <meta name="msapplication-TileColor" content="#c50000">
     <meta name="theme-color" content="#c50000">
-    <title>YEG</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
