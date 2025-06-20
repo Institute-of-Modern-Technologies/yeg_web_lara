@@ -10,11 +10,17 @@
     <!-- Navigation Links -->
     <nav class="hidden md:block">
         <ul class="flex space-x-8">
-            <li><a href="#hero-section" class="nav-link font-medium active" data-section="hero-section">Home</a></li>
-            <li><a href="#about" class="nav-link font-medium" data-section="about">About</a></li>
-            <li><a href="#our-stages" class="nav-link font-medium" data-section="our-stages">Stages</a></li>
-            <li><a href="#about-us" class="nav-link font-medium" data-section="about-us">Programs</a></li>
-            <li><a href="#faq" class="nav-link font-medium" data-section="faq">FAQ'S</a></li>
+            @php
+                // Check if we're on the home page
+                $isHomePage = request()->path() == '/';
+                // Base URL to prepend to anchors when NOT on home page
+                $homeUrl = $isHomePage ? '' : url('/');
+            @endphp
+            <li><a href="{{ $homeUrl }}#hero-section" class="nav-link font-medium {{ $isHomePage ? 'active' : '' }}" data-section="hero-section">Home</a></li>
+            <li><a href="{{ $homeUrl }}#about" class="nav-link font-medium" data-section="about">About</a></li>
+            <li><a href="{{ $homeUrl }}#our-stages" class="nav-link font-medium" data-section="our-stages">Stages</a></li>
+            <li><a href="{{ $homeUrl }}#about-us" class="nav-link font-medium" data-section="about-us">Programs</a></li>
+            <li><a href="{{ $homeUrl }}#faq" class="nav-link font-medium" data-section="faq">FAQ'S</a></li>
         </ul>
     </nav>
     
