@@ -63,7 +63,7 @@
                     <div>
                         <input type="email" placeholder="Your email address" class="w-full px-4 py-2 bg-primary-dark border border-primary-dark text-white rounded-md focus:outline-none focus:ring-1 focus:ring-secondary">
                     </div>
-                    <button type="submit" class="w-full py-2 bg-secondary text-primary font-medium rounded-md hover:bg-opacity-90 transition-colors">Subscribe</button>
+                    <button type="submit" class="w-full py-2 bg-secondary text-primary font-medium rounded-md hover:bg-opacity-90 transition-colors" style="background-color: #ffcb05 !important; color: #950713;">Subscribe</button>
                 </form>
             </div>
         </div>

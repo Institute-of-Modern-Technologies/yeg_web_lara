@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class StudentRegistrationController extends Controller
 {
@@ -276,56 +277,68 @@ class StudentRegistrationController extends Controller
     
     public function processDetails(Request $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:20',
-            'date_of_birth' => 'required|date',
-            'gender' => 'required|in:male,female,other',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:255',
-            'region' => 'required|string|max:255',
-        ]);
-        
-        // Generate a unique registration number for the student
-        $registrationNumber = $this->generateRegistrationNumber();
-        
-        // Create a student object we'll use throughout the method
-        $studentObj = (object)[
-            'registration_number' => $registrationNumber,
-            'full_name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-        ];
-        
         try {
-            // Create a new student record using the fields that exist in the database
-            DB::table('students')->insert([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'full_name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'date_of_birth' => $request->date_of_birth,
-                'gender' => $request->gender,
-                'address' => $request->address,
-                'city' => $request->city,
-                'region' => $request->region,
-                'program_type_id' => session('registration.program_type_id'),
-                'school_id' => session('registration.school_id') ?? null,
-                'registration_number' => $registrationNumber,
-                'status' => 'active',
-                'payer_type' => session('registration.payer_type') ?? 'individual',
-                'payment_status' => session('registration.payment_status') ?? 'pending',
-                'age' => date_diff(date_create($request->date_of_birth), date_create('today'))->y,
-                'created_at' => now(),
-                'updated_at' => now()
+            // Simple validation of required fields
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'nullable|email|max:255',
+                'phone' => 'nullable|string|max:20',
+                'parent_contact' => 'required|string|max:20',
+                'date_of_birth' => 'required|date',
+                'gender' => 'required|in:male,female,other',
+                'address' => 'required|string|max:500',
+                'city' => 'required|string|max:255',
+                'region' => 'required|string|max:255',
             ]);
             
-            // Get the student ID for further processing
-            $studentId = DB::getPdo()->lastInsertId();
-            $studentObj->id = $studentId;
+            // Generate a unique registration number
+            $registrationNumber = $this->generateRegistrationNumber();
+            
+            // Basic student information
+            $fullName = $request->first_name . ' ' . $request->last_name;
+            
+            // Create student record with only the essential fields we know exist
+            $student = new Student();
+            $student->first_name = $request->first_name;
+            $student->last_name = $request->last_name;
+            $student->full_name = $fullName;
+            $student->email = $request->email;
+            $student->phone = $request->phone;
+            $student->registration_number = $registrationNumber;
+            $student->status = 'active';
+            $student->program_type_id = session('registration.program_type_id');
+            $student->school_id = session('registration.school_id') ?? null;
+            
+            // Calculate age from date of birth (required by the database)
+            if ($request->date_of_birth) {
+                $student->age = date_diff(date_create($request->date_of_birth), date_create('today'))->y;
+            } else {
+                $student->age = 0; // Default value if date_of_birth is missing
+            }
+            
+            // Set the parent contact field directly from the form
+            $student->parent_contact = $request->parent_contact;
+
+            // Only set these fields if they were successfully added to the database
+            try { $student->date_of_birth = $request->date_of_birth; } catch (\Exception $e) {}
+            try { $student->gender = $request->gender; } catch (\Exception $e) {}
+            try { $student->address = $request->address; } catch (\Exception $e) {}
+            try { $student->city = $request->city; } catch (\Exception $e) {}
+            try { $student->region = $request->region; } catch (\Exception $e) {}
+            
+            // Save the student record
+            $student->save();
+            
+            // For further processing
+            $studentId = $student->id;
+            $studentObj = (object)[
+                'id' => $studentId,
+                'registration_number' => $registrationNumber,
+                'full_name' => $fullName,
+                'email' => $request->email,
+                'phone' => $request->phone
+            ];
             
             // Create a user account for the student
             try {
@@ -404,27 +417,32 @@ class StudentRegistrationController extends Controller
                 ]);
             }
             
+            
+            // Store student info in session for success page
+            session(['registration.student' => $studentObj]);
+            session(['registration.registration_number' => $registrationNumber]);
+            
+            // Clear other registration session data
+            session()->forget([
+                'registration.program_type_id',
+                'registration.program_type_name',
+                'registration.school_id',
+                'registration.payer_type',
+                'registration.fee_amount',
+                'registration.payment_reference',
+            ]);
+            
+            return redirect()->route('student.registration.success');
+            
         } catch (\Exception $e) {
             // Log the error and return a friendly message
-            \Log::error('Student registration error: ' . $e->getMessage());
-            
-            return redirect()->back()->with('error', 'There was a problem with your registration. Please try again or contact support. Error: ' . $e->getMessage());
-        }
-        
-        // Store student info in session for success page
-        session(['registration.student' => $studentObj]);
-        session(['registration.registration_number' => $registrationNumber]);
-        
-        // Clear other registration session data
-        session()->forget([
-            'registration.program_type_id',
-            'registration.program_type_name',
-            'registration.school_id',
-            'registration.payer_type',
-            'registration.fee_amount',
-            'registration.payment_reference',
+            \Log::error('Student registration details error: ' . $e->getMessage(), [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ]);
         
-        return redirect()->route('student.registration.success');
+        return redirect()->back()->withInput()->with('error', 'There was a problem saving your registration. Please try again or contact support.');
+        }
     }
 }

@@ -1,5 +1,62 @@
 @extends('layouts.app')
 
+@section('styles')
+<!-- Ensure all necessary styles are loaded directly in this page -->
+<style>
+    /* Core styling for feature cards */
+    .feature-card {
+        transition: all 0.3s ease;
+        border-color: #950713;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    /* Ensure primary color is applied */
+    .text-primary, a.text-primary, .primary-color {
+        color: #950713 !important;
+    }
+    
+    .bg-primary, .primary-bg {
+        background-color: #950713 !important;
+    }
+    
+    /* Secondary color (yellow) */
+    .text-secondary, a.text-secondary, .secondary-color {
+        color: #ffcb05 !important;
+    }
+    
+    .bg-secondary, .secondary-bg {
+        background-color: #ffcb05 !important;
+    }
+    
+    /* Accent color (magenta) */
+    .accent-color {
+        color: #FF00FF !important;
+    }
+    
+    .accent-bg {
+        background-color: #FF00FF !important;
+    }
+    
+    /* Fix specific styling issues */
+    .badge-modern {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35em 0.65em;
+        font-size: 0.85em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease-in-out;
+    }
+</style>
+@endsection
+
 @section('content')
     <style>
         /* Hero section styles */
@@ -129,12 +186,12 @@
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-70"></div>
             <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent opacity-85 backdrop-blur-sm"></div>
             <!-- Accent color strip -->
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 via-blue-500 to-neon-pink"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-neon-pink" style="--tw-gradient-from: #950713; --tw-gradient-stops: var(--tw-gradient-from), #ffcb05, var(--tw-gradient-to); --tw-gradient-to: #FF00FF;"></div>
         </div>
         
         <!-- Hero Content - Modernized -->
         <div class="container mx-auto px-6 relative h-full flex flex-col justify-end pb-16">
-            <div class="max-w-3xl text-white backdrop-blur-sm bg-gradient-to-r from-black/50 to-transparent p-6 rounded-lg border-l-4 border-purple-600 animate-fadeIn">
+            <div class="max-w-3xl text-white backdrop-blur-sm bg-gradient-to-r from-black/50 to-transparent p-6 rounded-lg border-l-4 animate-fadeIn" style="border-color: #950713;">
                 <!-- Event Badges -->
                 <div class="flex flex-wrap gap-3 mb-4">
                     @if($event->level)
@@ -143,11 +200,11 @@
                         </span>
                     @endif
                     @if($event->duration)
-                        <span class="badge-modern bg-blue-500 text-white">
+                        <span class="badge-modern text-black" style="background-color: #ffcb05;">
                             <i class="far fa-clock mr-1"></i> {{ $event->duration }}
                         </span>
                     @endif
-                    <span class="badge-modern bg-purple-600 text-white">
+                    <span class="badge-modern text-white" style="background-color: #950713 !important;">
                         <i class="fas fa-users mr-1"></i> Young Experts Event
                     </span>
                 </div>
@@ -160,10 +217,10 @@
                 
                 <!-- Call to Action Buttons -->
                 <div class="flex flex-wrap gap-3">
-                    <a href="#event-content" class="btn-animated bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center">
+                    <a href="#event-content" class="btn-animated text-white font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center" style="background: linear-gradient(to right, #950713, #FF00FF);">
                         <i class="fas fa-info-circle mr-2"></i> Learn More
                     </a>
-                    <a href="/students/register" class="btn-animated bg-white text-primary hover:bg-gray-100 font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center">
+                    <a href="/students/register" class="btn-animated bg-white hover:bg-gray-100 font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center" style="color: #950713;">
                         <i class="fas fa-user-plus mr-2"></i> Register Now
                     </a>
                 </div>
@@ -190,8 +247,8 @@
                             <!-- Event Features -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <!-- Feature 1 -->
-                                <div class="feature-card bg-blue-50 border border-blue-100 rounded-lg p-4 flex">
-                                    <div class="feature-icon bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4">
+                                <div class="feature-card border rounded-lg p-4 flex" style="background-color: rgba(255, 203, 5, 0.15); border-color: #950713;">
+                                    <div class="feature-icon text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4" style="background-color: #950713;">
                                         <i class="fas fa-lightbulb"></i>
                                     </div>
                                     <div>
@@ -201,8 +258,8 @@
                                 </div>
                                 
                                 <!-- Feature 2 -->
-                                <div class="feature-card bg-purple-50 border border-purple-100 rounded-lg p-4 flex">
-                                    <div class="feature-icon bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4">
+                                <div class="feature-card border rounded-lg p-4 flex" style="background-color: rgba(255, 0, 255, 0.15); border-color: #950713;">
+                                    <div class="feature-icon text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4" style="background-color: #950713;">
                                         <i class="fas fa-users"></i>
                                     </div>
                                     <div>
@@ -212,8 +269,8 @@
                                 </div>
                                 
                                 <!-- Feature 3 -->
-                                <div class="feature-card bg-green-50 border border-green-100 rounded-lg p-4 flex">
-                                    <div class="feature-icon bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4">
+                                <div class="feature-card border rounded-lg p-4 flex" style="background-color: rgba(255, 203, 5, 0.15); border-color: #950713;">
+                                    <div class="feature-icon text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4" style="background-color: #950713;">
                                         <i class="fas fa-certificate"></i>
                                     </div>
                                     <div>
@@ -223,8 +280,8 @@
                                 </div>
                                 
                                 <!-- Feature 4 -->
-                                <div class="feature-card bg-orange-50 border border-orange-100 rounded-lg p-4 flex">
-                                    <div class="feature-icon bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4">
+                                <div class="feature-card border rounded-lg p-4 flex" style="background-color: rgba(255, 0, 255, 0.15); border-color: #950713;">
+                                    <div class="feature-icon text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mr-4" style="background-color: #950713;">
                                         <i class="fas fa-project-diagram"></i>
                                     </div>
                                     <div>
@@ -235,13 +292,13 @@
                             </div>
                             
                             <!-- CTA Section -->
-                            <div class="bg-gradient-to-r from-purple-600 to-blue-500 text-white rounded-lg p-6 mt-10">
+                            <div class="text-white rounded-lg p-6 mt-10" style="background: linear-gradient(to right, #950713, #FF00FF);">
                                 <div class="flex flex-col md:flex-row items-center justify-between">
                                     <div>
-                                        <h3 class="text-xl font-bold mb-2">Ready to join this event?</h3>
+                                        <h3 class="text-xl font-bold mb-2 text-white">Ready to join this event?</h3>
                                         <p class="text-gray-100">Secure your spot today and begin your journey with Young Experts Group.</p>
                                     </div>
-                                    <a href="/students/register" class="btn-animated mt-4 md:mt-0 bg-white text-primary hover:bg-gray-100 font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center">
+                                    <a href="/students/register" class="btn-animated mt-4 md:mt-0 bg-white hover:bg-gray-100 font-medium rounded-md px-6 py-3 transition duration-300 shadow-lg flex items-center" style="color: #950713;">
                                         <i class="fas fa-user-plus mr-2"></i> Register Now
                                     </a>
                                 </div>
@@ -332,7 +389,7 @@
                                 </div>
                             </div>
                             
-                            <a href="#" class="btn-animated mt-4 inline-block text-sm text-primary hover:text-primary-dark font-medium">
+                            <a href="#" class="btn-animated mt-4 inline-block text-sm font-medium" style="color: #950713;">
                                 <span class="flex items-center">View all questions <i class="fas fa-chevron-right ml-1 text-xs"></i></span>
                             </a>
                         </div>
@@ -347,7 +404,7 @@
     @if($relatedEvents->count() > 0)
     <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-10">Similar Events You May Like</h2>
+            <h2 class="text-3xl font-bold text-center mb-10" style="color: #950713;">Similar Events You May Like</h2>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($relatedEvents as $relatedEvent)
@@ -371,7 +428,7 @@
                             @else
                             <span class="text-xs text-gray-500">Coming soon</span>
                             @endif
-                            <span class="text-primary flex items-center text-sm font-medium">
+                            <span class="flex items-center text-sm font-medium" style="color: #950713;">
                                 View Details
                                 <i class="fas fa-chevron-right ml-1 text-xs"></i>
                             </span>

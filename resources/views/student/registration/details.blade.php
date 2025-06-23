@@ -13,8 +13,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#e11d48',
-                        secondary: '#f59e0b'
+                        primary: '#950713',
+                        secondary: '#ffcb05'
                     }
                 }
             }
@@ -108,7 +108,7 @@
             </div>
     <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="bg-primary py-6 px-8">
+            <div class="py-6 px-8" style="background-color: #950713;">
                 <h1 class="text-2xl font-bold text-white">Student Registration</h1>
                 <p class="text-white text-opacity-80 mt-1">Final Step: Student Details</p>
             </div>
@@ -116,7 +116,7 @@
             <div class="p-8">
                 <div class="mb-6">
                     <div class="flex items-center mb-4">
-                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                        <div class="text-white rounded-full w-8 h-8 flex items-center justify-center mr-3" style="background-color: #950713;">
                             <i class="fas fa-user"></i>
                         </div>
                         <h2 class="text-xl font-semibold text-gray-800">Student Information</h2>
@@ -143,7 +143,7 @@
                     </div>
                 </div>
                 
-                <form action="{{ route('student.registration.process_details') }}" method="POST" class="space-y-6">
+                <form action="/students/register/details" method="POST" class="space-y-6" id="student-registration-form">
                     @csrf
                     
                     <!-- Personal Information -->
@@ -176,6 +176,15 @@
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                             <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
                             @error('phone')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <div>
+                            <label for="parent_contact" class="block text-sm font-medium text-gray-700 mb-1">Parent/Guardian Contact <span class="text-red-500">*</span></label>
+                            <input type="text" id="parent_contact" name="parent_contact" value="{{ old('parent_contact') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                            <p class="text-xs text-gray-500 mt-1">Emergency contact number for parent or guardian</p>
+                            @error('parent_contact')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
@@ -248,12 +257,18 @@
                     
                     <!-- Submit Button -->
                     <div class="mt-8 flex justify-end">
-                        <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200">
+                            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200" style="background-color: #950713;">
                             Complete Registration
                             <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </button>
+                        
+                        @if(session('error'))
+                            <div class="mt-4 p-4 mb-4 bg-red-100 border border-red-200 text-red-700 rounded">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                     </div>
                 </form>
             </div>

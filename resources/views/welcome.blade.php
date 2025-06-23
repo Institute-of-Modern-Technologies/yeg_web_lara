@@ -833,12 +833,12 @@
     </section>
 
     <!-- Partnered Schools Section -->
-    <section class="py-16 bg-primary text-white">
+    <section class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-10">
                 <p class="text-sm uppercase tracking-widest mb-2">EXPERIENCE & CONNECT</p>
-                <h2 class="text-4xl font-bold text-cyan-400 mb-4">Partnered Schools</h2>
+                <h2 class="text-4xl font-bold mb-4" style="color: #950713;">Partnered Schools</h2>
                 <p class="text-lg text-yellow-400 max-w-2xl mx-auto">
                     Your school can be part of our growing network—let's teach, grow, and
                     innovate together.
@@ -976,7 +976,7 @@
     @endpush
 
     <!-- Explore Our Events Section -->
-    <section id="events" class="py-16 bg-white">
+    <section id="events" class="py-16" style="background-color: rgba(255, 203, 5, 0.25);">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-10">
@@ -1166,14 +1166,14 @@
     </section>
 
     <!-- Partnered Schools Marquee Section -->
-    <section id="partners" class="py-16">
+    <section id="partners" class="py-16" style="background-color: #950713 !important; color: white;">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-3">
-                    Partnered <span class="text-orange-500">Schools</span>
+                <h2 class="text-3xl font-bold mb-3" style="color: white;">
+                    Partnered <span style="color: #ffcb05;">Schools</span>
                 </h2>
-                <p class="text-gray-600">
+                <p style="color: white;">
                     Join us at these exciting upcoming events with our valued partners
                 </p>
             </div>
@@ -1436,11 +1436,11 @@
     @endpush
 
     <!-- Pricing Section -->
-    <section id="pricing" class="py-16 bg-gray-50">
+    <section id="pricing" class="py-16" style="background-color: rgba(0, 255, 255, 0.1);">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-purple-800 mb-4">Pricing</h2>
+                <h2 class="text-3xl font-bold mb-4" style="color: #950713;">Pricing</h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
                     Young Experts Group offers flexible pricing options to accommodate different 
                     needs and schedules.
@@ -1567,11 +1567,11 @@
             </div>
             
             <!-- Important Note -->
-            <div class="max-w-5xl mx-auto mt-8 bg-white border border-gray-200 rounded-lg p-4">
+            <div class="max-w-5xl mx-auto mt-8 bg-white border rounded-lg p-4" style="border-color: #950713;">
                 <div class="flex">
                     <div class="flex-shrink-0 mr-3">
-                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-info text-red-500"></i>
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background-color: rgba(149, 7, 19, 0.1);">
+                            <i class="fas fa-info" style="color: #950713;"></i>
                         </div>
                     </div>
                     <div>
