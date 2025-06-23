@@ -110,7 +110,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#c50000',
+                        primary: '#950713',
                         secondary: '#ffcb05',
                         'neon-pink': '#FF00FF'
                     }

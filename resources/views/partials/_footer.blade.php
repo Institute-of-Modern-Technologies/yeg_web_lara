@@ -1,5 +1,5 @@
 <!-- Footer Section -->
-<footer class="bg-primary text-white pt-12 pb-4">
+<footer class="bg-primary text-white pt-12 pb-4" style="background-color: #950713 !important;">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <!-- Column 1: Young Experts Group -->

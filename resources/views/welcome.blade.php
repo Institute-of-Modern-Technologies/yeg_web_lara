@@ -198,30 +198,30 @@
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 <!-- Discover Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="text-primary text-3xl mb-3">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                    <div class="text-3xl mb-3" style="color: #950713;">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Discover</h3>
-                    <p class="text-gray-600 text-sm">Transforming Ideas<br>into Innovation.</p>
+                    <h3 class="text-lg font-bold mb-2" style="color: #950713;">Discover</h3>
+                    <p class="text-sm" style="color: #950713;">Transforming Ideas<br>into Innovation.</p>
                 </div>
                 
                 <!-- Build Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="text-primary text-3xl mb-3">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                    <div class="text-3xl mb-3" style="color: #950713;">
                         <i class="fas fa-university"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Build</h3>
-                    <p class="text-gray-600 text-sm">Crafting the Next<br>Big Thing.</p>
+                    <h3 class="text-lg font-bold mb-2" style="color: #950713;">Build</h3>
+                    <p class="text-sm" style="color: #950713;">Crafting the Next<br>Big Thing.</p>
                 </div>
                 
                 <!-- Mastery Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border border-primary flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <div class="text-primary text-3xl mb-3">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                    <div class="text-3xl mb-3" style="color: #950713;">
                         <i class="fas fa-bell"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-primary mb-2">Mastery</h3>
-                    <p class="text-gray-600 text-sm">Where Skill Meets<br>Innovation.</p>
+                    <h3 class="text-lg font-bold mb-2" style="color: #950713;">Mastery</h3>
+                    <p class="text-sm" style="color: #950713;">Where Skill Meets<br>Innovation.</p>
                 </div>
             </div>
         </div>
@@ -234,10 +234,10 @@
                 <h2 class="text-4xl font-bold mb-4">Welcome</h2>
                 <p class="text-lg">
                     Equipping young minds with skills in 
-                    <span class="text-primary">Technology</span>, 
-                    <span class="bg-secondary text-black px-2">Entrepreneurship</span>, 
+                    <span style="color: #950713;">Technology</span>, 
+                    <span class="bg-yellow-400 text-black px-1">Entrepreneurship</span>, 
                     and 
-                    <span class="text-neon-pink">Creativity</span>.
+                    <span style="color: #FF00FF;">Creativity</span>.
                 </p>
             </div>
             
@@ -252,12 +252,7 @@
                     </div>
                     
                     <p class="mb-4">
-                        We collaborate with schools to provide
-                        <span class="text-neon-pink font-medium">innovative</span>, 
-                        <span class="text-neon-pink font-medium">engaging</span>, and 
-                        <span class="text-neon-pink font-medium">practical</span>
-                        learning experiences that prepare
-                        students for a <span class="bg-secondary text-black px-1">tech-driven future</span>.
+                        We collaborate with schools to provide <span style="color: #FF00FF;">innovative</span>, <span style="color: #FF00FF;">engaging</span>, and <span style="color: #FF00FF;">practical</span> learning experiences that prepare students for a <span class="bg-yellow-400 text-black px-1">tech-driven future</span>.
                     </p>
                     
                     <!-- Video Element -->
@@ -416,48 +411,48 @@
                     </div>
                     
                     <p class="mb-6">
-                        <span class="text-neon-pink font-bold">T</span>he Young Experts Group (YEG) collaborates with schools to provide hands-on 
+                        <span>T</span>he Young Experts Group (YEG) collaborates with schools to provide hands-on 
                         <span class="bg-cyan-500 text-white px-1">Technology</span>, 
-                        <span class="bg-secondary text-black px-1">Entrepreneurship</span>, and
-                        <span class="bg-neon-pink text-white px-1">Creativity</span> training. Our tailored programs complement academic learning and prepare students for a tech-driven future.
+                        <span class="bg-yellow-400 text-black px-1">Entrepreneurship</span>, and
+                        <span class="bg-neon-pink text-white px-1" style="background-color: #FF00FF !important;">Creativity</span> training. Our tailored programs complement academic learning and prepare students for a tech-driven future.
                     </p>
                     
                     <!-- Feature Boxes -->
                     <div class="space-y-4">
                         <!-- Integrated Learning -->
-                        <div class="border border-cyan-200 rounded-md p-3 bg-cyan-50">
+                        <div class="border rounded-md p-3" style="border-color: #950713; background-color: rgba(149, 7, 19, 0.05);">
                             <div class="flex items-start">
-                                <div class="bg-cyan-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                <div class="text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0" style="background-color: #950713;">
                                     <i class="fas fa-puzzle-piece text-xs"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-cyan-500">Integrated Learning</h4>
+                                    <h4 class="font-bold" style="color: #950713;">Integrated Learning</h4>
                                     <p class="text-sm">We work with your school to design a program that fits seamlessly into your curriculum needs.</p>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Practical & Fun -->
-                        <div class="border border-yellow-200 rounded-md p-3 bg-yellow-50">
+                        <div class="border rounded-md p-3" style="border-color: #ffcb05; background-color: rgba(255, 203, 5, 0.1);">
                             <div class="flex items-start">
-                                <div class="bg-yellow-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                <div class="text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0" style="background-color: #ffcb05;">
                                     <i class="fas fa-lightbulb text-xs"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-yellow-500">Practical & Fun</h4>
+                                    <h4 class="font-bold" style="color: #ffcb05;">Practical & Fun</h4>
                                     <p class="text-sm">Hands-on projects that keep students engaged while learning valuable skills.</p>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Flexible & Customizable -->
-                        <div class="border border-pink-200 rounded-md p-3 bg-pink-50">
+                        <div class="border rounded-md p-3" style="border-color: #FF00FF; background-color: rgba(255, 0, 255, 0.05);">
                             <div class="flex items-start">
-                                <div class="bg-neon-pink text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                                <div class="text-white rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0" style="background-color: #FF00FF;">
                                     <i class="fas fa-sliders-h text-xs"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-neon-pink">Flexible & Customizable</h4>
+                                    <h4 class="font-bold" style="color: #FF00FF;">Flexible & Customizable</h4>
                                     <p class="text-sm">Programs are designed to match your school's specific needs.</p>
                                 </div>
                             </div>
@@ -469,14 +464,14 @@
     </section>
 
     <!-- Happenings Section -->
-    <section id="happenings" class="py-16 bg-primary text-white">
+    <section id="happenings" class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left Column - Blog Posts -->
                 <div class="lg:col-span-2">
-                    <h4 class="text-sm mb-2">HAPPENINGS AT <span class="text-secondary font-bold">YOUNG EXPERTS</span></h4>
+                    <h4 class="text-sm mb-2">HAPPENINGS AT <span class="text-secondary font-bold" style="color: #ffcb05 !important;">YOUNG EXPERTS</span></h4>
                     <h2 class="text-3xl font-bold mb-8">
-                        This Week at<span class="text-secondary"> Young Experts </span><span class="text-cyan-400">GROUP</span>:
+                        This Week at<span class="text-secondary" style="color: #ffcb05 !important;"> Young Experts </span><span class="text-cyan-400">GROUP</span>:
                         <br>where your ideas come to life!
                     </h2>
                     
@@ -1590,104 +1585,7 @@
         </div>
     </section>
 
-    <!-- Footer Section -->
-    <footer class="bg-primary text-white pt-12 pb-4">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                <!-- Column 1: Young Experts Group -->
-                <div>
-                    <h3 class="text-xl font-bold text-secondary mb-4">Young Experts Group</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#hero-section" class="hover:text-secondary transition-colors">Home</a></li>
-                        <li><a href="#our-stages" class="hover:text-secondary transition-colors">About Us</a></li>
-                        <li><a href="#programs" class="hover:text-secondary transition-colors">Programs</a></li>
-                        <li><a href="#faq" class="hover:text-secondary transition-colors">FAQs</a></li>
-                        <li><a href="#pricing" class="hover:text-secondary transition-colors">Pricing</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Column 2: Contact Info -->
-                <div>
-                    <h3 class="text-xl font-bold text-secondary mb-4">Contact Info</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="far fa-envelope text-secondary mr-3 mt-1"></i>
-                            <span>yeg@imtghana.com</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt text-secondary mr-3 mt-1"></i>
-                            <span>+233 547147313</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-secondary mr-3 mt-1"></i>
-                            <div>
-                                <p>No. 8 Borstal Street,</p>
-                                <p>Roman Ridge Accra.</p>
-                                <p>P.O.Box 4754 Accra</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start mt-2">
-                            <i class="fas fa-map-marker-alt text-secondary mr-3 mt-1 opacity-0"></i>
-                            <div>
-                                <p>Lapaz Nii Boi Accra.</p>
-                                <p>P.O.Box 4754 Accra</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Column 3: Quick Links -->
-                <div>
-                    <h3 class="text-xl font-bold text-secondary mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#our-stages" class="hover:text-secondary transition-colors">Stages</a></li>
-                        <li><a href="#programs" class="hover:text-secondary transition-colors">Registration</a></li>
-                        <li><a href="#contact" class="hover:text-secondary transition-colors">Contact Us</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Column 4: Newsletter -->
-                <div>
-                    <h3 class="text-xl font-bold text-secondary mb-4">Newsletter</h3>
-                    <p class="mb-4 text-sm">Stay updated with our latest news and offers.</p>
-                    
-                    <form action="#" method="POST" class="space-y-3">
-                        <div>
-                            <input type="email" placeholder="Your email address" class="w-full px-4 py-2 bg-primary-dark border border-primary-dark text-white rounded-md focus:outline-none focus:ring-1 focus:ring-secondary">
-                        </div>
-                        <button type="submit" class="w-full py-2 bg-secondary text-primary font-medium rounded-md hover:bg-opacity-90 transition-colors">Subscribe</button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Social Media Icons -->
-            <div class="flex justify-center space-x-6 py-8">
-                <a href="mailto:contact@youngexpertsgroup.com" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                    <i class="fa-regular fa-envelope"></i>
-                </a>
-                <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-            
-            <!-- Divider -->
-            <div class="border-t border-primary-dark opacity-50"></div>
-            
-            <!-- Copyright -->
-            <div class="text-center text-sm text-gray-300 mt-6">
-                <p>© 2025 Young Experts Group | Designed by Institute Of Modern Technologies</p>
-            </div>
-        </div>
-    </footer>
+
 @endsection
 
 @section('scripts')
