@@ -1216,10 +1216,10 @@
             @if($schoolLogos->count() > 0)
                 <div class="relative">
                     <div class="overflow-hidden">
-                        <div class="flex items-center">
+                        <div class="flex items-center animate-marquee whitespace-nowrap">
                             <!-- First set of logos -->
                             @foreach($schoolLogos as $logo)
-                                <div class="flex-shrink-0 mx-8">
+                                <div class="inline-block mx-8">
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
@@ -1228,7 +1228,7 @@
                             @endforeach
                             <!-- Second set for seamless looping -->
                             @foreach($schoolLogos as $logo)
-                                <div class="flex-shrink-0 mx-8">
+                                <div class="inline-block mx-8">
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
@@ -1244,6 +1244,28 @@
             @endif
         </div>
     </section>
+    
+    <style>
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        
+        .marquee-container {
+            overflow: hidden;
+            width: 100%;
+        }
+    </style>
 
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-16 bg-white">
