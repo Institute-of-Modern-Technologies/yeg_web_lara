@@ -1194,15 +1194,15 @@
     </section>
 
     <!-- Partnered Schools Marquee Section -->
-    <section id="partners" class="py-16" style="background-color: #950713 !important; color: white;">
-        <div class="container mx-auto px-6">
+    <section id="partners" class="py-16 bg-gray-100 relative">
+        <div class="container mx-auto px-6 relative z-10">
             <!-- Header -->
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-3" style="color: white;">
-                    Partnered <span style="color: #ffcb05;">Schools</span>
+                <h2 class="text-3xl font-bold mb-3 text-primary">
+                    Partnered <span class="text-yellow-500">Schools</span>
                 </h2>
-                <p style="color: white;">
-                    Join us at these exciting upcoming events with our valued partners
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    We're proud to partner with leading educational institutions to deliver exceptional learning experiences
                 </p>
             </div>
             
@@ -1214,22 +1214,25 @@
             @endphp
             
             @if($schoolLogos->count() > 0)
-                <div class="logos-slider-container" style="background: transparent; box-shadow: none;">
-                    <div class="logos-slider">
-                        <!-- First set of logos -->
-                        <div class="logos-slide">
+                <div class="relative">
+                    <div class="overflow-hidden">
+                        <div class="flex items-center">
+                            <!-- First set of logos -->
                             @foreach($schoolLogos as $logo)
-                                <div class="logo-item" style="background: transparent; box-shadow: none;">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" style="max-height: 100px; object-fit: contain;">
+                                <div class="flex-shrink-0 mx-8">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                         alt="{{ $logo->name }}" 
+                                         class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.png') }}'">
                                 </div>
                             @endforeach
-                        </div>
-                        
-                        <!-- Duplicate for seamless scrolling -->
-                        <div class="logos-slide">
+                            <!-- Second set for seamless looping -->
                             @foreach($schoolLogos as $logo)
-                                <div class="logo-item" style="background: transparent; box-shadow: none;">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" style="max-height: 100px; object-fit: contain;">
+                                <div class="flex-shrink-0 mx-8">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                         alt="{{ $logo->name }}" 
+                                         class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.png') }}'">
                                 </div>
                             @endforeach
                         </div>
@@ -1237,7 +1240,7 @@
                 </div>
             @else
                 <!-- Fallback if no logos are available -->
-                <p class="text-center text-gray-500 italic">Partner school logos will be displayed here.</p>
+                <p class="text-center text-gray-500">Partner school logos will be displayed here.</p>
             @endif
         </div>
     </section>
