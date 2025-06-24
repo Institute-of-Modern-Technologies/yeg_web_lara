@@ -1072,9 +1072,9 @@
             <!-- View All Button -->
             <div class="text-center mt-10">
                 @if($events->isNotEmpty())
-                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-block bg-primary text-white py-3 px-6 rounded-md hover:bg-primary-dark transition duration-300">
-                    View All Events 
-                    <i class="fas fa-arrow-right ml-2"></i>
+                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm transition-all duration-300 transform hover:scale-105" style="background-color: #950713; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+                    <span>View All Events</span>
+                    <i class="fas fa-arrow-right ml-3 transition-transform duration-300 group-hover:translate-x-1"></i>
                 </a>
                 @endif
             </div>

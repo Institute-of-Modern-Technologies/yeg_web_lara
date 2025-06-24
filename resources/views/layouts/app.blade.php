@@ -103,8 +103,8 @@
     <!-- Fonts with Display Swap for Faster Rendering -->
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS with async loading -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -112,7 +112,14 @@
                     colors: {
                         primary: '#950713',
                         secondary: '#ffcb05',
-                        'neon-pink': '#FF00FF'
+                        'neon-pink': '#FF00FF',
+                        'primary-dark': '#7a0610'
+                    },
+                    fontFamily: {
+                        sans: ['Instrument Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'custom': '0 4px 20px rgba(0, 0, 0, 0.1)'
                     }
                 }
             }

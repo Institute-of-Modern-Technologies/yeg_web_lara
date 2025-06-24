@@ -1,7 +1,16 @@
 @extends('layouts.app')
 
 @section('styles')
-<!-- Ensure all necessary styles are loaded directly in this page -->
+<!-- Preload Critical Assets -->
+<link rel="preload" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" as="style">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+
+<!-- Fonts -->
+<link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
     /* Core styling for feature cards */
     .feature-card {
@@ -11,9 +20,10 @@
     
     .feature-card:hover {
         transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
     
-    /* Ensure primary color is applied */
+    /* Primary color */
     .text-primary, a.text-primary, .primary-color {
         color: #950713 !important;
     }
@@ -40,11 +50,11 @@
         background-color: #FF00FF !important;
     }
     
-    /* Fix specific styling issues */
+    /* Badge styles */
     .badge-modern {
         display: inline-flex;
         align-items: center;
-        padding: 0.35em 0.65em;
+        padding: 0.5em 0.8em;
         font-size: 0.85em;
         font-weight: 600;
         line-height: 1;
@@ -53,6 +63,14 @@
         vertical-align: baseline;
         border-radius: 0.375rem;
         transition: all 0.2s ease-in-out;
+        background-color: #f8f9fa;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+    
+    .badge-modern:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 </style>
 @endsection
