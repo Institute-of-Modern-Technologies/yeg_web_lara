@@ -833,7 +833,7 @@
     </section>
 
     <!-- Partnered Schools Showcase -->
-    <section class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
+    <section class="py-16 bg-gray-900">
         <div class="container mx-auto px-6">
             <!-- Section Header -->
             <div class="text-center mb-12">
@@ -842,7 +842,7 @@
                     Partnered <span class="text-yellow-400">Schools</span>
                 </h2>
                 <div class="w-20 h-1 bg-yellow-400 mx-auto mb-6"></div>
-                <p class="text-lg text-white/90 max-w-3xl mx-auto">
+                <p class="text-lg text-gray-300 max-w-3xl mx-auto">
                     We're proud to collaborate with leading educational institutions to deliver exceptional learning experiences.
                     Join our network and become part of something extraordinary.
                 </p>
@@ -853,60 +853,43 @@
                 $partnerSchools = \App\Models\PartnerSchool::active()->ordered()->get();
             @endphp
             
-            <!-- School Showcase Carousel -->
-            <div class="relative max-w-5xl mx-auto">
+            <!-- School Logos Grid -->
+            <div class="relative max-w-6xl mx-auto">
                 @if($partnerSchools->isEmpty())
                 <!-- No Schools Message -->
-                <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative p-10 text-center">
-                    <p class="text-white text-lg">No partner schools available at the moment. Be the first to join our network!</p>
+                <div class="bg-white rounded-xl shadow-sm p-10 text-center border border-gray-100">
+                    <p class="text-gray-600 text-lg">No partner schools available at the moment. Be the first to join our network!</p>
                 </div>
                 @else
-                <!-- School Slides -->
-                <div class="schools-carousel overflow-hidden">
-                    <div class="schools-carousel-inner flex transition-transform duration-500">
-                        @foreach($partnerSchools as $index => $school)
-                        <div class="school-slide flex-shrink-0 w-full {{ $index > 0 ? 'hidden' : '' }}" data-index="{{ $index }}">
-                            <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
-                                <div class="aspect-w-16 aspect-h-9 relative">
-                                    <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="w-full object-cover">
-                                    
-                                    <!-- School Name Badge -->
-                                    <div class="absolute bottom-6 left-6">
-                                        <div class="bg-red-700 text-white py-2 px-4 inline-block font-bold uppercase">
-                                            {{ $school->name }}
-                                        </div>
-                                    </div>
-                                    
-                                    @if($school->website_url)
-                                    <!-- Visit Website Button -->
-                                    <div class="absolute top-6 right-6">
-                                        <a href="{{ $school->website_url }}" target="_blank" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-md p-2 inline-block">
-                                            <i class="fas fa-external-link-alt text-white"></i>
-                                        </a>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
+                <!-- Logo Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach($partnerSchools as $school)
+                    <div class="group bg-gray-800 rounded-xl hover:bg-gray-700 transition-all duration-300 p-6 flex items-center justify-center h-40 border border-gray-700 hover:border-yellow-400/30">
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            <img src="{{ asset('storage/' . $school->image_path) }}" 
+                                 alt="{{ $school->name }}" 
+                                 class="max-h-20 w-auto object-contain filter brightness-0 invert"
+                                 style="opacity: 0.9;">
+                            
+                            @if($school->website_url)
+                            <a href="{{ $school->image_path }}" 
+                               target="_blank" 
+                               class="absolute -top-2 -right-2 bg-yellow-400 text-gray-900 rounded-full w-7 h-7 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                               title="Visit {{ $school->name }} website">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            @endif
                         </div>
-                        @endforeach
                     </div>
-                </div>
-                
-                <!-- Carousel Navigation Dots -->
-                <div class="flex justify-center mt-6 space-x-2">
-                    @foreach($partnerSchools as $index => $school)
-                    <button class="school-nav-dot w-3 h-3 rounded-full {{ $index == 0 ? 'bg-cyan-400' : 'bg-gray-400' }}" data-index="{{ $index }}"></button>
                     @endforeach
                 </div>
                 
-                <!-- Carousel Navigation Arrows (only if more than one school) -->
-                @if($partnerSchools->count() > 1)
-                <div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 z-10">
-                    <button class="school-prev bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-10 h-10 flex items-center justify-center">
-                        <i class="fas fa-chevron-left text-white"></i>
-                    </button>
-                    <button class="school-next bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full w-10 h-10 flex items-center justify-center">
-                        <i class="fas fa-chevron-right text-white"></i>
+                <!-- View All Button -->
+                @if($partnerSchools->count() > 8)
+                <div class="text-center mt-10">
+                    <button class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-red-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        View All Partners
+                        <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
                 @endif
@@ -1194,14 +1177,14 @@
     </section>
 
     <!-- Partnered Schools Marquee Section -->
-    <section id="partners" class="py-16" style="background-color: #950713 !important; color: white;">
+    <section id="partners" class="py-16" style="background-color: #f8f9fa;">
         <div class="container mx-auto px-6">
             <!-- Header -->
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-3" style="color: white;">
-                    Partnered <span style="color: #ffcb05;">Schools</span>
+                <h2 class="text-3xl font-bold mb-3 text-gray-800">
+                    Partnered <span style="color: #950713;">Schools</span>
                 </h2>
-                <p style="color: white;">
+                <p class="text-gray-600">
                     Join us at these exciting upcoming events with our valued partners
                 </p>
             </div>
