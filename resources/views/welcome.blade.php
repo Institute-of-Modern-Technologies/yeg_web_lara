@@ -832,16 +832,19 @@
         </div>
     </section>
 
-    <!-- Partnered Schools Section -->
+    <!-- Partnered Schools Showcase -->
     <section class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
         <div class="container mx-auto px-6">
-            <!-- Header -->
-            <div class="text-center mb-10">
-                <p class="text-sm uppercase tracking-widest mb-2">EXPERIENCE & CONNECT</p>
-                <h2 class="text-4xl font-bold mb-4" style="color: #950713;">Partnered Schools</h2>
-                <p class="text-lg text-yellow-400 max-w-2xl mx-auto">
-                    Your school can be part of our growing network—let's teach, grow, and
-                    innovate together.
+            <!-- Section Header -->
+            <div class="text-center mb-12">
+                <span class="inline-block text-yellow-400 text-sm font-semibold tracking-wider mb-3">OUR PARTNERS</span>
+                <h2 class="text-4xl font-bold mb-4 text-white">
+                    Partnered <span class="text-yellow-400">Schools</span>
+                </h2>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto mb-6"></div>
+                <p class="text-lg text-white/90 max-w-3xl mx-auto">
+                    We're proud to collaborate with leading educational institutions to deliver exceptional learning experiences.
+                    Join our network and become part of something extraordinary.
                 </p>
             </div>
             
@@ -912,68 +915,93 @@
         </div>
     </section>
     
-    @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Partner Schools Carousel functionality
-            const slides = document.querySelectorAll('.school-slide');
-            const dots = document.querySelectorAll('.school-nav-dot');
-            const prevBtn = document.querySelector('.school-prev');
-            const nextBtn = document.querySelector('.school-next');
-            const totalSlides = slides.length;
-            let currentSlide = 0;
-            
-            // Only initialize if there are slides
-            if (totalSlides > 0) {
-                // Function to show a specific slide
-                function showSlide(index) {
-                    // Hide all slides
-                    slides.forEach(slide => {
-                        slide.classList.add('hidden');
-                    });
-                    
-                    // Show the current slide
-                    slides[index].classList.remove('hidden');
-                    
-                    // Update dots
-                    dots.forEach((dot, idx) => {
-                        dot.classList.toggle('bg-cyan-400', idx === index);
-                        dot.classList.toggle('bg-gray-400', idx !== index);
-                    });
-                }
-                
-                // Go to previous slide
-                function prevSlide() {
-                    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                    showSlide(currentSlide);
-                }
-                
-                // Go to next slide
-                function nextSlide() {
-                    currentSlide = (currentSlide + 1) % totalSlides;
-                    showSlide(currentSlide);
-                }
-                
-                // Add click events to dots
-                dots.forEach((dot, index) => {
-                    dot.addEventListener('click', () => {
-                        currentSlide = index;
-                        showSlide(currentSlide);
-                    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Partner Schools Carousel functionality
+        const slides = document.querySelectorAll('.school-slide');
+        const dots = document.querySelectorAll('.school-nav-dot');
+        const prevBtn = document.querySelector('.school-prev');
+        const nextBtn = document.querySelector('.school-next');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+        let slideInterval;
+        
+        // Only initialize if there are slides
+        if (totalSlides > 0) {
+            // Function to show a specific slide
+            function showSlide(index) {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.classList.add('hidden');
                 });
                 
-                // Add click events to navigation buttons
-                if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-                if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+                // Show the current slide
+                slides[index].classList.remove('hidden');
                 
-                // Auto-advance slides every 5 seconds if there's more than one slide
+                // Update dots
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('bg-cyan-400', idx === index);
+                    dot.classList.toggle('bg-gray-400', idx !== index);
+                });
+            }
+            
+            // Go to previous slide
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                showSlide(currentSlide);
+                resetInterval();
+            }
+            
+            // Go to next slide
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+                resetInterval();
+            }
+            
+            // Reset the auto-advance interval
+            function resetInterval() {
+                if (slideInterval) clearInterval(slideInterval);
                 if (totalSlides > 1) {
-                    setInterval(nextSlide, 5000);
+                    slideInterval = setInterval(nextSlide, 5000);
                 }
             }
-        });
+            
+            // Add click events to dots
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    showSlide(currentSlide);
+                    resetInterval();
+                });
+            });
+            
+            // Add click events to navigation buttons
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            
+            // Initialize the carousel
+            showSlide(currentSlide);
+            
+            // Auto-advance slides every 5 seconds if there's more than one slide
+            if (totalSlides > 1) {
+                resetInterval();
+                
+                // Pause on hover
+                const carousel = document.querySelector('.schools-carousel');
+                if (carousel) {
+                    carousel.addEventListener('mouseenter', () => {
+                        if (slideInterval) clearInterval(slideInterval);
+                    });
+                    
+                    carousel.addEventListener('mouseleave', () => {
+                        resetInterval();
+                    });
+                }
+            }
+        }
+    });
     </script>
-    @endpush
 
     <!-- Explore Our Events Section -->
     <section id="events" class="py-16" style="background-color: rgba(255, 203, 5, 0.25);">
@@ -1072,9 +1100,9 @@
             <!-- View All Button -->
             <div class="text-center mt-10">
                 @if($events->isNotEmpty())
-                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white shadow-sm transition-all duration-300 transform hover:scale-105" style="background-color: #950713; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
-                    <span>View All Events</span>
-                    <i class="fas fa-arrow-right ml-3 transition-transform duration-300 group-hover:translate-x-1"></i>
+                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-block text-white py-3 px-6 rounded-md hover:opacity-90 transition duration-300" style="background-color: #950713;">
+                    View All Events 
+                    <i class="fas fa-arrow-right ml-2"></i>
                 </a>
                 @endif
             </div>
