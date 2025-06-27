@@ -635,14 +635,16 @@
                     <!-- Category List -->
                     <div class="space-y-2">
                         <!-- About Us -->
-                        <div class="border border-teal-300 rounded-md overflow-hidden">
-                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
-                                <span class="text-gray-700">About us</span>
-                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
-                                    <i class="fas fa-plus text-xs"></i>
+                        <a href="{{ route('about') }}" class="block transition-all duration-300 hover:shadow-md">
+                            <div class="border border-teal-300 rounded-md overflow-hidden">
+                                <div class="flex items-center justify-between p-3 hover:bg-gray-50">
+                                    <span class="text-gray-700">About us</span>
+                                    <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
+                                        <i class="fas fa-arrow-right text-xs"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                         
                         <!-- Career Guidance -->
                         <div class="border border-teal-300 rounded-md overflow-hidden">
@@ -664,16 +666,7 @@
                             </div>
                         </div>
                         
-                        <!-- Tutoring and mentors -->
-                        <div class="border border-teal-300 rounded-md overflow-hidden">
-                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
-                                <span class="text-gray-700">Tutoring and mentors</span>
-                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
+
                         <!-- Enrollment and rates -->
                         <div class="border border-teal-300 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">

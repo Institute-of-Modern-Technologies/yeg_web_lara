@@ -8,6 +8,8 @@ use App\Http\Controllers\EventController;
 
 // Public routes (no auth required)
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
+Route::get('/about', [\App\Http\Controllers\PageController::class, 'about'])->name('about');
+Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 
 // Make event details publicly accessible with a clearly named public route
 Route::get('/event-details/{id}', [EventController::class, 'publicShow'])->name('events.public.show');

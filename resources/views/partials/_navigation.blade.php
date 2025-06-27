@@ -24,6 +24,7 @@
                     <li><a href="{{ $homeUrl }}#our-stages" class="nav-link font-medium" data-section="our-stages">Stages</a></li>
                     <li><a href="{{ $homeUrl }}#about-us" class="nav-link font-medium" data-section="about-us">Programs</a></li>
                     <li><a href="{{ $homeUrl }}#faq" class="nav-link font-medium" data-section="faq">FAQ'S</a></li>
+                    <li><a href="{{ route('contact') }}" class="nav-link font-medium hover:text-primary transition-colors">Contact</a></li>
                 </ul>
             </nav>
         </div>
