@@ -29,4 +29,59 @@ class PageController extends Controller
 
         return view('pages.about', compact('faqCategories', 'metaTitle', 'metaDescription', 'metaKeywords'));
     }
+
+    /**
+     * Show the career guidance page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function careerGuidance()
+    {
+        // Meta information for SEO
+        $metaTitle = 'Career Guidance - Young Experts Group';
+        $metaDescription = 'Explore career pathways in technology with Young Experts Group. Find resources, guidance, and support for young tech enthusiasts.';
+        $metaKeywords = 'tech careers, youth career guidance, digital careers, tech education, future skills, technology career paths';
+
+        return view('pages.career-guidance', compact('metaTitle', 'metaDescription', 'metaKeywords'));
+    }
+
+    /**
+     * Show the programs page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function programs()
+    {
+        // Meta information for SEO
+        $metaTitle = 'Our Programs - Young Experts Group';
+        $metaDescription = 'Discover our innovative technology programs designed for young minds. Coding, digital marketing, graphic design, and more for children and teenagers.';
+        $metaKeywords = 'tech programs for kids, coding classes, digital skills, STEM education, technology courses, children programming';
+
+        // Program categories that will be shown on the page
+        $programCategories = [
+            [
+                'name' => 'Little Tech Explorers',
+                'age' => '6-9 years',
+                'description' => 'Introduction to digital literacy through fun, interactive activities. Students learn basic computer skills, simple block-based coding, and digital art in a playful environment.',
+                'color' => 'bg-pink-500',
+                'image' => 'https://images.pexels.com/photos/5621936/pexels-photo-5621936.jpeg'
+            ],
+            [
+                'name' => 'Code Stars',
+                'age' => '10-13 years',
+                'description' => 'Building fundamental programming skills using Scratch and beginning JavaScript. Students create animations, games, and simple apps while learning computational thinking.',
+                'color' => 'bg-purple-500',
+                'image' => 'https://images.pexels.com/photos/5306484/pexels-photo-5306484.jpeg'
+            ],
+            [
+                'name' => 'Tech Leaders',
+                'age' => '14-16 years',
+                'description' => 'Advanced coding and project development using Python and web technologies. Students work on real-world problems and develop portfolio-ready projects.',
+                'color' => 'bg-green-500',
+                'image' => 'https://images.pexels.com/photos/7237211/pexels-photo-7237211.jpeg'
+            ]
+        ];
+
+        return view('pages.programs', compact('metaTitle', 'metaDescription', 'metaKeywords', 'programCategories'));
+    }
 }

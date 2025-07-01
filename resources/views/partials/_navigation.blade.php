@@ -165,6 +165,7 @@
                         <span>Programs</span>
                     </a>
                 </li>
+
                 <li>
                     <a href="{{ $homeUrl }}#faq" class="mobile-nav-link flex items-center py-3 px-4 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-all duration-200" data-section="faq">
                         <div class="flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-full text-yellow-600 mr-3">
