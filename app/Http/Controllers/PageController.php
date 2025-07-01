@@ -84,4 +84,51 @@ class PageController extends Controller
 
         return view('pages.programs', compact('metaTitle', 'metaDescription', 'metaKeywords', 'programCategories'));
     }
+    
+    /**
+     * Show the enrollment and rates page.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function enrollment()
+    {
+        // Meta information for SEO
+        $metaTitle = 'Enrollment & Rates - Young Experts Group';
+        $metaDescription = 'Learn about our program fees, enrollment process, and register your child for our tech education programs. Scholarship options available.';
+        $metaKeywords = 'tech program rates, coding class fees, enrollment process, tech education cost, children technology courses pricing';
+        
+        // Program categories with pricing information
+        $programRates = [
+            [
+                'name' => 'Little Tech Explorers',
+                'age' => '6-9 years',
+                'price' => 250,
+                'period' => 'per month',
+                'color' => 'border-pink-500'
+            ],
+            [
+                'name' => 'Code Stars',
+                'age' => '10-13 years',
+                'price' => 300,
+                'period' => 'per month',
+                'color' => 'border-purple-500'
+            ],
+            [
+                'name' => 'Tech Leaders',
+                'age' => '14-16 years',
+                'price' => 350,
+                'period' => 'per month',
+                'color' => 'border-green-500'
+            ],
+            [
+                'name' => 'School Programs',
+                'age' => 'For institutions',
+                'price' => 'Custom',
+                'period' => 'Contact for details',
+                'color' => 'border-yellow-500'
+            ]
+        ];
+        
+        return view('pages.enrollment', compact('metaTitle', 'metaDescription', 'metaKeywords', 'programRates'));
+    }
 }

@@ -43,6 +43,36 @@
             width: 64px !important; 
             height: 64px !important;
         }
+        
+        /* Custom animations for the enrollment section */
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+            75% {
+                transform: translateY(10px) rotate(-5deg);
+            }
+        }
+        
+        .animate-bounce-slow {
+            animation: bounce-slow 4s infinite;
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
     </style>
     
     <!-- Security Headers for SEO and Protection -->

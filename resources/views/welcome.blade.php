@@ -672,14 +672,16 @@
                         
 
                         <!-- Enrollment and rates -->
-                        <div class="border border-teal-300 rounded-md overflow-hidden">
-                            <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50">
-                                <span class="text-gray-700">Enrollment and rates</span>
-                                <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
-                                    <i class="fas fa-plus text-xs"></i>
+                        <a href="{{ route('enrollment') }}" class="block">
+                            <div class="border border-[#950713] rounded-md overflow-hidden">
+                                <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
+                                    <span class="text-gray-700">Enrollment and rates</span>
+                                    <div class="w-6 h-6 bg-[#ffcb05]/20 rounded-full flex items-center justify-center text-[#950713]">
+                                        <i class="fas fa-arrow-right text-xs"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -828,6 +830,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Partnered Schools Showcase -->
     <section class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
