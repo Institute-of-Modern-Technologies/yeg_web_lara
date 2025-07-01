@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('admin.dashboard')
 
 @section('content')
 <div class="container px-6 mx-auto grid">
@@ -7,10 +7,23 @@
     </h2>
     
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    @if(session('status'))
+    <div class="mb-4 px-4 py-2 border-l-4 border-green-500 bg-green-50 text-green-700">
+        {{ session('status') }}
+    </div>
+    @endif
     
     <!-- Validation Errors -->
-    <x-auth-validation-errors class="mb-4" :errors="$errors" />
+    @if($errors->any())
+    <div class="mb-4 px-4 py-2 border-l-4 border-red-500 bg-red-50 text-red-700">
+        <div class="font-medium">Please fix the following errors:</div>
+        <ul class="mt-2 list-disc list-inside">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
         <p class="mb-4">

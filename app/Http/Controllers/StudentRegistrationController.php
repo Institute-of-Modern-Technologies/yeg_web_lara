@@ -61,15 +61,43 @@ class StudentRegistrationController extends Controller
      */
     public function processStep2InSchool(Request $request)
     {
-        $validated = $request->validate([
-            'school_id' => 'required|exists:schools,id',
-        ]);
-        
-        // Store data in session
-        session(['registration.school_id' => $request->school_id]);
-        
-        // Get the school information
-        $school = School::find($request->school_id);
+        // Validate based on which option was selected
+        if ($request->has('school_name') && !empty($request->school_name)) {
+            // Manual school entry option selected
+            $validated = $request->validate([
+                'school_name' => 'required|string|max:255',
+            ]);
+            
+            // Create a new temporary school entry or find existing one with same name
+            $school = School::firstOrCreate(
+                ['name' => $request->school_name],
+                [
+                    'status' => 'pending',
+                    'slug' => Str::slug($request->school_name),
+                    'address' => 'Pending',
+                    'contact_person' => 'Pending',
+                    'email' => 'pending@example.com',
+                    'phone' => '0000000000',
+                ]
+            );
+            
+            // Store data in session
+            session(['registration.school_id' => $school->id]);
+            session(['registration.manual_school_entry' => true]);
+            
+        } else {
+            // School selection from dropdown
+            $validated = $request->validate([
+                'school_id' => 'required|exists:schools,id',
+            ]);
+            
+            // Store data in session
+            session(['registration.school_id' => $request->school_id]);
+            session(['registration.manual_school_entry' => false]);
+            
+            // Get the school information
+            $school = School::find($request->school_id);
+        }
         
         return view('student.registration.step3_inschool', compact('school'));
     }

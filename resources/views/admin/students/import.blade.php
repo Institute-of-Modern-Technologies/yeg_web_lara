@@ -34,7 +34,7 @@
                 </ol>
             </div>
             
-            <form action="{{ route('admin.students.import.process') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.students.import.validate') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="mb-6">
@@ -48,62 +48,71 @@
                 
                 <div class="mb-6">
                     <div class="flex items-center justify-between">
-                        <h3 class="font-semibold text-lg">Column Mapping (Optional)</h3>
+                        <h3 class="font-semibold text-lg">Column Mapping</h3>
                         <button type="button" id="toggleMapping" class="text-primary hover:underline text-sm">
                             Show Mapping Options
                         </button>
                     </div>
-                    <p class="text-sm text-gray-600 mb-3">If your column headers don't match our field names, you can specify the mapping here.</p>
+                    <p class="text-sm text-gray-600 mb-3">Map your CSV columns to our system fields. Once you upload your CSV file, the dropdowns will be populated with your actual column headers.</p>
                     
                     <div id="mappingFields" class="hidden border rounded-lg p-4 bg-gray-50">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="columnMappingContainer">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                <input type="text" name="map_full_name" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_full_name" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                                <input type="text" name="map_age" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_age" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                <input type="text" name="map_phone" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_phone" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="text" name="map_email" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_email" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Parent Contact</label>
-                                <input type="text" name="map_parent_contact" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_parent_contact" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                                <input type="text" name="map_city" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_city" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                                <input type="text" name="map_school_id" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_school_id" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                                 <p class="text-xs text-gray-500 mt-1">Can be school name or ID</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Program Type</label>
-                                <input type="text" name="map_program_type_id" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <select name="map_program_type_id" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
                                 <p class="text-xs text-gray-500 mt-1">Can be program name or ID</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <input type="text" name="map_status" placeholder="CSV column name" 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
-                                <p class="text-xs text-gray-500 mt-1">Default is 'active'</p>
+                                <select name="map_status" class="mapping-select w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                    <option value="">Select column...</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">active, inactive, or completed</p>
                             </div>
                         </div>
                     </div>
@@ -124,19 +133,84 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleBtn = document.getElementById('toggleMapping');
+    document.getElementById('toggleMapping').addEventListener('click', function() {
         const mappingFields = document.getElementById('mappingFields');
-        
-        toggleBtn.addEventListener('click', function() {
+        if (mappingFields.classList.contains('hidden')) {
+            mappingFields.classList.remove('hidden');
+            this.textContent = 'Hide Mapping Options';
+        } else {
+            mappingFields.classList.add('hidden');
+            this.textContent = 'Show Mapping Options';
+        }
+    });
+
+    // CSV file parsing to get headers and populate dropdowns
+    document.getElementById('csv_file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Show mapping options when a file is selected
+            const mappingFields = document.getElementById('mappingFields');
             if (mappingFields.classList.contains('hidden')) {
-                mappingFields.classList.remove('hidden');
-                toggleBtn.textContent = 'Hide Mapping Options';
-            } else {
-                mappingFields.classList.add('hidden');
-                toggleBtn.textContent = 'Show Mapping Options';
+                document.getElementById('toggleMapping').click();
             }
-        });
+            
+            // Use FileReader to read the CSV
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const contents = e.target.result;
+                const lines = contents.split('\n');
+                
+                if (lines.length > 0) {
+                    // Get the headers from the first line
+                    let headers = lines[0].split(',');
+                    
+                    // Clean up headers (remove quotes, trim whitespace)
+                    headers = headers.map(header => {
+                        // Remove double quotes if present
+                        let cleaned = header.replace(/^"(.*)"$/, '$1');
+                        // Remove single quotes if present
+                        cleaned = cleaned.replace(/^'(.*)'$/, '$1');
+                        // Trim whitespace
+                        return cleaned.trim();
+                    });
+                    
+                    // Populate all dropdown selects with the headers
+                    const selects = document.querySelectorAll('.mapping-select');
+                    selects.forEach(select => {
+                        // Keep the default empty option
+                        const defaultOption = select.options[0];
+                        select.innerHTML = '';
+                        select.appendChild(defaultOption);
+                        
+                        // Add options based on CSV headers
+                        headers.forEach(header => {
+                            if (header) { // Only add non-empty headers
+                                const option = document.createElement('option');
+                                option.value = header;
+                                option.textContent = header;
+                                
+                                // Try to auto-select the most likely match based on field name
+                                const fieldName = select.getAttribute('name').replace('map_', '');
+                                const headerLower = header.toLowerCase();
+                                if (headerLower.includes(fieldName) || 
+                                    (fieldName === 'full_name' && (headerLower.includes('name') || headerLower.includes('student'))) ||
+                                    (fieldName === 'parent_contact' && (headerLower.includes('parent') || headerLower.includes('contact') || headerLower.includes('guardian'))) ||
+                                    (fieldName === 'school_id' && headerLower.includes('school')) ||
+                                    (fieldName === 'program_type_id' && (headerLower.includes('program') || headerLower.includes('type'))) ||
+                                    (fieldName === 'phone' && (headerLower.includes('phone') || headerLower.includes('mobile') || headerLower.includes('cell')))) {
+                                    option.selected = true;
+                                }
+                                
+                                select.appendChild(option);
+                            }
+                        });
+                    });
+                    
+                    console.log('CSV headers loaded:', headers);
+                }
+            };
+            reader.readAsText(file);
+        }
     });
 </script>
 @endsection

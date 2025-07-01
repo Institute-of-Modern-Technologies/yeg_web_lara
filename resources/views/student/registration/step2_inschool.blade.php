@@ -196,22 +196,51 @@
                         </div>
                         <h2 class="text-xl font-semibold text-gray-800">Select Your School</h2>
                     </div>
-                    <p class="text-gray-600 ml-11">Please select your school from the list below.</p>
+                    <p class="text-gray-600 ml-11">Please select your school from the list or enter your school name if not found.</p>
                 </div>
                 
                 <form action="{{ route('student.registration.process_step2_inschool') }}" method="POST" class="space-y-6">
                     @csrf
                     
                     <div class="mb-6">
-                        <label for="school_id" class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                        <select id="school_id" name="school_id" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
-                            <option value="">-- Select School --</option>
-                            @foreach($schools as $school)
-                                <option value="{{ $school->id }}">{{ $school->name }}</option>
-                            @endforeach
-                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">School Information</label>
+                        
+                        <!-- Option tabs -->
+                        <div class="flex border-b border-gray-200 mb-4">
+                            <button type="button" id="select-school-tab" 
+                                class="py-2 px-4 border-b-2 border-primary text-primary font-medium text-sm focus:outline-none"
+                                onclick="switchTab('select')">
+                                Select from List
+                            </button>
+                            <button type="button" id="enter-school-tab" 
+                                class="py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm focus:outline-none"
+                                onclick="switchTab('enter')">
+                                Enter Manually
+                            </button>
+                        </div>
+                        
+                        <!-- Select school option -->
+                        <div id="select-school-content" class="animate-fade-in">
+                            <select id="school_id" name="school_id" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                                <option value="">-- Select School --</option>
+                                @foreach($schools as $school)
+                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Enter school manually option -->
+                        <div id="enter-school-content" class="hidden animate-fade-in">
+                            <input type="text" id="school_name" name="school_name" placeholder="Enter your school name" 
+                                class="mt-1 block w-full pl-3 pr-10 py-3 text-base border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                            <p class="text-sm text-gray-500 mt-1">If your school is not in our list, please enter the name above.</p>
+                        </div>
                         
                         @error('school_id')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                        
+                        @error('school_name')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -326,6 +355,40 @@
             if (carouselContainer) {
                 carouselContainer.addEventListener('mouseenter', stopAutoplay);
                 carouselContainer.addEventListener('mouseleave', startAutoplay);
+            }
+            
+            // School selection tab functionality
+            function switchTab(tab) {
+                // Update tab styles
+                if (tab === 'select') {
+                    document.getElementById('select-school-tab').classList.add('border-primary', 'text-primary');
+                    document.getElementById('select-school-tab').classList.remove('border-transparent', 'text-gray-500');
+                    document.getElementById('enter-school-tab').classList.add('border-transparent', 'text-gray-500');
+                    document.getElementById('enter-school-tab').classList.remove('border-primary', 'text-primary');
+                    
+                    // Show select content, hide manual entry
+                    document.getElementById('select-school-content').classList.remove('hidden');
+                    document.getElementById('enter-school-content').classList.add('hidden');
+                    
+                    // Enable select field and disable input field for form submission
+                    document.getElementById('school_id').setAttribute('required', '');
+                    document.getElementById('school_name').removeAttribute('required');
+                    document.getElementById('school_name').value = '';
+                } else {
+                    document.getElementById('enter-school-tab').classList.add('border-primary', 'text-primary');
+                    document.getElementById('enter-school-tab').classList.remove('border-transparent', 'text-gray-500');
+                    document.getElementById('select-school-tab').classList.add('border-transparent', 'text-gray-500');
+                    document.getElementById('select-school-tab').classList.remove('border-primary', 'text-primary');
+                    
+                    // Show manual entry, hide select content
+                    document.getElementById('enter-school-content').classList.remove('hidden');
+                    document.getElementById('select-school-content').classList.add('hidden');
+                    
+                    // Enable input field and disable select field for form submission
+                    document.getElementById('school_name').setAttribute('required', '');
+                    document.getElementById('school_id').removeAttribute('required');
+                    document.getElementById('school_id').value = '';
+                }
             }
         });
 </script>

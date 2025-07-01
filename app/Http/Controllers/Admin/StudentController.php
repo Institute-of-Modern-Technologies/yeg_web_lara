@@ -294,7 +294,10 @@ class StudentController extends Controller
             
             // If no schools to match, go directly to final import
             if (empty($schoolsData['schools'])) {
-                return redirect()->route('admin.students.import.process');
+                // Create a view with auto-submitting form to make a proper POST request
+                return view('admin.students.auto-process-import', [
+                    'route' => route('admin.students.import.process')
+                ]);
             }
             
             // Get all available schools for dropdown selection
@@ -332,7 +335,10 @@ class StudentController extends Controller
         // Store school mapping in session
         session(['import_school_mapping' => $request->school_mapping]);
         
-        return redirect()->route('admin.students.import.process');
+        // Use auto-submission view to make a proper POST request
+        return view('admin.students.auto-process-import', [
+            'route' => route('admin.students.import.process')
+        ]);
     }
     
     /**

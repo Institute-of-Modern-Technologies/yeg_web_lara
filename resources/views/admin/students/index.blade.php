@@ -182,7 +182,9 @@
                                 @endswitch
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $student->phone }}<br>{{ $student->email }}
+                                @if($student->phone)<span class="font-medium">Phone:</span> {{ $student->phone }}<br>@endif
+                                @if($student->email)<span class="font-medium">Email:</span> {{ $student->email }}<br>@endif
+                                @if($student->parent_contact)<span class="font-medium">Parent:</span> {{ $student->parent_contact }}@endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $student->created_at->format('M d, Y') }}
