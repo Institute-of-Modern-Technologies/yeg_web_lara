@@ -72,7 +72,7 @@
                         <p class="text-gray-500 text-sm mb-2">{{ $program['age'] }}</p>
                         <div class="flex justify-between items-center mt-4">
                             @if(is_numeric($program['price']))
-                                <span class="text-2xl font-bold text-[#950713]">${{ $program['price'] }}</span>
+                                <span class="text-2xl font-bold text-[#950713]">GH₵{{ $program['price'] }}</span>
                             @else
                                 <span class="text-xl font-bold text-[#950713]">{{ $program['price'] }} Pricing</span>
                             @endif

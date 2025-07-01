@@ -97,37 +97,59 @@ class PageController extends Controller
         $metaDescription = 'Learn about our program fees, enrollment process, and register your child for our tech education programs. Scholarship options available.';
         $metaKeywords = 'tech program rates, coding class fees, enrollment process, tech education cost, children technology courses pricing';
         
-        // Program categories with pricing information
-        $programRates = [
-            [
-                'name' => 'Little Tech Explorers',
-                'age' => '6-9 years',
-                'price' => 250,
+        // Get program categories with pricing information from the database
+        $programRates = [];
+        
+        // Get fees for standard programs
+        $fees = \App\Models\Fee::with('programType')
+            ->where('is_active', true)
+            ->whereHas('programType', function($query) {
+                $query->where('is_active', true);
+            })
+            ->get();
+            
+        // Define the colors for each program type (you can adjust these based on your preferences)
+        $programColors = [
+            'Little Tech Explorers' => 'border-pink-500',
+            'Code Stars' => 'border-purple-500',
+            'Tech Leaders' => 'border-green-500',
+            'School Programs' => 'border-yellow-500'
+        ];
+        
+        // Age ranges for each program
+        $programAges = [
+            'Little Tech Explorers' => '6-9 years',
+            'Code Stars' => '10-13 years',
+            'Tech Leaders' => '14-16 years',
+            'School Programs' => 'For institutions'
+        ];
+        
+        // Add standard programs to the rates array
+        foreach ($fees as $fee) {
+            $programName = $fee->programType->name ?? '';
+            if (empty($programName)) continue;
+            
+            $programRates[] = [
+                'name' => $programName,
+                'age' => $programAges[$programName] ?? '',
+                'price' => $fee->amount,
                 'period' => 'per month',
-                'color' => 'border-pink-500'
-            ],
-            [
-                'name' => 'Code Stars',
-                'age' => '10-13 years',
-                'price' => 300,
-                'period' => 'per month',
-                'color' => 'border-purple-500'
-            ],
-            [
-                'name' => 'Tech Leaders',
-                'age' => '14-16 years',
-                'price' => 350,
-                'period' => 'per month',
-                'color' => 'border-green-500'
-            ],
-            [
+                'color' => $programColors[$programName] ?? 'border-gray-500'
+            ];
+        }
+        
+        // Add school programs as a special case if not already included
+        $schoolProgramExists = collect($programRates)->where('name', 'School Programs')->count() > 0;
+        
+        if (!$schoolProgramExists) {
+            $programRates[] = [
                 'name' => 'School Programs',
                 'age' => 'For institutions',
                 'price' => 'Custom',
                 'period' => 'Contact for details',
                 'color' => 'border-yellow-500'
-            ]
-        ];
+            ];
+        }
         
         return view('pages.enrollment', compact('metaTitle', 'metaDescription', 'metaKeywords', 'programRates'));
     }

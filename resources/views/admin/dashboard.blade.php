@@ -339,10 +339,9 @@
                                     <i class="fas fa-school w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Schools</span>
                                 </a>
-                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.fees.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.fees.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-money-bill-wave w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Program Fees</span>
-                                    <!-- Route not created yet: admin.fees.index -->
                                 </a>
                             </div>
                         </div>
