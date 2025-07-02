@@ -1,11 +1,5 @@
 @extends('admin.dashboard')
 
-<!-- Add SweetAlert2 and jQuery in the head to ensure they're loaded early -->
-@push('head')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-@endpush
-
 @section('content')
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
@@ -101,12 +95,12 @@
                             <a href="{{ route('admin.events.edit', $event->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this event?')">
+                            <button type="button" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" onclick="confirmDelete({{ $event->id }}, '{{ addslashes($event->title) }}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <form id="delete-form-{{ $event->id }}" action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
                             </form>
                         </div>
                     </div>
@@ -118,7 +112,38 @@
     </div>
 </div>
 
-@push('scripts')
+<!-- Add SweetAlert2 deletion handler script -->
+<script type="text/javascript">
+    function confirmDelete(id, name) {
+        if (typeof Swal === 'undefined') {
+            // Fallback to basic confirmation if SweetAlert2 is not available
+            if (confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+                document.getElementById(`delete-form-${id}`).submit();
+            }
+            return;
+        }
+        
+        // Use SweetAlert2 for confirmation
+        Swal.fire({
+            title: 'Delete Event',
+            html: `Are you sure you want to delete <strong>${name}</strong>?<br>This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            focusCancel: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`delete-form-${id}`).submit();
+            }
+        });
+    }
+</script>
+
+<!-- Add an inline script for event handlers -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -209,6 +234,8 @@
             });
         });
         
+
+        
         // Update event order via AJAX
         function updateEventOrder() {
             const eventItems = document.querySelectorAll('.event-item');
@@ -240,5 +267,4 @@
         }
     });
 </script>
-@endpush
 @endsection

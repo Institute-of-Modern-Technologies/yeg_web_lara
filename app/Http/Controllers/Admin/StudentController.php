@@ -7,11 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\School;
 use App\Models\ProgramType;
+use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Support\Facades\DB;
 use App\Imports\StudentsImport;
 use App\Exports\StudentsExport;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Notifications\StudentApprovalNotification;
 
 class StudentController extends Controller
 {
@@ -144,6 +149,7 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $student = Student::findOrFail($id);
+        $originalStatus = $student->status;
         
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
@@ -157,7 +163,17 @@ class StudentController extends Controller
             'status' => 'required|string|in:active,inactive,completed',
         ]);
         
+        // Check if status is being changed to 'active' (approved)
+        $isBeingApproved = ($originalStatus != 'active' && $request->status == 'active');
+        
         $student->update($validated);
+        
+        // If student is being approved, send approval notification with credentials
+        if ($isBeingApproved && $student->email) {
+            $this->sendApprovalNotification($student);
+            return redirect()->route('admin.students.show', $student->id)
+                ->with('success', 'Student approved successfully. Login credentials have been sent to their email.');
+        }
         
         return redirect()->route('admin.students.show', $student->id)
             ->with('success', 'Student information updated successfully.');
@@ -430,6 +446,63 @@ class StudentController extends Controller
             Log::error('Student export failed: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('admin.students.index')
                 ->with('error', 'Export failed: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Send approval notification with login credentials to student
+     *
+     * @param  \App\Models\Student  $student
+     * @return void
+     */
+    protected function sendApprovalNotification(Student $student)
+    {
+        try {
+            // Get student user type
+            $studentUserType = UserType::where('name', 'student')->first();
+            
+            if (!$studentUserType) {
+                Log::error('Could not find student user type when approving student');
+                return;
+            }
+            
+            // Check if user already exists with this email
+            $existingUser = User::where('email', $student->email)->first();
+            
+            if ($existingUser) {
+                // User already exists, send notification with their username
+                $student->notify(new StudentApprovalNotification($student, $existingUser->username, 'Your existing password'));
+                return;
+            }
+            
+            // Create a username from the student's name
+            $baseUsername = Str::slug(explode(' ', $student->full_name)[0]);
+            $username = $baseUsername;
+            $counter = 1;
+            
+            // Make sure the username is unique
+            while (User::where('username', $username)->exists()) {
+                $username = $baseUsername . $counter++;
+            }
+            
+            // Generate a random password
+            $password = 'YEG' . rand(1000, 9999);
+            
+            // Create the user
+            $user = User::create([
+                'name' => $student->full_name,
+                'email' => $student->email,
+                'username' => $username,
+                'password' => Hash::make($password),
+                'user_type_id' => $studentUserType->id
+            ]);
+            
+            // Send notification with login credentials
+            $student->notify(new StudentApprovalNotification($student, $username, $password));
+            
+            Log::info('Approval notification sent to student: ' . $student->id);
+        } catch (\Exception $e) {
+            Log::error('Failed to send approval notification: ' . $e->getMessage());
         }
     }
 }

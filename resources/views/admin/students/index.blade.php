@@ -4,7 +4,7 @@
 <div class="p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Student Management</h1>
-        <div class="ml-auto flex space-x-2">
+        <div class="ml-auto flex flex-wrap gap-2 sm:flex-nowrap sm:space-x-2">
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="inline-flex items-center px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
                     <i class="fas fa-file-csv mr-1"></i>
@@ -69,7 +69,7 @@
     
     <!-- Filter Form -->
     <div class="p-6 border-b">
-        <form action="{{ route('admin.students.index') }}" method="GET" class="flex flex-wrap items-end gap-4">
+        <form action="{{ route('admin.students.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="w-full sm:w-auto">
                 <label for="school_id" class="block text-sm font-medium text-gray-700">Filter by School</label>
                 <select id="school_id" name="school_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
@@ -108,7 +108,69 @@
     <form id="bulkDeleteForm" action="{{ route('admin.students.bulk-destroy') }}" method="POST">
         @csrf
         @method('DELETE')
-        <div class="overflow-x-auto">
+        <!-- Mobile Card View (visible on small screens) -->
+        <div class="md:hidden space-y-4 p-4">
+            @if(count($students) > 0)
+                @foreach($students as $student)
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-primary">{{ $student->full_name }}</h3>
+                            <div class="flex space-x-2">
+                                <input type="checkbox" name="student_ids[]" value="{{ $student->id }}" class="student-checkbox form-checkbox h-5 w-5 text-primary rounded border-gray-300 focus:ring-primary" {{ $student->payments && $student->payments->count() > 0 ? 'disabled title="Cannot delete student with payment records"' : '' }}>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                            <div>
+                                <span class="text-gray-500 block">Registration #</span>
+                                <span class="font-medium">{{ $student->registration_number }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">School</span>
+                                <span class="font-medium">{{ $student->school->name ?? 'N/A' }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Status</span>
+                                <span class="{{ $student->status == 'active' ? 'text-green-600' : ($student->status == 'completed' ? 'text-blue-600' : 'text-red-600') }} font-medium">{{ ucfirst($student->status) }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Contact</span>
+                                <span class="font-medium">{{ $student->phone ?? 'N/A' }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block">Date</span>
+                                <span class="font-medium">{{ $student->created_at->format('M d, Y') }}</span>
+                            </div>
+                            <div class="col-span-2 mt-2">
+                                <span class="text-gray-500 block">Email</span>
+                                <span class="font-medium">{{ $student->email ?? 'N/A' }}</span>
+                            </div>
+                        </div>
+                        <div class="border-t pt-3 flex justify-end space-x-3">
+                            <a href="{{ route('admin.students.show', $student->id) }}" class="text-blue-600 hover:bg-blue-50 p-2 rounded">
+                                <i class="fas fa-eye mr-1"></i> View
+                            </a>
+                            <a href="{{ route('admin.students.edit', $student->id) }}" class="text-green-600 hover:bg-green-50 p-2 rounded">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </a>
+                            <button onclick="confirmDelete({{ $student->id }})" class="text-red-600 hover:bg-red-50 p-2 rounded">
+                                <i class="fas fa-trash-alt mr-1"></i> Delete
+                            </button>
+                            <form id="delete-form-{{ $student->id }}" action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="text-center py-8">
+                    <p class="text-gray-500">No students found</p>
+                </div>
+            @endif
+        </div>
+
+        <!-- Desktop Table View (hidden on small screens) -->
+        <div class="hidden md:block overflow-x-auto overflow-y-hidden">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
@@ -147,7 +209,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @if(count($students) > 0)
                     @foreach($students as $student)
-                        <tr>
+                        <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <input type="checkbox" name="student_ids[]" value="{{ $student->id }}" class="student-checkbox form-checkbox h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary" {{ $student->payments && $student->payments->count() > 0 ? 'disabled title="Cannot delete student with payment records"' : '' }}>
                             </td>
@@ -190,17 +252,18 @@
                                 {{ $student->created_at->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end space-x-3">
-                                    <a href="{{ route('admin.students.show', $student->id) }}" class="text-blue-600 hover:text-blue-900" title="View Student">
+                                <div class="flex flex-nowrap space-x-3 justify-end">
+                                    <a href="{{ route('admin.students.show', $student->id) }}" class="text-blue-600 hover:text-blue-900 p-1">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="text-blue-600 hover:text-blue-900" title="Edit Student">
+                                    <a href="{{ route('admin.students.edit', $student->id) }}" class="text-green-600 hover:text-green-900 p-1">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button onclick="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900" title="Delete Student">
+                                    <button type="button" onclick="confirmDelete({{ $student->id }})" class="text-red-600 hover:text-red-900 p-1">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
-                                    <form id="delete-form-{{ $student->id }}" action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="hidden">
+                                </div>
+                                <form id="delete-form-{{ $student->id }}" action="{{ route('admin.students.destroy', $student->id) }}" method="POST" class="hidden">
                                         @csrf
                                         @method('DELETE')
                                     </form>

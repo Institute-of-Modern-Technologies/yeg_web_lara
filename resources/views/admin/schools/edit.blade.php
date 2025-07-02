@@ -109,22 +109,35 @@
                     <!-- School Logo (Optional) -->
                     <div class="md:col-span-2">
                         <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">School Logo <span class="text-gray-400">(Optional)</span></label>
-                        <div class="mt-1 flex items-center">
-                            <div id="logo-preview" class="w-20 h-20 border border-gray-300 bg-gray-100 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
-                                @if($school->logo)
-                                    <img src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo" class="w-full h-full object-cover">
-                                @else
-                                    <i class="fas fa-school text-gray-400 text-3xl"></i>
-                                @endif
+                        <div class="mt-2">
+                            <!-- Simplified upload area -->
+                            <div class="max-w-xl border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
+                                <div class="flex justify-center mb-4">
+                                    <!-- Image Preview -->
+                                    <img id="image-preview" class="w-32 h-32 object-cover border rounded-md {{ $school->logo ? '' : 'hidden' }}" src="{{ $school->logo ? asset('storage/' . $school->logo) : '' }}" alt="{{ $school->name }} Logo">
+                                    
+                                    <!-- Default Icon (Shown when no image) -->
+                                    <div id="default-preview" class="w-32 h-32 flex items-center justify-center bg-white border border-gray-300 rounded-md {{ $school->logo ? 'hidden' : '' }}">
+                                        <i class="fas fa-school text-gray-400 text-4xl"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <!-- File Input With Label -->
+                                    <label class="inline-block px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+                                        <span class="text-sm text-gray-700">{{ $school->logo ? 'Change Logo' : 'Choose Logo File' }}</span>
+                                        <input type="file" name="logo" id="logo" class="hidden" accept="image/*" onchange="showPreview(this)">
+                                    </label>
+                                    
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        PNG, JPG, GIF up to 2MB
+                                    </p>
+                                    
+                                    <!-- Selected Filename -->
+                                    <p id="selected-file" class="mt-2 text-sm text-gray-600 hidden"></p>
+                                </div>
                             </div>
-                            <label for="logo" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                <span>Upload a file</span>
-                                <input id="logo" name="logo" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
-                            </label>
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">
-                            PNG, JPG, GIF up to 2MB
-                        </p>
                         @error('logo')
                             <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                         @enderror
@@ -145,26 +158,49 @@
 </div>
 
 <script>
-    function previewImage(input) {
-        const preview = document.getElementById('logo-preview');
+    // Very simple, direct image preview function
+    function showPreview(input) {
+        const preview = document.getElementById('image-preview');
+        const defaultPreview = document.getElementById('default-preview');
+        const selectedFile = document.getElementById('selected-file');
         
         if (input.files && input.files[0]) {
-            const reader = new FileReader();
+            // Update selected filename display
+            selectedFile.textContent = input.files[0].name;
+            selectedFile.classList.remove('hidden');
             
-            reader.onload = function(e) {
-                // Remove any existing content
-                preview.innerHTML = '';
-                
-                // Create image element
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'w-full h-full object-cover';
-                
-                // Add image to preview
-                preview.appendChild(img);
+            // Create a URL for the file
+            const objectUrl = URL.createObjectURL(input.files[0]);
+            
+            // Set the image source
+            preview.src = objectUrl;
+            
+            // Show image preview, hide default icon
+            preview.classList.remove('hidden');
+            defaultPreview.classList.add('hidden');
+            
+            // Log success for debugging
+            console.log('Preview image set to:', objectUrl);
+            
+            // Add event listeners for image loading success/failure
+            preview.onload = function() {
+                console.log('Image loaded successfully');
             };
             
-            reader.readAsDataURL(input.files[0]);
+            preview.onerror = function() {
+                console.error('Failed to load image');
+                preview.classList.add('hidden');
+                defaultPreview.classList.remove('hidden');
+                
+                // Show error message
+                selectedFile.textContent = 'Error loading image. Please try another file.';
+                selectedFile.classList.add('text-red-500');
+            };
+        } else {
+            // Reset to default state if no file selected
+            preview.classList.add('hidden');
+            defaultPreview.classList.remove('hidden');
+            selectedFile.classList.add('hidden');
         }
     }
 </script>

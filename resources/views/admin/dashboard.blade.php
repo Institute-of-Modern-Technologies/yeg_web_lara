@@ -77,6 +77,19 @@
             box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
         }
         
+        /* Mobile sidebar takes full width */
+        @media (max-width: 767px) {
+            #sidebar {
+                width: 100%;
+                z-index: 1001; /* Higher than header on mobile */
+            }
+            
+            #sidebar.collapsed {
+                width: 0; /* Hide completely on mobile when collapsed */
+                transform: translateX(-100%);
+            }
+        }
+        
         #sidebar.collapsed .sidebar-link-text,
         #sidebar.collapsed .sidebar-accordion-content,
         #sidebar.collapsed .sidebar-section-header {
@@ -137,16 +150,15 @@
             min-height: 100vh;
             flex: 1;
             transition: padding 0.3s ease;
+            padding-left: 0; /* No padding on mobile */
         }
         
         @media (min-width: 768px) {
             .content-area {
-                padding-left: 256px; /* Exact sidebar width */
-                width: calc(100% - 0px); /* Full width minus 0 (to take up all remaining space) */
-                transition: padding-left 0.3s ease;
+                padding-left: 256px; /* Match sidebar width */
             }
             
-            .sidebar-collapsed .content-area {
+            .content-area.sidebar-collapsed {
                 padding-left: 70px; /* Match collapsed sidebar width */
             }
         }
@@ -164,25 +176,18 @@
             <div class="px-4 py-3">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <!-- Mobile menu button -->
-                        <button id="mobile-menu-button" class="md:hidden mr-4 text-white focus:outline-none">
+                        <!-- Unified sidebar toggle button -->
+                        <button id="sidebar-toggle" class="text-white hover:text-gray-300 focus:outline-none mr-3">
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         
-                        <!-- Desktop sidebar toggle button -->
-                        <button id="sidebar-toggle" class="hidden md:flex mr-4 text-white focus:outline-none hover:text-secondary transition-colors">
-                            <i class="fas fa-bars-staggered text-xl"></i>
-                        </button>
-                        
-                        <a href="{{ url('/') }}" class="flex items-center">
-                            <span class="text-white text-xl font-medium">Young</span>
-                            <span class="text-secondary mx-1 text-xl font-medium">Experts</span>
-                            <span class="text-white text-xl font-medium">Group</span>
+                        <a href="{{ route('admin.dashboard') }}" class="font-semibold text-xl tracking-tight text-white hover:text-gray-200 transition-colors">
+                            <img src="{{ asset('images/logo.png') }}" alt="YEG Logo" class="h-8 sm:h-9">
                         </a>
-                        <span class="ml-4 text-sm bg-secondary px-2 py-1 rounded">Super Admin</span>
+                        <span class="text-xs sm:text-sm bg-secondary px-2 py-1 rounded">Super Admin</span>
                     </div>
                     
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 sm:space-x-4">
                         <!-- Notifications -->
                         <div class="relative">
                             <button class="text-white focus:outline-none">
@@ -468,58 +473,108 @@
                             </div>
                         </div>
 
-                        <!-- Users Table -->
+                        <!-- Users Table/Cards -->
                         <div class="overflow-y-auto flex-grow scroll-smooth" style="max-height: calc(100vh - 60px);">
                             @php
                                 $paginatedUsers = \App\Models\User::paginate(5);
                             @endphp
-                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
-                                        <th class="py-3 px-4 text-left font-semibold">Name</th>
-                                        <th class="py-3 px-4 text-left font-semibold">Username</th>
-                                        <th class="py-3 px-4 text-left font-semibold">Email</th>
-                                        <th class="py-3 px-4 text-left font-semibold">User Type</th>
-                                        <th class="py-3 px-4 text-center font-semibold">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-600 text-sm">
-                                    @foreach($paginatedUsers as $user)
-                                    <tr data-user-type="{{ $user->user_type_id }}">
-                                        <td class="py-3 px-4">{{ $user->name }}</td>
-                                        <td class="py-3 px-4">{{ $user->username }}</td>
-                                        <td class="py-3 px-4">{{ $user->email }}</td>
-                                        <td class="py-3 px-4">
-                                            @php
-                                                $badgeClass = 'bg-gray-100 text-gray-800';
-                                                if($user->user_type_id == 1) {
-                                                    $badgeClass = 'bg-purple-100 text-purple-800';
-                                                } elseif($user->user_type_id == 2) {
-                                                    $badgeClass = 'bg-blue-100 text-blue-800';
-                                                } elseif($user->user_type_id == 3) {
-                                                    $badgeClass = 'bg-green-100 text-green-800';
-                                                }
-                                            @endphp
-                                            <span class="{{ $badgeClass }} px-2 py-1 rounded-full text-xs font-semibold">
-                                                {{ $user->userType ? $user->userType->name : 'Unknown' }}
-                                            </span>
-                                        </td>
-                                        <td class="py-3 px-4 text-center">
-                                            <div class="flex justify-center space-x-2">
-                                                <button class="text-blue-500 hover:text-blue-700" onclick="editUser({{ $user->id }})">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                @if(Auth::id() != $user->id)
-                                                <button class="text-red-500 hover:text-red-700" onclick="deleteUser({{ $user->id }}, '{{ $user->name }}')">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            
+                            <!-- Desktop Table View (hidden on mobile) -->
+                            <div class="hidden md:block overflow-x-auto">
+                                <table class="w-full bg-white rounded-lg overflow-hidden">
+                                    <thead>
+                                        <tr class="bg-gray-100 text-gray-600 uppercase text-xs">
+                                            <th class="py-3 px-4 text-left font-semibold">Name</th>
+                                            <th class="py-3 px-4 text-left font-semibold">Username</th>
+                                            <th class="py-3 px-4 text-left font-semibold">Email</th>
+                                            <th class="py-3 px-4 text-left font-semibold">User Type</th>
+                                            <th class="py-3 px-4 text-center font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-gray-600 text-sm">
+                                        @foreach($paginatedUsers as $user)
+                                        <tr data-user-type="{{ $user->user_type_id }}">
+                                            <td class="py-3 px-4">{{ $user->name }}</td>
+                                            <td class="py-3 px-4">{{ $user->username }}</td>
+                                            <td class="py-3 px-4">{{ $user->email }}</td>
+                                            <td class="py-3 px-4">
+                                                @php
+                                                    $badgeClass = 'bg-gray-100 text-gray-800';
+                                                    if($user->user_type_id == 1) {
+                                                        $badgeClass = 'bg-purple-100 text-purple-800';
+                                                    } elseif($user->user_type_id == 2) {
+                                                        $badgeClass = 'bg-blue-100 text-blue-800';
+                                                    } elseif($user->user_type_id == 3) {
+                                                        $badgeClass = 'bg-green-100 text-green-800';
+                                                    }
+                                                @endphp
+                                                <span class="{{ $badgeClass }} px-2 py-1 rounded-full text-xs font-semibold">
+                                                    {{ $user->userType ? $user->userType->name : 'Unknown' }}
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-4 text-center">
+                                                <div class="flex justify-center space-x-2">
+                                                    <button class="text-blue-500 hover:text-blue-700" onclick="editUser({{ $user->id }})">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    @if(Auth::id() != $user->id)
+                                                    <button class="text-red-500 hover:text-red-700" onclick="deleteUser({{ $user->id }}, '{{ $user->name }}')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Mobile Card View (visible only on mobile) -->
+                            <div class="md:hidden space-y-4">
+                                @foreach($paginatedUsers as $user)
+                                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200" data-user-type="{{ $user->user_type_id }}">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h3 class="text-gray-800 font-medium">{{ $user->name }}</h3>
+                                        @php
+                                            $badgeClass = 'bg-gray-100 text-gray-800';
+                                            if($user->user_type_id == 1) {
+                                                $badgeClass = 'bg-purple-100 text-purple-800';
+                                            } elseif($user->user_type_id == 2) {
+                                                $badgeClass = 'bg-blue-100 text-blue-800';
+                                            } elseif($user->user_type_id == 3) {
+                                                $badgeClass = 'bg-green-100 text-green-800';
+                                            }
+                                        @endphp
+                                        <span class="{{ $badgeClass }} px-2 py-1 rounded-full text-xs font-semibold">
+                                            {{ $user->userType ? $user->userType->name : 'Unknown' }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex">
+                                            <span class="text-gray-500 w-24">Username:</span>
+                                            <span class="text-gray-800 font-medium">{{ $user->username }}</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-gray-500 w-24">Email:</span>
+                                            <span class="text-gray-800 font-medium">{{ $user->email }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 flex justify-end space-x-3">
+                                        <button class="flex items-center text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-md text-sm" onclick="editUser({{ $user->id }})">
+                                            <i class="fas fa-edit mr-1.5"></i> Edit
+                                        </button>
+                                        @if(Auth::id() != $user->id)
+                                        <button class="flex items-center text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md text-sm" onclick="deleteUser({{ $user->id }}, '{{ $user->name }}')">
+                                            <i class="fas fa-trash-alt mr-1.5"></i> Delete
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
                             
                             <!-- Pagination Links with Tailwind Styling -->
                             <div class="mt-5 flex justify-center">
@@ -1059,25 +1114,44 @@
         window.addEventListener('load', function() {
             console.log('Page fully loaded');
             
-            // Mobile menu toggle - This is now handled in the sidebar accordion script
-            // But we keep this for backward compatibility
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            // Unified sidebar toggle for mobile and desktop
+            const sidebarToggleBtn = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');
+            const contentArea = document.querySelector('.content-area');
             
-            if (mobileMenuButton && sidebar) {
-                mobileMenuButton.addEventListener('click', function() {
-                    sidebar.classList.toggle('-translate-x-full');
+            if (sidebar && sidebarToggleBtn) {
+                // Unified sidebar toggle button handler
+                sidebarToggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    if (contentArea) {
+                        contentArea.classList.toggle('sidebar-collapsed');
+                    }
+                    
+                    // On mobile, also toggle the translate class
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.toggle('-translate-x-full');
+                    }
                 });
                 
                 // Close sidebar when clicking outside on mobile
                 document.addEventListener('click', function(event) {
                     const isMobile = window.innerWidth < 768;
                     const isClickInsideSidebar = sidebar.contains(event.target);
-                    const isClickInsideButton = mobileMenuButton.contains(event.target);
+                    const isClickInsideButton = sidebarToggleBtn.contains(event.target);
                     
                     if (isMobile && !isClickInsideSidebar && !isClickInsideButton && 
                         !sidebar.classList.contains('-translate-x-full')) {
                         sidebar.classList.add('-translate-x-full');
+                    }
+                });
+                
+                // Handle resize events
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth >= 768) {
+                        // On desktop
+                        if (sidebar.classList.contains('-translate-x-full')) {
+                            sidebar.classList.remove('-translate-x-full');
+                        }
                     }
                 });
             }
