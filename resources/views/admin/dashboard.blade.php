@@ -82,23 +82,25 @@
             #sidebar {
                 width: 100%;
                 z-index: 1001; /* Higher than header on mobile */
-            }
-            
-            #sidebar.collapsed {
-                width: 0; /* Hide completely on mobile when collapsed */
                 transform: translateX(-100%);
             }
+            
+            #sidebar.mobile-visible {
+                transform: translateX(0);
+            }
         }
         
-        #sidebar.collapsed .sidebar-link-text,
-        #sidebar.collapsed .sidebar-accordion-content,
-        #sidebar.collapsed .sidebar-section-header {
-            display: none;
-        }
-        
-        /* Collapsed sidebar */
-        #sidebar.collapsed {
-            width: 70px;
+        /* Desktop collapsed sidebar - mini mode */
+        @media (min-width: 768px) {
+            #sidebar.collapsed {
+                width: 70px;
+            }
+            
+            #sidebar.collapsed .sidebar-link-text,
+            #sidebar.collapsed .sidebar-accordion-content,
+            #sidebar.collapsed .sidebar-section-header {
+                display: none;
+            }
         }
         
         /* Sidebar accordion styling */
@@ -176,8 +178,8 @@
             <div class="px-4 py-3">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                        <!-- Unified sidebar toggle button -->
-                        <button id="sidebar-toggle" class="text-white hover:text-gray-300 focus:outline-none mr-3">
+                        <!-- Sidebar toggle button (mobile only) -->
+                        <button id="sidebar-toggle" class="md:hidden text-white hover:text-gray-300 focus:outline-none mr-3">
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         
@@ -228,7 +230,7 @@
         </header>
 
         <!-- Sidebar -->
-        <aside class="transform -translate-x-full md:translate-x-0 transition-transform duration-300" id="sidebar">
+        <aside class="transition-all duration-300 md:block" id="sidebar">
             <div class="h-full flex flex-col pt-0"> <!-- No top padding needed since sidebar starts below header -->
                 <!-- Navigation -->
                 <div class="px-4 py-5">
@@ -993,20 +995,33 @@
             
             if (sidebarToggle && sidebar) {
                 sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('collapsed');
-                    bodyElement.classList.toggle('sidebar-collapsed');
+                    const isMobile = window.innerWidth < 768;
                     
-                    // Store the user preference
-                    const isCollapsed = sidebar.classList.contains('collapsed');
-                    localStorage.setItem('sidebar-collapsed', isCollapsed);
+                    // Only toggle sidebar on mobile
+                    if (isMobile) {
+                        sidebar.classList.toggle('mobile-visible');
+                    }
+                    
+                    // Store the mobile sidebar visibility preference
+                    if (isMobile) {
+                        const isMobileVisible = sidebar.classList.contains('mobile-visible');
+                        localStorage.setItem('sidebar-mobile-visible', isMobileVisible);
+                    }
                 });
                 
-                // Check for saved preference
-                const savedCollapsed = localStorage.getItem('sidebar-collapsed');
-                if (savedCollapsed === 'true') {
-                    sidebar.classList.add('collapsed');
-                    bodyElement.classList.add('sidebar-collapsed');
+                // Check for saved preferences with separate mobile/desktop settings
+                const isMobile = window.innerWidth < 768;
+                
+                // Only apply mobile sidebar visibility preference if on mobile
+                if (isMobile) {
+                    const mobileVisible = localStorage.getItem('sidebar-mobile-visible');
+                    if (mobileVisible === 'true') {
+                        sidebar.classList.add('mobile-visible');
+                    }
                 }
+                
+                // Clear out old localStorage format
+                localStorage.removeItem('sidebar-collapsed');
             }
             
             // Initialize accordion functionality

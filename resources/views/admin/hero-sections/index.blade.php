@@ -99,19 +99,7 @@ function confirmDelete(id, title) {
                                 <h3 class="text-lg font-semibold text-gray-800">{{ $section->title }}</h3>
                                 <p class="text-gray-600 text-sm line-clamp-2">{{ $section->subtitle }}</p>
                                 <div class="mt-2 flex flex-wrap gap-2">
-                                    <!-- Toggle Switch for Active Status -->
-                                    <div class="flex items-center">
-                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                            <input type="checkbox" 
-                                                class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
-                                                id="toggle-{{$section->id}}" 
-                                                data-id="{{$section->id}}"
-                                                {{ $section->is_active ? 'checked' : '' }}
-                                            >
-                                            <label for="toggle-{{$section->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                        </div>
-                                        <span class="status-label text-sm font-medium text-gray-900">{{ $section->is_active ? 'Active' : 'Inactive' }}</span>
-                                    </div>
+
                                     @if($section->button_text)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         <i class="fas fa-link text-xs mr-1"></i>
@@ -123,6 +111,10 @@ function confirmDelete(id, title) {
                             
                             <!-- Actions -->
                             <div class="flex items-center space-x-2 mt-3 md:mt-0">
+                                <button type="button" class="toggle-active relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors {{ $section->is_active ? 'bg-green-500' : 'bg-gray-200' }}" data-id="{{$section->id}}" title="{{ $section->is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate' }}">
+                                    <span class="sr-only">{{ $section->is_active ? 'Active' : 'Inactive' }}</span>
+                                    <span class="{{ $section->is_active ? 'translate-x-6' : 'translate-x-1' }} inline-block w-4 h-4 transform bg-white rounded-full transition-transform"></span>
+                                </button>
                                 <a href="{{ route('admin.hero-sections.edit', $section->id) }}" class="p-2 text-blue-500 hover:text-blue-700" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -160,25 +152,35 @@ function confirmDelete(id, title) {
             });
         }
         
-        // Add event listeners to toggle switches with AJAX
-        document.querySelectorAll('.toggle-active').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const id = this.getAttribute('data-id');
-                const isActive = this.checked;
+        // Handle toggle button for active status
+        document.querySelectorAll('.toggle-active').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const isCurrentlyActive = this.classList.contains('bg-green-500');
+                const newStatus = !isCurrentlyActive; // Toggle the status
                 const heroCard = this.closest('.hero-section-item');
-                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
-                const originalStatus = !isActive; // Store original status in case we need to revert
                 
-                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                // Store original status for reverting
+                const originalStatus = isCurrentlyActive;
                 
-                // Update UI immediately for better user experience
-                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                // Update UI immediately for better UX
+                this.classList.toggle('bg-green-500');
+                this.classList.toggle('bg-gray-200');
                 
-                if (!isActive) {
-                    heroCard.classList.add('opacity-50');
-                } else {
+                // Move the toggle button knob
+                const toggleKnob = this.querySelector('span:not(.sr-only)');
+                if (newStatus) {
+                    toggleKnob.classList.remove('translate-x-1');
+                    toggleKnob.classList.add('translate-x-6');
                     heroCard.classList.remove('opacity-50');
+                } else {
+                    toggleKnob.classList.remove('translate-x-6');
+                    toggleKnob.classList.add('translate-x-1');
+                    heroCard.classList.add('opacity-50');
                 }
+                
+                // Update title attribute
+                this.title = newStatus ? 'Active - Click to deactivate' : 'Inactive - Click to activate';
                 
                 // Send AJAX request using the Fetch API
                 fetch(`/admin/hero-sections/${id}/toggle-active`, {
@@ -190,7 +192,7 @@ function confirmDelete(id, title) {
                     },
                     body: JSON.stringify({
                         _method: 'PATCH',
-                        is_active: isActive ? 1 : 0
+                        is_active: newStatus ? 1 : 0
                     })
                 })
                 .then(response => {
@@ -216,13 +218,24 @@ function confirmDelete(id, title) {
                     console.error('Error:', error);
                     
                     // Revert UI changes on error
-                    this.checked = originalStatus;
-                    statusLabel.textContent = originalStatus ? 'Active' : 'Inactive';
-                    
                     if (originalStatus) {
+                        // Was active, revert to active
+                        this.classList.add('bg-green-500');
+                        this.classList.remove('bg-gray-200');
+                        const toggleKnob = this.querySelector('span:not(.sr-only)');
+                        toggleKnob.classList.add('translate-x-6');
+                        toggleKnob.classList.remove('translate-x-1');
                         heroCard.classList.remove('opacity-50');
+                        this.title = 'Active - Click to deactivate';
                     } else {
+                        // Was inactive, revert to inactive
+                        this.classList.remove('bg-green-500');
+                        this.classList.add('bg-gray-200');
+                        const toggleKnob = this.querySelector('span:not(.sr-only)');
+                        toggleKnob.classList.remove('translate-x-6');
+                        toggleKnob.classList.add('translate-x-1');
                         heroCard.classList.add('opacity-50');
+                        this.title = 'Inactive - Click to activate';
                     }
                     
                     // Show error notification

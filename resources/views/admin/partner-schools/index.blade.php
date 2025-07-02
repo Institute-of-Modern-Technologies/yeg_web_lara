@@ -55,19 +55,7 @@
                                 </span>
                             </div>
                             <div>
-                                <!-- Toggle Switch for Active Status -->
-                                <div class="flex items-center">
-                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                        <input type="checkbox" 
-                                            class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
-                                            id="toggle-{{$school->id}}" 
-                                            data-id="{{$school->id}}"
-                                            {{ $school->is_active ? 'checked' : '' }}
-                                        >
-                                        <label for="toggle-{{$school->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                    </div>
-                                    <span class="status-label text-sm font-medium text-gray-900">{{ $school->is_active ? 'Active' : 'Inactive' }}</span>
-                                </div>
+
                             </div>
                         </div>
                         
@@ -95,7 +83,11 @@
                         </div>
                         
                         <!-- Actions -->
-                        <div class="flex justify-end space-x-2 mt-3 pt-3 border-t border-gray-100">
+                        <div class="flex justify-end items-center space-x-2 mt-3 pt-3 border-t border-gray-100">
+                            <button type="button" class="toggle-active relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors {{ $school->is_active ? 'bg-green-500' : 'bg-gray-200' }}" data-id="{{$school->id}}" title="{{ $school->is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate' }}">
+                                <span class="sr-only">{{ $school->is_active ? 'Active' : 'Inactive' }}</span>
+                                <span class="{{ $school->is_active ? 'translate-x-6' : 'translate-x-1' }} inline-block w-4 h-4 transform bg-white rounded-full transition-transform"></span>
+                            </button>
                             <a href="{{ route('admin.partner-schools.edit', $school->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -132,25 +124,35 @@
             });
         }
         
-        // Add event listeners to toggle switches with direct AJAX
-        document.querySelectorAll('.toggle-active').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const id = this.getAttribute('data-id');
-                const isActive = this.checked;
+        // Handle toggle button for active status
+        document.querySelectorAll('.toggle-active').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const isCurrentlyActive = this.classList.contains('bg-green-500');
+                const newStatus = !isCurrentlyActive; // Toggle the status
                 const schoolItem = this.closest('.school-item');
-                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
-                const originalStatus = !isActive; // Store original status in case we need to revert
                 
-                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                // Store original status for reverting
+                const originalStatus = isCurrentlyActive;
                 
-                // Update UI immediately for better user experience
-                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                // Update UI immediately for better UX
+                this.classList.toggle('bg-green-500');
+                this.classList.toggle('bg-gray-200');
                 
-                if (!isActive) {
-                    schoolItem.classList.add('opacity-50');
-                } else {
+                // Move the toggle button knob
+                const toggleKnob = this.querySelector('span:not(.sr-only)');
+                if (newStatus) {
+                    toggleKnob.classList.remove('translate-x-1');
+                    toggleKnob.classList.add('translate-x-6');
                     schoolItem.classList.remove('opacity-50');
+                } else {
+                    toggleKnob.classList.remove('translate-x-6');
+                    toggleKnob.classList.add('translate-x-1');
+                    schoolItem.classList.add('opacity-50');
                 }
+                
+                // Update title attribute
+                this.title = newStatus ? 'Active - Click to deactivate' : 'Inactive - Click to activate';
                 
                 // Send AJAX request using the Fetch API
                 fetch(`/admin/partner-schools/${id}/toggle-active`, {
@@ -162,7 +164,7 @@
                     },
                     body: JSON.stringify({
                         _method: 'PATCH',
-                        is_active: isActive ? 1 : 0
+                        is_active: newStatus ? 1 : 0
                     })
                 })
                 .then(response => {

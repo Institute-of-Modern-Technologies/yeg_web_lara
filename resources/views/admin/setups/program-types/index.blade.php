@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Manage Program Types</h1>
         <button onclick="openCreateModal()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
             <i class="fas fa-plus mr-2"></i>
@@ -24,7 +24,7 @@
 
     <!-- Program Type List -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex flex-wrap justify-between items-center gap-2">
             <h2 class="font-semibold text-gray-800 flex items-center">
                 <i class="fas fa-list-alt mr-2 text-primary"></i>
                 <span>Program Types</span>
@@ -36,7 +36,8 @@
             <p>No program types found. Click "Add New Program Type" to create one.</p>
         </div>
         @else
-        <div class="overflow-x-auto">
+        <!-- Table view for desktop/tablet -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
@@ -71,8 +72,37 @@
                 </tbody>
             </table>
         </div>
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $programTypes->links() }}
+        
+        <!-- Card view for mobile -->
+        <div class="block md:hidden">
+            <ul class="divide-y divide-gray-200">
+                @foreach($programTypes as $programType)
+                <li class="p-4">
+                    <div class="flex flex-col space-y-3">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">{{ $programType->name }}</h3>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="openEditModal({{ $programType->id }})" class="flex items-center text-blue-600 bg-blue-50 hover:bg-blue-100 p-2 rounded-md">
+                                <i class="fas fa-edit mr-1"></i>
+                                <span class="text-sm">Edit</span>
+                            </button>
+                            <button onclick="confirmDelete({{ $programType->id }})" class="flex items-center text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-md">
+                                <i class="fas fa-trash-alt mr-1"></i>
+                                <span class="text-sm">Delete</span>
+                            </button>
+                            <form id="delete-form-{{ $programType->id }}" action="{{ route('admin.program-types.destroy', $programType->id) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                @endforeach
+            </ul>
+            <div class="px-6 py-4 border-t border-gray-200">
+                {{ $programTypes->links() }}
+            </div>
         </div>
         @endif
     </div>

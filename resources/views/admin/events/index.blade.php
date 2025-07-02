@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="p-6">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Manage Events</h1>
         <a href="{{ route('admin.events.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
             <i class="fas fa-plus mr-2"></i>
@@ -24,7 +24,7 @@
 
     <!-- Event List -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex flex-wrap justify-between items-center gap-2">
             <h2 class="font-semibold text-gray-800 flex items-center">
                 <i class="fas fa-calendar-alt mr-2 text-primary"></i>
                 <span>Events</span>
@@ -41,43 +41,33 @@
             <ul id="sortable-events" class="space-y-4">
                 @foreach($events as $event)
                 <li class="border border-gray-200 rounded-lg overflow-hidden event-item {{ !$event->is_active ? 'opacity-50' : '' }}" data-id="{{ $event->id }}">
-                    <div class="flex flex-col md:flex-row md:items-center p-4 bg-white">
-                        <!-- Drag Handle -->
-                        <div class="flex-shrink-0 mr-4 cursor-move drag-handle">
-                            <span class="text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-grip-vertical text-xl"></i>
-                            </span>
-                        </div>
-                        
-                        <!-- Media Preview -->
-                        <div class="flex-shrink-0 md:mr-4 mb-3 md:mb-0 w-full md:w-40 h-24 overflow-hidden rounded">
-                            @if($event->media_type == 'image')
-                                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="bg-gray-900 w-full h-full flex items-center justify-center">
-                                    <i class="fas fa-play-circle text-3xl text-white"></i>
-                                </div>
-                            @endif
+                    <div class="flex flex-col md:flex-row md:items-start p-4 bg-white">
+                        <div class="flex items-start w-full md:w-auto">  
+                            <!-- Drag Handle -->
+                            <div class="flex-shrink-0 mr-3 cursor-move drag-handle h-full flex items-center">
+                                <span class="text-gray-400 hover:text-gray-600 p-1">
+                                    <i class="fas fa-grip-vertical text-xl"></i>
+                                </span>
+                            </div>
+                            
+                            <!-- Media Preview -->
+                            <div class="flex-shrink-0 mr-0 md:mr-4 mb-0 w-full max-w-[220px] h-24 overflow-hidden rounded">
+                                @if($event->media_type == 'image')
+                                    <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="bg-gray-900 w-full h-full flex items-center justify-center">
+                                        <i class="fas fa-play-circle text-3xl text-white"></i>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         
                         <!-- Content -->
-                        <div class="flex-grow">
+                        <div class="flex-grow mt-4 md:mt-0">
                             <h3 class="text-lg font-semibold text-gray-800">{{ $event->title }}</h3>
                             <p class="text-gray-600 text-sm line-clamp-2">{{ $event->description }}</p>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                <!-- Toggle switch for active status -->
-                                <div class="flex items-center mr-2">
-                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                        <input type="checkbox" 
-                                            class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
-                                            id="toggle-{{$event->id}}" 
-                                            data-id="{{$event->id}}"
-                                            {{ $event->is_active ? 'checked' : '' }}
-                                        >
-                                        <label for="toggle-{{$event->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                    </div>
-                                    <span class="status-label text-sm font-medium text-gray-900">{{ $event->is_active ? 'Active' : 'Inactive' }}</span>
-                                </div>
+                            <div class="mt-3 flex flex-wrap gap-3">
+
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" style="background-color: {{ $event->level_color }}20; color: {{ $event->level_color }}">
                                     {{ $event->level ?? 'All Levels' }}
                                 </span>
@@ -91,12 +81,18 @@
                         </div>
                         
                         <!-- Actions -->
-                        <div class="flex flex-shrink-0 mt-3 md:mt-0 md:ml-4 space-x-2">
-                            <a href="{{ route('admin.events.edit', $event->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
-                                <i class="fas fa-edit"></i>
+                        <div class="flex flex-shrink-0 mt-4 md:mt-0 md:ml-4 gap-2 w-full md:w-auto justify-end items-center">
+                            <button type="button" class="toggle-active relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors {{ $event->is_active ? 'bg-green-500' : 'bg-gray-200' }}" data-id="{{$event->id}}" title="{{ $event->is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate' }}">
+                                <span class="sr-only">{{ $event->is_active ? 'Active' : 'Inactive' }}</span>
+                                <span class="{{ $event->is_active ? 'translate-x-6' : 'translate-x-1' }} inline-block w-4 h-4 transform bg-white rounded-full transition-transform"></span>
+                            </button>
+                            <a href="{{ route('admin.events.edit', $event->id) }}" class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-md flex items-center">
+                                <i class="fas fa-edit mr-1"></i>
+                                <span class="text-sm">Edit</span>
                             </a>
                             <button type="button" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" onclick="confirmDelete({{ $event->id }}, '{{ addslashes($event->title) }}')">
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="fas fa-trash-alt mr-1"></i>
+                                <span class="text-sm">Delete</span>
                             </button>
                             <form id="delete-form-{{ $event->id }}" action="{{ route('admin.events.destroy', $event->id) }}" method="POST" class="hidden">
                                 @csrf
@@ -159,25 +155,35 @@
             });
         }
         
-        // Add event listeners to toggle switches with direct AJAX
-        document.querySelectorAll('.toggle-active').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const id = this.getAttribute('data-id');
-                const isActive = this.checked;
+        // Handle toggle button for active status
+        document.querySelectorAll('.toggle-active').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const isCurrentlyActive = this.classList.contains('bg-green-500');
+                const newStatus = !isCurrentlyActive; // Toggle the status
                 const eventItem = this.closest('.event-item');
-                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
-                const originalStatus = !isActive; // Store original status in case we need to revert
                 
-                console.log('Toggle clicked for ID:', id, 'New status:', isActive ? 'active' : 'inactive');
+                // Store original status for reverting
+                const originalStatus = isCurrentlyActive;
                 
-                // Update UI immediately for better user experience
-                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                // Update UI immediately for better UX
+                this.classList.toggle('bg-green-500');
+                this.classList.toggle('bg-gray-200');
                 
-                if (!isActive) {
-                    eventItem.classList.add('opacity-50');
-                } else {
+                // Move the toggle button knob
+                const toggleKnob = this.querySelector('span:not(.sr-only)');
+                if (newStatus) {
+                    toggleKnob.classList.remove('translate-x-1');
+                    toggleKnob.classList.add('translate-x-6');
                     eventItem.classList.remove('opacity-50');
+                } else {
+                    toggleKnob.classList.remove('translate-x-6');
+                    toggleKnob.classList.add('translate-x-1');
+                    eventItem.classList.add('opacity-50');
                 }
+                
+                // Update title attribute
+                this.title = newStatus ? 'Active - Click to deactivate' : 'Inactive - Click to activate';
                 
                 // Send AJAX request using the Fetch API
                 fetch(`/admin/events/${id}/toggle-active`, {
@@ -189,7 +195,7 @@
                     },
                     body: JSON.stringify({
                         _method: 'PATCH',
-                        is_active: isActive ? 1 : 0
+                        is_active: newStatus ? 1 : 0
                     })
                 })
                 .then(response => {

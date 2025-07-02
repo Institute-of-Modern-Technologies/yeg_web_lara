@@ -70,23 +70,7 @@
                             <h3 class="text-lg font-semibold text-gray-800">{{ $happening->title }}</h3>
                             <p class="text-gray-600 text-sm line-clamp-2">{{ $happening->getShortContent(150) }}</p>
                             <div class="mt-2 flex flex-wrap gap-2">
-                                <!-- Toggle Switch for Active Status -->
-                                <div class="flex items-center">
-                                    <form action="{{ route('admin.happenings.toggle-active', $happening->id) }}" method="POST" class="toggle-form">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                            <input type="checkbox" 
-                                                class="toggle-active toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
-                                                id="toggle-{{$happening->id}}" 
-                                                name="is_active"
-                                                {{ $happening->is_active ? 'checked' : '' }}
-                                            >
-                                            <label for="toggle-{{$happening->id}}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                                        </div>
-                                    </form>
-                                    <span class="status-label text-sm font-medium text-gray-900">{{ $happening->is_active ? 'Active' : 'Inactive' }}</span>
-                                </div>
+
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     <i class="far fa-user mr-1"></i>
                                     {{ $happening->author_name ?? 'Unknown' }}
@@ -105,7 +89,16 @@
                         </div>
                         
                         <!-- Actions -->
-                        <div class="flex flex-shrink-0 mt-3 md:mt-0 md:ml-4 space-x-2">
+                        <div class="flex flex-shrink-0 mt-3 md:mt-0 md:ml-4 space-x-2 items-center">
+                            <form action="{{ route('admin.happenings.toggle-active', $happening->id) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('PATCH')
+                                <button type="button" class="toggle-active relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors {{ $happening->is_active ? 'bg-green-500' : 'bg-gray-200' }}" data-id="{{$happening->id}}" title="{{ $happening->is_active ? 'Active - Click to deactivate' : 'Inactive - Click to activate' }}">
+                                    <span class="sr-only">{{ $happening->is_active ? 'Active' : 'Inactive' }}</span>
+                                    <span class="{{ $happening->is_active ? 'translate-x-6' : 'translate-x-1' }} inline-block w-4 h-4 transform bg-white rounded-full transition-transform"></span>
+                                </button>
+                                <input type="hidden" name="is_active" value="{{ $happening->is_active ? 0 : 1 }}">
+                            </form>
                             <a href="{{ route('admin.happenings.edit', $happening->id) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -142,31 +135,38 @@
             });
         }
         
-        // Add event listeners to toggle switches with form submission
-        document.querySelectorAll('.toggle-active').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const form = this.closest('.toggle-form');
-                const isActive = this.checked;
+        // Handle toggle button with form submission
+        document.querySelectorAll('.toggle-active').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const form = this.closest('form');
+                const isCurrentlyActive = this.classList.contains('bg-green-500');
+                const newStatus = !isCurrentlyActive; // Toggle the status
                 const happeningCard = this.closest('.happening-item');
-                const statusLabel = this.closest('.flex.items-center').querySelector('.status-label');
                 
                 console.log('Toggle clicked, submitting form...');
                 
-                // Update UI immediately
-                statusLabel.textContent = isActive ? 'Active' : 'Inactive';
+                // Update UI immediately for better UX
+                this.classList.toggle('bg-green-500');
+                this.classList.toggle('bg-gray-200');
                 
-                if (!isActive) {
-                    happeningCard.classList.add('opacity-50');
-                } else {
+                // Move the toggle button knob
+                const toggleKnob = this.querySelector('span:not(.sr-only)');
+                if (newStatus) {
+                    toggleKnob.classList.remove('translate-x-1');
+                    toggleKnob.classList.add('translate-x-6');
                     happeningCard.classList.remove('opacity-50');
+                } else {
+                    toggleKnob.classList.remove('translate-x-6');
+                    toggleKnob.classList.add('translate-x-1');
+                    happeningCard.classList.add('opacity-50');
                 }
                 
-                // Create and append a hidden field for is_active
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'is_active';
-                hiddenInput.value = isActive ? '1' : '0';
-                form.appendChild(hiddenInput);
+                // Update title attribute
+                this.title = newStatus ? 'Active - Click to deactivate' : 'Inactive - Click to activate';
+                
+                // Update the hidden input with the new status
+                const hiddenInput = form.querySelector('input[name="is_active"]');
+                hiddenInput.value = newStatus ? '1' : '0';
                 
                 // Submit the form with traditional form submission
                 form.submit();
