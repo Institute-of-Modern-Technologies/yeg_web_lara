@@ -201,15 +201,21 @@
                         <!-- User dropdown -->
                         <div class="relative" x-data="{ open: false }" @click.away="open = false">
                             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-                                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-medium">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                <div class="w-8 h-8 rounded-full bg-white/20 overflow-hidden flex items-center justify-center text-white font-medium">
+                                     @if(Auth::user()->profile_photo)
+                                        <img src="{{ asset('storage/profile-photos/' . rawurlencode(Auth::user()->profile_photo)) }}?v={{ time() }}" 
+                                            alt="{{ Auth::user()->name }}" class="w-full h-full object-cover"
+                                            onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '{{ substr(Auth::user()->name, 0, 1) }}'">
+                                    @else
+                                        {{ substr(Auth::user()->name, 0, 1) }}
+                                    @endif
                                 </div>
                                 <span class="hidden md:block text-sm">{{ Auth::user()->name }}</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
                             </button>
                             
                             <div x-show="open" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" style="display: none;">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{{ route('admin.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-user mr-2"></i> Profile
                                 </a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -408,6 +414,7 @@
         <main class="content-area">
             <div class="p-6">
                 @if(Route::currentRouteName() == 'admin.dashboard')
+                <!-- Dashboard specific content -->
                 <!-- Dashboard Header -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>

@@ -42,7 +42,20 @@
     // Submit the form automatically when the page loads
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
-            document.getElementById('processForm').submit();
+            // Ensure we're using a POST request
+            const form = document.getElementById('processForm');
+            form.method = 'POST'; // Force the method to be POST
+            
+            // Add a hidden input for _method if needed
+            if (!form.querySelector('input[name="_token"]')) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_token';
+                tokenInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                form.appendChild(tokenInput);
+            }
+            
+            form.submit();
         }, 1000); // Wait 1 second to show the loading spinner
     });
 </script>

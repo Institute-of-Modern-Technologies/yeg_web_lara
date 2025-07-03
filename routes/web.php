@@ -104,6 +104,10 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         return view('admin.dashboard');
     })->name('admin.dashboard');
     
+    // Profile Routes
+    Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'show'])->name('admin.profile');
+    Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('admin.profile.update');
+    
     // User Management Routes
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
