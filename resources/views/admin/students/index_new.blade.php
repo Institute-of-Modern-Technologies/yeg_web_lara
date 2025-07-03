@@ -122,15 +122,9 @@
         <div class="md:col-span-3">
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-200">
-                    <div class="flex items-center space-x-3">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="selectAll" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                            <label for="selectAll" class="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900">Select All</label>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-900">Students</h3>
-                            <p class="mt-1 text-sm text-gray-500">{{ count($students) }} results</p>
-                        </div>
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">Students</h3>
+                        <p class="mt-1 text-sm text-gray-500">{{ count($students) }} results</p>
                     </div>
                     <div>
                         <form id="bulkDeleteForm" action="{{ route('admin.students.bulk-destroy') }}" method="POST" class="hidden">
@@ -144,13 +138,12 @@
                 </div>
                 
                 @if(count($students) > 0)
-                <ul class="divide-y divide-gray-200">
+                <ul class="divide-y divide-gray-200 max-h-[70vh] overflow-y-auto">
                     @foreach($students as $student)
                     <li class="hover:bg-gray-50">
-                        <div class="block">
-                            <div class="flex items-center px-4 py-4 sm:px-6">
-                                <input type="checkbox" name="selected_students[]" value="{{ $student->id }}" form="bulkDeleteForm" class="student-checkbox h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded mr-4" onClick="event.stopPropagation()">
-                                <div class="min-w-0 flex-1 flex items-center justify-between" onclick="window.location='{{ route('admin.students.show', $student->id) }}'" style="cursor: pointer;">
+                        <a href="{{ route('admin.students.show', $student->id) }}" class="block">
+                            <div class="px-4 py-4 sm:px-6">
+                                <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
                                         <!-- Student Avatar -->
                                         <div class="flex-shrink-0 h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
@@ -202,7 +195,12 @@
                                         <!-- Action Menu -->
                                         <div class="flex items-center">
                                             <div class="flex items-center">
-                                                <div class="flex-shrink-0 flex" onclick="event.stopPropagation();">
+                                                <div class="flex items-center">
+                                                    <label class="sr-only">Select student</label>
+                                                    <input type="checkbox" name="selected_students[]" form="bulkDeleteForm" value="{{ $student->id }}" class="student-checkbox h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" onclick="event.stopPropagation();">
+                                                </div>
+                                                
+                                                <div class="ml-4 flex-shrink-0 flex" onclick="event.stopPropagation();">
                                                     <div class="relative" x-data="{ open: false }">
                                                         <button @click.prevent="open = !open" class="text-gray-500 hover:text-gray-700">
                                                             <i class="fas fa-ellipsis-v"></i>
@@ -299,37 +297,14 @@
     
     // Bulk delete functionality
     document.addEventListener('DOMContentLoaded', function() {
-        const selectAllCheckbox = document.getElementById('selectAll');
         const studentCheckboxes = document.querySelectorAll('.student-checkbox');
         const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
         const bulkDeleteForm = document.getElementById('bulkDeleteForm');
-        
-        // Select all functionality
-        if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
-                const isChecked = this.checked;
-                
-                studentCheckboxes.forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                });
-                
-                updateBulkDeleteButton();
-            });
-        }
         
         // Individual checkbox change
         studentCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 updateBulkDeleteButton();
-                
-                // Update 'select all' checkbox
-                if (selectAllCheckbox) {
-                    const allChecked = Array.from(studentCheckboxes).every(cb => cb.checked);
-                    const anyChecked = Array.from(studentCheckboxes).some(cb => cb.checked);
-                    
-                    selectAllCheckbox.checked = allChecked;
-                    selectAllCheckbox.indeterminate = anyChecked && !allChecked;
-                }
             });
         });
         
