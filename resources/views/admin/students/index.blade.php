@@ -91,11 +91,22 @@
             </div>
             
             <div class="w-full sm:w-auto">
+                <label for="status" class="block text-sm font-medium text-gray-700">Filter by Status</label>
+                <select id="status" name="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md">
+                    <option value="">All Status</option>
+                    <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pending Approval</option>
+                    <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="completed" {{ $status == 'completed' ? 'selected' : '' }}>Completed</option>
+                </select>
+            </div>
+            
+            <div class="w-full sm:w-auto">
                 <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 transition-colors">
                     Apply Filters
                 </button>
                 
-                @if($schoolId || $programTypeId)
+                @if($schoolId || $programTypeId || $status)
                     <a href="{{ route('admin.students.index') }}" class="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
                         Clear Filters
                     </a>
@@ -130,7 +141,7 @@
                             </div>
                             <div>
                                 <span class="text-gray-500 block">Status</span>
-                                <span class="{{ $student->status == 'active' ? 'text-green-600' : ($student->status == 'completed' ? 'text-blue-600' : 'text-red-600') }} font-medium">{{ ucfirst($student->status) }}</span>
+                                <span class="{{ $student->status == 'active' ? 'text-green-600' : ($student->status == 'completed' ? 'text-blue-600' : ($student->status == 'pending' ? 'text-yellow-600' : 'text-red-600')) }} font-medium">{{ ucfirst($student->status) }}</span>
                             </div>
                             <div>
                                 <span class="text-gray-500 block">Contact</span>
@@ -226,7 +237,7 @@
                                 <div class="text-sm text-gray-900">{{ $student->school->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @switch($student->status)
+                                 @switch($student->status)
                                     @case('active')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Active
@@ -235,6 +246,11 @@
                                     @case('inactive')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                             Inactive
+                                        </span>
+                                        @break
+                                    @case('pending')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            Pending
                                         </span>
                                         @break
                                     @default
@@ -253,6 +269,11 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex flex-nowrap space-x-3 justify-end">
+                                    @if($student->status == 'pending')
+                                        <a href="{{ route('admin.students.approve', $student->id) }}" class="text-yellow-600 hover:text-yellow-900 p-1" title="Approve student">
+                                            <i class="fas fa-user-check"></i>
+                                        </a>
+                                    @endif
                                     <a href="{{ route('admin.students.show', $student->id) }}" class="text-blue-600 hover:text-blue-900 p-1">
                                         <i class="fas fa-eye"></i>
                                     </a>

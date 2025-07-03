@@ -31,6 +31,7 @@ class StudentController extends Controller
         // Get filter parameters
         $schoolId = $request->input('school_id');
         $programTypeId = $request->input('program_type_id');
+        $status = $request->input('status', '');
         
         // Start with a base query
         $query = Student::query();
@@ -44,6 +45,11 @@ class StudentController extends Controller
             $query->where('program_type_id', $programTypeId);
         }
         
+        // Filter by status if provided
+        if ($status) {
+            $query->where('status', $status);
+        }
+        
         // Get the filtered students with pagination and eager load relationships
         $students = $query->with(['school', 'programType'])
             ->orderBy('created_at', 'desc')
@@ -53,7 +59,7 @@ class StudentController extends Controller
         $schools = School::orderBy('name')->get();
         $programTypes = ProgramType::where('is_active', true)->orderBy('name')->get();
         
-        return view('admin.students.index', compact('students', 'schools', 'programTypes', 'schoolId', 'programTypeId'));
+        return view('admin.students.index', compact('students', 'schools', 'programTypes', 'schoolId', 'programTypeId', 'status'));
     }
     
     /**
@@ -167,6 +173,11 @@ class StudentController extends Controller
         $isBeingApproved = ($originalStatus != 'active' && $request->status == 'active');
         
         $student->update($validated);
+        
+        // If student is being approved, create a user account if it doesn't exist
+        if ($isBeingApproved) {
+            $this->createStudentUser($student);
+        }
         
         // If student is being approved, send approval notification with credentials
         if ($isBeingApproved && $student->email) {
@@ -503,6 +514,105 @@ class StudentController extends Controller
             Log::info('Approval notification sent to student: ' . $student->id);
         } catch (\Exception $e) {
             Log::error('Failed to send approval notification: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Approve a pending student
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function approveStudent($id)
+    {
+        try {
+            $student = Student::findOrFail($id);
+            
+            // Check if student is already active
+            if ($student->status === 'active') {
+                return redirect()->route('admin.students.show', $student->id)
+                    ->with('info', 'Student is already approved and active.');
+            }
+            
+            // Update status to active
+            $student->status = 'active';
+            $student->save();
+            
+            // Create user account for student if needed
+            $this->createStudentUser($student);
+            
+            // Send notification if email exists
+            if ($student->email) {
+                $this->sendApprovalNotification($student);
+            }
+            
+            return redirect()->route('admin.students.index', ['status' => 'pending'])
+                ->with('success', 'Student has been approved successfully.');
+                
+        } catch (\Exception $e) {
+            Log::error('Failed to approve student: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to approve student: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Create a user account for a student
+     * 
+     * @param  \App\Models\Student  $student
+     * @return \App\Models\User|null
+     */
+    private function createStudentUser($student)
+    {
+        // Don't create user account if email is missing
+        if (empty($student->email)) {
+            return null;
+        }
+        
+        // Check if user already exists with this email
+        $existingUser = User::where('email', $student->email)->first();
+        if ($existingUser) {
+            return $existingUser;
+        }
+        
+        try {
+            // Get or create student user type
+            $studentUserType = UserType::firstOrCreate(
+                ['slug' => 'student'],
+                ['name' => 'Student', 'description' => 'Regular student account']
+            );
+            
+            // Create username from first name or full name
+            $nameParts = explode(' ', $student->full_name);
+            $firstName = $nameParts[0] ?? '';
+            $baseUsername = strtolower($firstName ?: $student->full_name);
+            $username = $baseUsername;
+            $counter = 1;
+            
+            // Check if username exists
+            while (User::where('username', $username)->exists()) {
+                $username = $baseUsername . $counter++;
+            }
+            
+            // Generate a random password
+            $password = Str::random(8);
+            
+            // Create user account
+            $user = User::create([
+                'name' => $student->full_name,
+                'email' => $student->email,
+                'username' => $username,
+                'password' => Hash::make($password),
+                'user_type_id' => $studentUserType->id
+            ]);
+            
+            // Store the plaintext password temporarily to include in notification
+            $user->temp_password = $password;
+            
+            return $user;
+            
+        } catch (\Exception $e) {
+            Log::error('Failed to create user for student: ' . $e->getMessage());
+            return null;
         }
     }
 }

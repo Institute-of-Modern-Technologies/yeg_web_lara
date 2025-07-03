@@ -334,7 +334,7 @@ class StudentRegistrationController extends Controller
             $student->email = $request->email;
             $student->phone = $request->phone;
             $student->registration_number = $registrationNumber;
-            $student->status = 'active';
+            $student->status = 'pending';
             $student->program_type_id = session('registration.program_type_id');
             $student->school_id = session('registration.school_id') ?? null;
             
@@ -368,45 +368,9 @@ class StudentRegistrationController extends Controller
                 'phone' => $request->phone
             ];
             
-            // Create a user account for the student
-            try {
-                // Get or create student user type
-                $studentUserType = UserType::firstOrCreate(
-                    ['slug' => 'student'],
-                    ['name' => 'Student', 'description' => 'Regular student account']
-                );
-                
-                // Create username from first name (handle duplicates by adding a random number if needed)
-                $baseUsername = strtolower($request->first_name);
-                $username = $baseUsername;
-                $counter = 1;
-                
-                // Check if username exists
-                while (User::where('username', $username)->exists()) {
-                    $username = $baseUsername . $counter++;
-                }
-                
-                // Create the user - ensure email is valid or generate a temporary one
-                $userEmail = $request->email;
-                
-                // If email is not provided, create a placeholder email based on username
-                if (empty($userEmail)) {
-                    $userEmail = $username . '@example.com';
-                }
-                
-                User::create([
-                    'name' => $request->first_name . ' ' . $request->last_name,
-                    'email' => $userEmail,
-                    'username' => $username,
-                    'password' => Hash::make('student123'),
-                    'user_type_id' => $studentUserType->id
-                ]);
-                
-                \Log::info('User account created for student: ' . $username);
-            } catch (\Exception $e) {
-                \Log::error('Failed to create user account for student: ' . $e->getMessage());
-                // Don't fail registration if user creation fails
-            }
+            // Note: User account creation is now handled by admin approval process
+            // The admin will manually approve students and trigger user account creation
+            \Log::info('Student registered successfully, pending admin approval: ' . $studentId);
             
             // Get program type name for the success page
             if (session('registration.program_type_id')) {
