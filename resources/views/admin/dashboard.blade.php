@@ -183,7 +183,7 @@
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         
-                        <a href="{{ route('admin.dashboard') }}" class="font-semibold text-xl tracking-tight text-white hover:text-gray-200 transition-colors">
+                        <a href="/" class="font-semibold text-xl tracking-tight text-white hover:text-gray-200 transition-colors">
                             <img src="{{ asset('images/logo.png') }}" alt="YEG Logo" class="h-8 sm:h-9">
                         </a>
                         <span class="text-xs sm:text-sm bg-secondary px-2 py-1 rounded">Super Admin</span>
