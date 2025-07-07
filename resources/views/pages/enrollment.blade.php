@@ -87,7 +87,7 @@
                     <a href="{{ route('student.registration.step1') }}" class="bg-[#950713] hover:bg-[#950713]/90 text-white py-3 px-8 rounded-full font-bold transition-all shadow-lg">
                         Enroll Now
                     </a>
-                    <a href="{{ route('contact') }}" class="bg-[#ffcb05] hover:bg-[#ffcb05]/90 text-[#950713] py-3 px-8 rounded-full font-bold transition-all shadow-lg">
+                    <a href="{{ route('contact.index') }}" class="bg-[#ffcb05] hover:bg-[#ffcb05]/90 text-[#950713] py-3 px-8 rounded-full font-bold transition-all shadow-lg">
                         Request Information
                     </a>
                 </div>

@@ -23,26 +23,152 @@
                     <!-- Contact Form -->
                     <div class="p-8">
                         <h2 class="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
-                        <form>
+                        <form id="whatsappForm">
                             <div class="mb-4">
                                 <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
-                                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Your name">
+                                <input type="text" id="name" name="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Your name" required>
                             </div>
-                            <div class="mb-4">
-                                <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
-                                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="your@email.com">
-                            </div>
-                            <div class="mb-4">
-                                <label for="subject" class="block text-gray-700 text-sm font-medium mb-2">Subject</label>
-                                <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="How can we help?">
-                            </div>
+                            
                             <div class="mb-6">
                                 <label for="message" class="block text-gray-700 text-sm font-medium mb-2">Your Message</label>
-                                <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Tell us more about your inquiry..."></textarea>
+                                <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Tell us more about your inquiry..." required></textarea>
                             </div>
-                            <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-                                Send Message
+                            
+                            <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                                <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
                             </button>
+                            
+                            <!-- Custom WhatsApp Modal -->                            
+                            <div id="whatsapp-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+                                <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                                    <!-- Background overlay -->
+                                    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                                        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                    </div>
+                                    
+                                    <!-- Modal panel -->
+                                    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div class="bg-green-50 px-4 py-3 sm:px-6 border-b border-green-100">
+                                            <div class="flex items-center justify-between">
+                                                <h3 class="text-lg leading-6 font-medium text-green-800">
+                                                    <i class="fab fa-whatsapp mr-2 text-green-600"></i> WhatsApp Message
+                                                </h3>
+                                                <button id="close-modal" class="text-green-500 hover:text-green-800 focus:outline-none">
+                                                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <div class="sm:flex sm:items-start">
+                                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                    <i class="fas fa-comment text-green-600"></i>
+                                                </div>
+                                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                                    <h4 class="text-lg leading-6 font-medium text-gray-900">Ready to connect?</h4>
+                                                    <div class="mt-2">
+                                                        <p class="text-sm text-gray-500">
+                                                            You're about to send a WhatsApp message to the Institute of Modern Technologies Ghana. Your message will be pre-filled as shown below.
+                                                        </p>
+                                                        <div class="mt-3 p-3 bg-green-50 border border-green-100 rounded-lg">
+                                                            <p class="text-sm font-bold text-gray-700" id="preview-name"></p>
+                                                            <p class="text-sm text-gray-700 mt-2" id="preview-message"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                            <button id="confirm-whatsapp" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm transition duration-150 ease-in-out">
+                                                <i class="fab fa-whatsapp mr-2"></i> Open WhatsApp
+                                            </button>
+                                            <button id="cancel-whatsapp" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition duration-150 ease-in-out">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const form = document.getElementById('whatsappForm');
+                                const nameInput = document.getElementById('name');
+                                const messageInput = document.getElementById('message');
+                                const modal = document.getElementById('whatsapp-modal');
+                                const closeModal = document.getElementById('close-modal');
+                                const confirmWhatsapp = document.getElementById('confirm-whatsapp');
+                                const cancelWhatsapp = document.getElementById('cancel-whatsapp');
+                                const previewName = document.getElementById('preview-name');
+                                const previewMessage = document.getElementById('preview-message');
+                                let whatsappUrl = '';
+                                
+                                // Show modal
+                                function showModal() {
+                                    modal.classList.remove('hidden');
+                                    document.body.style.overflow = 'hidden';
+                                    
+                                    // Add fade-in animation
+                                    modal.style.opacity = '0';
+                                    setTimeout(function() {
+                                        modal.style.transition = 'opacity 0.3s ease-out';
+                                        modal.style.opacity = '1';
+                                    }, 10);
+                                }
+                                
+                                // Hide modal
+                                function hideModal() {
+                                    modal.style.opacity = '0';
+                                    setTimeout(function() {
+                                        modal.classList.add('hidden');
+                                        document.body.style.overflow = '';
+                                    }, 300);
+                                }
+                                
+                                form.addEventListener('submit', function(e) {
+                                    e.preventDefault();
+                                    
+                                    if (!nameInput.value || !messageInput.value) {
+                                        alert('Please fill out both your name and message');
+                                        return;
+                                    }
+                                    
+                                    // Format the message as requested
+                                    const formattedMessage = `My name is ${nameInput.value}\n\n${messageInput.value}`;
+                                    
+                                    // Set the WhatsApp URL
+                                    whatsappUrl = `https://wa.me/233547147313?text=${encodeURIComponent(formattedMessage)}`;
+                                    
+                                    // Update preview
+                                    previewName.textContent = `My name is ${nameInput.value}`;
+                                    previewMessage.textContent = messageInput.value;
+                                    
+                                    // Show modal
+                                    showModal();
+                                });
+                                
+                                // Close modal events
+                                closeModal.addEventListener('click', hideModal);
+                                cancelWhatsapp.addEventListener('click', hideModal);
+                                
+                                // Confirm and open WhatsApp
+                                confirmWhatsapp.addEventListener('click', function() {
+                                    window.open(whatsappUrl, '_blank');
+                                    hideModal();
+                                    
+                                    // Reset form
+                                    form.reset();
+                                });
+                                
+                                // Close modal when clicking outside
+                                window.addEventListener('click', function(e) {
+                                    if (e.target === modal) {
+                                        hideModal();
+                                    }
+                                });
+                            });
+                            </script>
                         </form>
                     </div>
                     
