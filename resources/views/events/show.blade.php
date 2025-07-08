@@ -426,7 +426,7 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($relatedEvents as $relatedEvent)
-                <a href="{{ route('events.show', $relatedEvent->id) }}" class="card-hover bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                <a href="{{ route('events.public.show', $relatedEvent->id) }}" class="card-hover bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                     <div class="relative">
                         <img src="{{ asset('storage/' . $relatedEvent->media_path) }}" alt="{{ $relatedEvent->title }}" class="w-full h-48 object-cover">
                         @if($relatedEvent->level)
