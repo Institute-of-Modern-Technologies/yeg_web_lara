@@ -630,7 +630,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left Column - Categories -->
                 <div class="lg:col-span-1">
-                    <h3 class="text-lg font-semibold mb-6 text-gray-800">Categories</h3>
+                    <h3 class="text-lg font-semibold mb-6 text-gray-800 font-montserrat">Categories</h3>
                     
                     <!-- Category List -->
                     <div class="space-y-2">
@@ -638,7 +638,7 @@
                         <a href="{{ route('about') }}" class="block transition-all duration-300 hover:shadow-md">
                             <div class="border border-teal-300 rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 hover:bg-gray-50">
-                                    <span class="text-gray-700">About us</span>
+                                    <span class="text-gray-700 font-montserrat">About us</span>
                                     <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </div>
@@ -650,7 +650,7 @@
                         <a href="{{ route('career.guidance') }}" class="block">
                             <div class="border border-teal-300 rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700">Career Guidance</span>
+                                    <span class="text-gray-700 font-montserrat">Career Guidance</span>
                                     <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
                                         <i class="fas fa-chevron-right text-xs"></i>
                                     </div>
@@ -662,7 +662,7 @@
                         <a href="{{ route('programs') }}" class="block">
                             <div class="border border-teal-300 rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700">Our Programs</span>
+                                    <span class="text-gray-700 font-montserrat">Our Programs</span>
                                     <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </div>
@@ -675,7 +675,7 @@
                         <a href="{{ route('enrollment') }}" class="block">
                             <div class="border border-[#950713] rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700">Enrollment and rates</span>
+                                    <span class="text-gray-700 font-montserrat">Enrollment and rates</span>
                                     <div class="w-6 h-6 bg-[#ffcb05]/20 rounded-full flex items-center justify-center text-[#950713]">
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </div>

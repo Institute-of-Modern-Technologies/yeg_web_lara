@@ -13,7 +13,7 @@
     <div class="relative z-10 bg-gradient-to-r from-[#950713]/90 to-transparent py-32 md:py-40">
         <div class="container mx-auto px-6">
             <div class="max-w-3xl">
-                <h1 class="text-4xl sm:text-5xl font-bold mb-6 text-white">Enrollment & Rates</h1>
+                <h1 class="text-4xl sm:text-5xl font-bold mb-6 text-white font-montserrat">Enrollment & Rates</h1>
                 <p class="text-xl text-white/90 mb-8 max-w-xl">
                     Give your child the advantage of tech education with our age-appropriate, engaging programs designed to build future-ready skills.
                 </p>
@@ -53,7 +53,7 @@
             <div>
                 <div class="mb-8">
                     <span class="text-[#950713] text-sm font-bold uppercase tracking-wider">Registration Open</span>
-                    <h2 class="text-4xl md:text-5xl font-bold mt-2 mb-6">
+                    <h2 class="text-4xl md:text-5xl font-bold mt-2 mb-6 font-montserrat">
                         <span class="text-[#950713]">Enroll</span> 
                         <span class="text-[#FF00FF]">Your Child</span> 
                         <span class="block text-[#ffcb05]">For Success!</span>
@@ -68,15 +68,15 @@
                 <div id="program-rates" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     @foreach($programRates as $program)
                     <div class="bg-white p-5 rounded-xl shadow-md border-l-4 {{ $program['color'] }} hover:shadow-lg transition-all">
-                        <h3 class="text-lg font-bold text-[#950713]">{{ $program['name'] }}</h3>
-                        <p class="text-gray-500 text-sm mb-2">{{ $program['age'] }}</p>
+                        <h3 class="text-xl font-bold mb-2 font-montserrat">{{ $program['name'] }}</h3>
+                        <p class="text-gray-500 text-sm mb-2 font-montserrat">{{ $program['age'] }}</p>
                         <div class="flex justify-between items-center mt-4">
                             @if(is_numeric($program['price']))
                                 <span class="text-2xl font-bold text-[#950713]">GH₵{{ $program['price'] }}</span>
                             @else
                                 <span class="text-xl font-bold text-[#950713]">{{ $program['price'] }} Pricing</span>
                             @endif
-                            <span class="text-sm text-gray-600">{{ $program['period'] }}</span>
+                            <span class="text-sm text-gray-600 font-montserrat">{{ $program['period'] }}</span>
                         </div>
                     </div>
                     @endforeach
@@ -93,7 +93,7 @@
                 </div>
                 
                 <!-- Note -->
-                <p class="mt-6 text-sm text-gray-600">
+                <p class="mt-6 text-sm text-gray-600 font-montserrat">
                     * Scholarship options available for qualifying students. School partnership discounts available.
                 </p>
             </div>
@@ -105,9 +105,9 @@
 <section class="py-16 bg-white">
     <div class="container mx-auto px-6">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-[#950713] title-font">Enrollment Process</h2>
+            <h2 class="text-4xl font-bold text-[#950713] font-montserrat">Enrollment Process</h2>
             <div class="w-24 h-1 bg-[#ffcb05] mx-auto my-6"></div>
-            <p class="text-gray-700 max-w-3xl mx-auto body-font">
+            <p class="text-gray-700 max-w-3xl mx-auto body-font font-montserrat">
                 Getting started with Young Experts Group is simple. Follow these steps to enroll your child in our programs.
             </p>
         </div>
@@ -117,8 +117,8 @@
             <div class="relative">
                 <div class="absolute -top-3 -left-3 w-12 h-12 bg-[#950713] rounded-full flex items-center justify-center text-white font-bold text-xl">1</div>
                 <div class="bg-gray-50 p-6 pt-10 rounded-lg shadow-md h-full">
-                    <h3 class="text-xl font-bold text-[#950713] mb-4">Choose a Program</h3>
-                    <p class="text-gray-600">
+                    <h3 class="text-2xl font-bold mb-3 font-montserrat">Choose a Program</h3>
+                    <p class="text-gray-600 font-montserrat">
                         Select the program that best suits your child's age, interests, and skill level from our three age categories.
                     </p>
                 </div>
@@ -128,8 +128,8 @@
             <div class="relative">
                 <div class="absolute -top-3 -left-3 w-12 h-12 bg-[#950713] rounded-full flex items-center justify-center text-white font-bold text-xl">2</div>
                 <div class="bg-gray-50 p-6 pt-10 rounded-lg shadow-md h-full">
-                    <h3 class="text-xl font-bold text-[#950713] mb-4">Complete Registration</h3>
-                    <p class="text-gray-600">
+                    <h3 class="text-2xl font-bold mb-3 font-montserrat">Complete Registration</h3>
+                    <p class="text-gray-600 font-montserrat">
                         Fill out our registration form with your child's information and select your preferred schedule.
                     </p>
                 </div>
@@ -139,8 +139,8 @@
             <div class="relative">
                 <div class="absolute -top-3 -left-3 w-12 h-12 bg-[#950713] rounded-full flex items-center justify-center text-white font-bold text-xl">3</div>
                 <div class="bg-gray-50 p-6 pt-10 rounded-lg shadow-md h-full">
-                    <h3 class="text-xl font-bold text-[#950713] mb-4">Payment</h3>
-                    <p class="text-gray-600">
+                    <h3 class="text-2xl font-bold mb-3 font-montserrat">Payment</h3>
+                    <p class="text-gray-600 font-montserrat">
                         Process the payment for the selected program. Multiple payment options are available for your convenience.
                     </p>
                 </div>
@@ -150,8 +150,8 @@
             <div class="relative">
                 <div class="absolute -top-3 -left-3 w-12 h-12 bg-[#950713] rounded-full flex items-center justify-center text-white font-bold text-xl">4</div>
                 <div class="bg-gray-50 p-6 pt-10 rounded-lg shadow-md h-full">
-                    <h3 class="text-xl font-bold text-[#950713] mb-4">Begin Learning</h3>
-                    <p class="text-gray-600">
+                    <h3 class="text-2xl font-bold mb-3 font-montserrat">Begin Learning</h3>
+                    <p class="text-gray-600 font-montserrat">
                         Receive confirmation and access details. Your child is now ready to begin their tech learning journey!
                     </p>
                 </div>
@@ -164,7 +164,7 @@
 <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-6">
         <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-[#950713]">Frequently Asked Questions</h2>
+            <h2 class="text-4xl font-bold text-[#950713] font-montserrat">Frequently Asked Questions</h2>
             <div class="w-24 h-1 bg-[#ffcb05] mx-auto my-6"></div>
         </div>
         
@@ -174,7 +174,7 @@
                 <!-- Question 1 -->
                 <div class="border border-gray-200 rounded-lg overflow-hidden">
                     <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                        <h4 class="text-lg text-gray-800">How often do classes meet?</h4>
+                        <h4 class="text-lg text-gray-800 font-montserrat">How often do classes meet?</h4>
                         <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
@@ -189,7 +189,7 @@
                 <!-- Question 2 -->
                 <div class="border border-gray-200 rounded-lg overflow-hidden">
                     <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                        <h4 class="text-lg text-gray-800">Are there any additional fees beyond the listed rates?</h4>
+                        <h4 class="text-lg text-gray-800 font-montserrat">Are there any additional fees beyond the listed rates?</h4>
                         <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
@@ -204,7 +204,7 @@
                 <!-- Question 3 -->
                 <div class="border border-gray-200 rounded-lg overflow-hidden">
                     <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                        <h4 class="text-lg text-gray-800">How do I apply for scholarships?</h4>
+                        <h4 class="text-lg text-gray-800 font-montserrat">How do I apply for scholarships?</h4>
                         <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
@@ -219,7 +219,7 @@
                 <!-- Question 4 -->
                 <div class="border border-gray-200 rounded-lg overflow-hidden">
                     <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                        <h4 class="text-lg text-gray-800">What is your refund policy?</h4>
+                        <h4 class="text-lg text-gray-800 font-montserrat">What is your refund policy?</h4>
                         <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                             <i class="fas fa-chevron-down text-xs"></i>
                         </div>
@@ -238,7 +238,7 @@
 <!-- Enroll CTA Banner -->
 <div class="bg-[#950713] py-16 text-white">
     <div class="container mx-auto px-6 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to get started?</h2>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 font-montserrat">Ready to get started?</h2>
         <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
             Enroll your child today and begin their journey to becoming a young tech expert!
         </p>

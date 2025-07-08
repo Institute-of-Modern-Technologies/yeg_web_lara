@@ -4,7 +4,7 @@
 <!-- Google Fonts Import for Kid-friendly fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <!-- Custom Font Styles -->
 <style>
@@ -13,6 +13,9 @@
     }
     .body-font {
         font-family: 'Fredoka', sans-serif;
+    }
+    .montserrat-font {
+        font-family: 'Montserrat', sans-serif;
     }
     @keyframes float {
         0% { transform: translateY(0); }
@@ -39,7 +42,7 @@
 <div class="relative">
     <div class="container mx-auto px-6 pt-16 pb-24">
         <div class="text-left max-w-3xl">
-            <h1 class="text-white leading-tight title-font">
+            <h1 class="text-white leading-tight montserrat-font font-bold">
                 <span class="block text-5xl md:text-6xl">Career</span>
                 <span class="block text-4xl md:text-5xl mt-1">Guidance</span>
             </h1>
@@ -60,7 +63,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Career Exploration Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-compass mr-2"></i>Career Exploration</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-compass mr-2"></i>Career Exploration</h2>
             <p class="text-white text-sm mb-4 body-font">
                 At YEG, we believe career guidance should start early. Our program introduces children to a wide range of tech-related careers through hands-on experiences, guest speakers, and project-based learning.
             </p>
@@ -71,7 +74,7 @@
         
         <!-- Skills Development Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-laptop-code mr-2"></i>Future Skills</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-laptop-code mr-2"></i>Future Skills</h2>
             <div class="flex items-start mb-4">
                 <div class="mr-3 mt-1 text-sky-300">
                     <i class="fas fa-check-circle"></i>
@@ -94,7 +97,7 @@
         
         <!-- Industry Connection Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-handshake mr-2"></i>Industry Connections</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-handshake mr-2"></i>Industry Connections</h2>
             <p class="text-white text-sm mb-4 body-font">
                 Our students connect with real-world professionals through:
             </p>
@@ -115,7 +118,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-l from-[#950713]/10 to-transparent rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-road mr-2"></i>Career Pathways</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-road mr-2"></i>Career Pathways</h2>
     <p class="text-white text-center mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">YEG helps students explore these exciting tech career paths:</p>
     
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
@@ -127,7 +130,7 @@
             <div class="text-white text-3xl mb-4 text-center">
                 <i class="fas fa-code"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3 title-font text-center">Software Developer</h3>
+            <h3 class="text-xl font-bold text-white mb-3 montserrat-font text-center">Software Developer</h3>
             <p class="text-white text-sm body-font">Create apps, websites, and programs that change how we live, work, and play.</p>
         </div>
         
@@ -136,7 +139,7 @@
             <div class="text-white text-3xl mb-4 text-center">
                 <i class="fas fa-paint-brush"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3 title-font text-center">Digital Artist</h3>
+            <h3 class="text-xl font-bold text-white mb-3 montserrat-font text-center">Digital Artist</h3>
             <p class="text-white text-sm body-font">Design amazing graphics, animations, and visual experiences for games, movies, and more.</p>
         </div>
         
@@ -145,7 +148,7 @@
             <div class="text-white text-3xl mb-4 text-center">
                 <i class="fas fa-chart-bar"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3 title-font text-center">Data Scientist</h3>
+            <h3 class="text-xl font-bold text-white mb-3 montserrat-font text-center">Data Scientist</h3>
             <p class="text-white text-sm body-font">Analyze information to solve problems and make predictions about our world.</p>
         </div>
         
@@ -154,7 +157,7 @@
             <div class="text-white text-3xl mb-4 text-center">
                 <i class="fas fa-lightbulb"></i>
             </div>
-            <h3 class="text-xl font-bold text-white mb-3 title-font text-center">Tech Entrepreneur</h3>
+            <h3 class="text-xl font-bold text-white mb-3 montserrat-font text-center">Tech Entrepreneur</h3>
             <p class="text-white text-sm body-font">Start your own tech company and turn your ideas into products that help people.</p>
         </div>
     </div>
@@ -164,7 +167,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-tr from-[#0f5687]/15 via-transparent to-[#950713]/10 rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-book mr-2"></i>Career Resources</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-book mr-2"></i>Career Resources</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
         <!-- Career Assessment -->
@@ -174,7 +177,7 @@
                     <i class="fas fa-clipboard-check"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Career Assessment</h3>
+                    <h3 class="text-white font-bold montserrat-font">Career Assessment</h3>
                     <p class="text-white text-sm body-font">Our fun, age-appropriate quizzes help students discover careers that match their interests and talents.</p>
                 </div>
             </div>
@@ -187,7 +190,7 @@
                     <i class="fas fa-folder-open"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Digital Portfolio</h3>
+                    <h3 class="text-white font-bold montserrat-font">Digital Portfolio</h3>
                     <p class="text-white text-sm body-font">Students build impressive digital portfolios showcasing their projects and skills for future opportunities.</p>
                 </div>
             </div>
@@ -200,7 +203,7 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Parent Workshops</h3>
+                    <h3 class="text-white font-bold montserrat-font">Parent Workshops</h3>
                     <p class="text-white text-sm body-font">We equip parents with knowledge about future careers and how to support their children's interests.</p>
                 </div>
             </div>
@@ -213,7 +216,7 @@
                     <i class="fas fa-map-signs"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Learning Roadmaps</h3>
+                    <h3 class="text-white font-bold montserrat-font">Learning Roadmaps</h3>
                     <p class="text-white text-sm body-font">Personalized learning paths that guide students toward their career interests through targeted skill development.</p>
                 </div>
             </div>
@@ -225,7 +228,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-bl from-[#950713]/15 via-transparent to-[#0f5687]/15 rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-star mr-2"></i>Success Stories</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-star mr-2"></i>Success Stories</h2>
     <p class="text-white text-center mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">Meet some of our students who discovered their passion through YEG:</p>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -233,7 +236,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-user-graduate"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Kofi, 14</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Kofi, 14</h3>
             <p class="text-white text-sm body-font">"Before YEG, I didn't know what I wanted to do. Now I'm building my own mobile games and planning to become a game developer!"</p>
         </div>
         
@@ -241,7 +244,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-user-graduate"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Ama, 12</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Ama, 12</h3>
             <p class="text-white text-sm body-font">"I discovered I love designing websites. My teacher says I have a natural talent for user experience design!"</p>
         </div>
         
@@ -249,7 +252,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-user-graduate"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Kwame, 15</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Kwame, 15</h3>
             <p class="text-white text-sm body-font">"Through YEG's industry connections, I got to meet real data scientists and now I'm learning advanced math to prepare for my future career!"</p>
         </div>
     </div>

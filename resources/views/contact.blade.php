@@ -2,15 +2,30 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="relative bg-gray-900 text-white">
-        <div class="absolute inset-0">
-            <img src="{{ asset('images/contact-hero.jpg') }}" alt="Contact Us" class="w-full h-full object-cover opacity-40">
-            <div class="absolute inset-0 bg-primary/80 mix-blend-multiply"></div>
+    <section class="relative bg-gradient-to-r from-primary to-blue-800 text-white py-20">
+        <div class="absolute inset-0 overflow-hidden">
+            <img src="{{ asset('images/Hero picture 3.png') }}" alt="Contact Us" class="w-full h-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-blue-900/90"></div>
         </div>
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6">Get In Touch</h1>
-                <p class="text-xl md:text-2xl opacity-90">We'd love to hear from you. Reach out to us with any questions or inquiries.</p>
+                <div class="flex justify-center mb-6">
+                    <div class="bg-white/20 p-4 rounded-full backdrop-blur-sm">
+                        <i class="fas fa-comments text-4xl text-white"></i>
+                    </div>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">Get In Touch</h1>
+                <p class="text-xl md:text-2xl opacity-90 mb-8">We'd love to hear from you. Reach out to us with any questions or inquiries.</p>
+                <div class="flex flex-wrap justify-center gap-4 mt-6">
+                    <div class="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-lg flex items-center">
+                        <i class="fas fa-map-marker-alt text-yellow-300 mr-3"></i>
+                        <span>No. 8 Borstal Street, Roman Ridge Accra</span>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-lg flex items-center">
+                        <i class="fas fa-phone text-yellow-300 mr-3"></i>
+                        <span>+233 547 147 313</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

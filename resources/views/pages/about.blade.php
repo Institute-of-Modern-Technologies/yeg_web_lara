@@ -3,13 +3,16 @@
 @section('content')
 <!-- Font Import -->
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
     
     .title-font {
         font-family: 'Fredoka One', cursive;
     }
     .body-font {
         font-family: 'Fredoka', sans-serif;
+    }
+    .montserrat-font {
+        font-family: 'Montserrat', sans-serif;
     }
 </style>
 <!-- Full Page Background with Image -->
@@ -24,7 +27,7 @@
 <div class="relative">
     <div class="container mx-auto px-6 pt-16 pb-32">
         <div class="text-left max-w-3xl">
-            <h1 class="text-white leading-tight title-font">
+            <h1 class="text-white leading-tight montserrat-font font-bold">
                 <span class="block text-5xl md:text-6xl">Young Experts</span>
                 <span class="block text-4xl md:text-5xl mt-1">Group</span>
             </h1>
@@ -45,7 +48,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- About Us Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-users mr-2"></i>About Us</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-users mr-2"></i>About Us</h2>
             <p class="text-white text-sm mb-4 body-font">
                 The Young Experts Group (YEG) is more than just a tech club — it's a movement. We are a hands-on, practical program designed to help children and teens unlock their creative potential, master 21st-century digital skills, and step confidently into the future.
             </p>
@@ -56,7 +59,7 @@
         
         <!-- Our Mission & Vision Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-compass mr-2"></i>Our Mission & Vision</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-compass mr-2"></i>Our Mission & Vision</h2>
             <div class="flex items-start mb-4">
                 <div class="mr-3 mt-1 text-sky-300">
                     <i class="fas fa-rocket"></i>
@@ -73,7 +76,7 @@
         
         <!-- Who Can Join Card -->
         <div class="bg-[#0f5687] rounded-sm p-6">
-            <h2 class="text-2xl font-bold text-white mb-5 title-font"><i class="fas fa-child mr-2"></i>Who Can Join</h2>
+            <h2 class="text-2xl font-bold text-white mb-5 montserrat-font"><i class="fas fa-child mr-2"></i>Who Can Join</h2>
             <p class="text-white text-sm mb-4 body-font">
                 YEG is open to students ages 6–16 through the following pathways:
             </p>
@@ -94,7 +97,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-l from-[#950713]/10 to-transparent rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-tools mr-2"></i>How YEG Works</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-tools mr-2"></i>How YEG Works</h2>
     <p class="text-white text-center mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">Our program operates across schools, learning centers, and bootcamps, structured into three progressive phases:</p>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
@@ -127,7 +130,7 @@
     </div>
     
     <!-- What We Teach Section -->
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-lightbulb mr-2"></i>What We Teach</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-lightbulb mr-2"></i>What We Teach</h2>
     <p class="text-white text-center mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">YEG students gain expertise in a wide range of 21st-century fields, including:</p>
     
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
@@ -171,7 +174,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-tr from-[#0f5687]/15 via-transparent to-[#950713]/10 rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-star mr-2"></i>What Makes YEG Different?</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-star mr-2"></i>What Makes YEG Different?</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
         <div class="bg-[#0f5687]/90 rounded-sm p-5">
@@ -180,7 +183,7 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Project-Based Learning</h3>
+                    <h3 class="text-white font-bold montserrat-font">Project-Based Learning</h3>
                     <p class="text-white text-sm body-font">Every student learns by doing, not just listening.</p>
                 </div>
             </div>
@@ -192,7 +195,7 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Career-Driven Exposure</h3>
+                    <h3 class="text-white font-bold montserrat-font">Career-Driven Exposure</h3>
                     <p class="text-white text-sm body-font">Beyond coding, we teach problem-solving and future-thinking.</p>
                 </div>
             </div>
@@ -204,7 +207,7 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">AI + Creativity</h3>
+                    <h3 class="text-white font-bold montserrat-font">AI + Creativity</h3>
                     <p class="text-white text-sm body-font">From book creation to ad design, we integrate AI tools in every module.</p>
                 </div>
             </div>
@@ -216,7 +219,7 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Montessori-Inspired</h3>
+                    <h3 class="text-white font-bold montserrat-font">Montessori-Inspired</h3>
                     <p class="text-white text-sm body-font">A student-centered approach that supports learning at each child's pace.</p>
                 </div>
             </div>
@@ -228,7 +231,7 @@
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <div>
-                    <h3 class="text-white font-bold title-font">Workplace Simulation</h3>
+                    <h3 class="text-white font-bold montserrat-font">Workplace Simulation</h3>
                     <p class="text-white text-sm body-font">Our learning spaces mimic office environments, building confidence and professionalism early on.</p>
                 </div>
             </div>
@@ -249,7 +252,7 @@
 <div class="container mx-auto px-4 py-12 relative">
     <!-- Section Overlay -->
     <div class="absolute inset-0 bg-gradient-to-bl from-[#950713]/15 via-transparent to-[#0f5687]/15 rounded-xl -z-10"></div>
-    <h2 class="text-3xl font-bold text-white mb-8 title-font text-center"><i class="fas fa-medal mr-2"></i>Certifications & Recognition</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 montserrat-font text-center"><i class="fas fa-medal mr-2"></i>Certifications & Recognition</h2>
     <p class="text-white text-center mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">Each YEG phase ends with:</p>
     
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
@@ -257,7 +260,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-certificate"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Official Certificates</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Official Certificates</h3>
             <p class="text-white text-sm body-font">Recognized achievements at the end of each program phase</p>
         </div>
         
@@ -265,7 +268,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-comments"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Project Feedback</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Project Feedback</h3>
             <p class="text-white text-sm body-font">Detailed guidance and assessment on student work</p>
         </div>
         
@@ -273,7 +276,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-laptop-code"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Digital Portfolios</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Digital Portfolios</h3>
             <p class="text-white text-sm body-font">Comprehensive showcase of each student's projects and skills</p>
         </div>
         
@@ -281,7 +284,7 @@
             <div class="text-white text-3xl mb-4">
                 <i class="fas fa-award"></i>
             </div>
-            <h3 class="text-white font-bold title-font mb-2">Public Exhibitions</h3>
+            <h3 class="text-white font-bold montserrat-font mb-2">Public Exhibitions</h3>
             <p class="text-white text-sm body-font">Opportunities to showcase work at school and community events</p>
         </div>
     </div>

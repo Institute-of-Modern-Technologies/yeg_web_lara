@@ -3,13 +3,16 @@
 @section('content')
 <!-- Font Import -->
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
     
     .title-font {
         font-family: 'Fredoka One', cursive;
     }
     .body-font {
         font-family: 'Fredoka', sans-serif;
+    }
+    .montserrat-font {
+        font-family: 'Montserrat', sans-serif;
     }
     
     /* Program card animations */
@@ -77,7 +80,7 @@
     
     <div class="container mx-auto px-6 py-24 relative z-10">
         <div class="max-w-xl">
-            <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight title-font mb-6">
+            <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight font-montserrat mb-6">
                 Our Programs
             </h1>
             <p class="text-white text-xl body-font mb-8">
@@ -98,7 +101,7 @@
 <!-- Welcome Section -->
 <div class="py-16 bg-white">
     <div class="container mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold mb-3 text-[#950713] title-font">
+        <h2 class="text-4xl font-bold mb-3 text-[#950713] font-montserrat">
             Welcome to <span class="text-[#ffcb05]">Young Experts Group</span> Programs
         </h2>
         <div class="w-24 h-1 bg-[#FF00FF] mx-auto my-6"></div>
@@ -112,7 +115,7 @@
 <div class="py-16 bg-gray-50">
     <div class="container mx-auto px-6">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-[#950713] title-font">Our Classes</h2>
+            <h2 class="text-4xl font-bold text-[#950713] font-montserrat">Our Classes</h2>
             <div class="w-24 h-1 bg-[#ffcb05] mx-auto my-6"></div>
             <p class="text-gray-700 max-w-3xl mx-auto body-font">
                 We provide three main program levels based on age groups and skill development, each tailored to meet the appropriate learning needs of your child.
@@ -151,7 +154,7 @@
 <div class="py-16 bg-white">
     <div class="container mx-auto px-6">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-[#950713] title-font">What Children Learn</h2>
+            <h2 class="text-4xl font-bold text-[#950713] font-montserrat">What Children Learn</h2>
             <div class="w-24 h-1 bg-[#ffcb05] mx-auto my-6"></div>
             <p class="text-gray-700 max-w-3xl mx-auto body-font">
                 Our curriculum is designed to build both technical skills and creative problem-solving abilities that prepare young minds for the digital future.
@@ -164,7 +167,7 @@
                 <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-laptop-code text-white text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-[#950713] mb-3 title-font">Technology</h3>
+                <h3 class="text-xl font-bold text-[#950713] mb-3 font-montserrat">Technology</h3>
                 <ul class="text-left space-y-2 text-gray-700 body-font">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
@@ -190,7 +193,7 @@
                 <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-lightbulb text-white text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-[#950713] mb-3 title-font">Entrepreneurship</h3>
+                <h3 class="text-xl font-bold text-[#950713] mb-3 font-montserrat">Entrepreneurship</h3>
                 <ul class="text-left space-y-2 text-gray-700 body-font">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
@@ -216,7 +219,7 @@
                 <div class="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-palette text-white text-2xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-[#950713] mb-3 title-font">Creativity</h3>
+                <h3 class="text-xl font-bold text-[#950713] mb-3 font-montserrat">Creativity</h3>
                 <ul class="text-left space-y-2 text-gray-700 body-font">
                     <li class="flex items-start">
                         <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
@@ -264,7 +267,7 @@
                             <i class="fas fa-check text-white"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-[#950713] mb-2 title-font">Hands-on Learning</h3>
+                            <h3 class="text-xl font-bold text-[#950713] mb-2 font-montserrat">Hands-on Learning</h3>
                             <p class="text-gray-700 body-font">Children learn by doing, creating real projects they can be proud of.</p>
                         </div>
                     </div>
@@ -276,7 +279,7 @@
                             <i class="fas fa-check text-white"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-[#950713] mb-2 title-font">Small Class Sizes</h3>
+                            <h3 class="text-xl font-bold text-[#950713] mb-2 font-montserrat">Small Class Sizes</h3>
                             <p class="text-gray-700 body-font">Personalized attention ensures each child gets the guidance they need.</p>
                         </div>
                     </div>
@@ -288,7 +291,7 @@
                             <i class="fas fa-check text-white"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-[#950713] mb-2 title-font">Expert Instructors</h3>
+                            <h3 class="text-xl font-bold text-[#950713] mb-2 font-montserrat">Expert Instructors</h3>
                             <p class="text-gray-700 body-font">Our teachers are passionate about technology and working with children.</p>
                         </div>
                     </div>
@@ -301,7 +304,7 @@
 <!-- Call to Action -->
 <div class="py-16 bg-[#950713]">
     <div class="container mx-auto px-6 text-center">
-        <h2 class="text-4xl font-bold text-white mb-6 title-font">Ready to Enroll Your Child?</h2>
+        <h2 class="text-4xl font-bold text-white mb-6 font-montserrat">Ready to Enroll Your Child?</h2>
         <p class="text-white text-xl max-w-3xl mx-auto mb-8 body-font">
             Give your child the gift of future-ready skills in a fun, engaging environment.
         </p>
