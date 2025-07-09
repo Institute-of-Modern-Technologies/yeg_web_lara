@@ -209,6 +209,14 @@
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        <div>
+                            <label for="class" class="block text-sm font-medium text-gray-700 mb-1">Class <span class="text-red-500">*</span></label>
+                            <input type="text" id="class" name="class" value="{{ old('class') }}" placeholder="e.g. Grade 3, JHS 1, Form 2" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                            @error('class')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     
                     <!-- Address Information -->

@@ -26,7 +26,8 @@ class Student extends Model
         'payment_reference',
         'payment_status',
         'status',
-        'payer_type'
+        'payer_type',
+        'class'
     ];
     
     /**
