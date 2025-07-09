@@ -55,7 +55,7 @@
                     <!-- Age -->
                     <div>
                         <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Age <span class="text-red-500">*</span></label>
-                        <input type="number" name="age" id="age" min="1" max="100" value="{{ old('age') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                        <input type="number" name="age" id="age" min="1" max="100" value="{{ old('age') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" readonly required>
                     </div>
                     
                     <!-- Email -->
@@ -80,6 +80,18 @@
                     <div>
                         <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-500">*</span></label>
                         <input type="text" name="city" id="city" value="{{ old('city') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                    </div>
+                    
+                    <!-- Date of Birth -->
+                    <div>
+                        <label for="date_of_birth" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" onchange="calculateAge()" required>
+                    </div>
+                    
+                    <!-- Class -->
+                    <div>
+                        <label for="class" class="block text-sm font-medium text-gray-700 mb-1">Class <span class="text-red-500">*</span></label>
+                        <input type="text" name="class" id="class" value="{{ old('class') }}" placeholder="e.g. Grade 3, JHS 1, Form 2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
                     </div>
                 </div>
             </div>
@@ -127,4 +139,30 @@
         </form>
     </div>
 </div>
+    <script>
+        function calculateAge() {
+            const dob = document.getElementById('date_of_birth').value;
+            
+            if(dob) {
+                const birthDate = new Date(dob);
+                const today = new Date();
+                
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDifference = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                document.getElementById('age').value = age;
+            }
+        }
+        
+        // Calculate age on page load if date of birth is already set
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('date_of_birth').value) {
+                calculateAge();
+            }
+        });
+    </script>
 @endsection
