@@ -46,7 +46,12 @@ class SchoolLogoController extends Controller
         }
 
         if ($request->hasFile('logo')) {
+            // Store in the storage/app/public directory
             $logoPath = $request->file('logo')->store('school_logos', 'public');
+            
+            // Also copy to public/images for direct access
+            $filename = basename($logoPath);
+            $request->file('logo')->move(public_path('images'), $filename);
         }
 
         SchoolLogo::create([
@@ -91,11 +96,26 @@ class SchoolLogoController extends Controller
         
         if ($request->hasFile('logo')) {
             // Delete old logo if exists
-            if ($schoolLogo->logo_path && Storage::disk('public')->exists($schoolLogo->logo_path)) {
-                Storage::disk('public')->delete($schoolLogo->logo_path);
+            if ($schoolLogo->logo_path) {
+                // Delete from storage
+                if (Storage::disk('public')->exists($schoolLogo->logo_path)) {
+                    Storage::disk('public')->delete($schoolLogo->logo_path);
+                }
+                
+                // Delete from public images if exists
+                $oldFilename = basename($schoolLogo->logo_path);
+                if (file_exists(public_path('images/' . $oldFilename))) {
+                    unlink(public_path('images/' . $oldFilename));
+                }
             }
             
+            // Store in the storage/app/public directory
             $logoPath = $request->file('logo')->store('school_logos', 'public');
+            
+            // Also copy to public/images for direct access
+            $filename = basename($logoPath);
+            $request->file('logo')->move(public_path('images'), $filename);
+            
             $schoolLogo->logo_path = $logoPath;
         }
 
@@ -116,8 +136,17 @@ class SchoolLogoController extends Controller
         $schoolLogo = SchoolLogo::findOrFail($id);
         
         // Delete logo file
-        if ($schoolLogo->logo_path && Storage::disk('public')->exists($schoolLogo->logo_path)) {
-            Storage::disk('public')->delete($schoolLogo->logo_path);
+        if ($schoolLogo->logo_path) {
+            // Delete from storage
+            if (Storage::disk('public')->exists($schoolLogo->logo_path)) {
+                Storage::disk('public')->delete($schoolLogo->logo_path);
+            }
+            
+            // Delete from public images if exists
+            $filename = basename($schoolLogo->logo_path);
+            if (file_exists(public_path('images/' . $filename))) {
+                unlink(public_path('images/' . $filename));
+            }
         }
         
         $schoolLogo->delete();

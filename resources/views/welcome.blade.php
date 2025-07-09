@@ -1223,7 +1223,7 @@
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.png') }}'">
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
                             @endforeach
                             <!-- Second set for seamless looping -->
@@ -1232,7 +1232,7 @@
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.png') }}'">
+                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
                             @endforeach
                         </div>

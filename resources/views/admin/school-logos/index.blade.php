@@ -62,7 +62,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex-shrink-0 h-16 w-16 overflow-hidden rounded border border-gray-200">
-                                <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" class="h-full w-full object-contain">
+                                <img src="{{ $logo->logo_url }}" alt="{{ $logo->name }}" class="h-full w-full object-contain">
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -108,8 +108,8 @@
                         <div class="flex-shrink-0 cursor-move handle">
                             <i class="fas fa-grip-vertical text-gray-400 mt-2"></i>
                         </div>
-                        <div class="flex-shrink-0 h-16 w-16 overflow-hidden rounded border border-gray-200">
-                            <img src="{{ asset('storage/' . $logo->logo_path) }}" alt="{{ $logo->name }}" class="h-full w-full object-contain">
+                        <div class="flex-shrink-0 w-16 h-16 rounded overflow-hidden border border-gray-200">
+                            <img src="{{ $logo->logo_url }}" alt="{{ $logo->name }}" class="w-full h-full object-contain">
                         </div>
                         <div class="flex-grow ml-2">
                             <h3 class="font-medium">{{ $logo->name }}</h3>

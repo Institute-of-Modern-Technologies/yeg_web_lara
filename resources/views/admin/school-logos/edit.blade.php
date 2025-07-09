@@ -82,14 +82,12 @@
                             <p class="mt-1 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p>
                         @enderror
                         
-                        @if($schoolLogo->logo_path)
                         <div id="current-logo-container" class="mt-3">
                             <p class="text-sm font-medium text-gray-700 mb-1"><i class="fas fa-image mr-1"></i>Current Logo:</p>
                             <div class="h-32 w-auto border rounded p-1 bg-gray-50 inline-block">
-                                <img src="{{ asset('storage/' . $schoolLogo->logo_path) }}" alt="{{ $schoolLogo->name }}" class="h-full w-auto object-contain">
+                                <img src="{{ $schoolLogo->logo_url }}" alt="{{ $schoolLogo->name }}" class="h-full w-auto object-contain">
                             </div>
                         </div>
-                        @endif
                         
                         <div id="new-logo-preview-container" class="mt-3 hidden">
                             <p class="text-sm font-medium text-gray-700 mb-1"><i class="fas fa-eye mr-1"></i>New Logo Preview:</p>
