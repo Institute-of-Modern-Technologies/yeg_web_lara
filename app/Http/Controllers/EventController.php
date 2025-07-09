@@ -49,6 +49,18 @@ class EventController extends Controller
     }
     
     /**
+     * Display all events in a modern gallery format
+     * No authentication required (public view)
+     */
+    public function gallery()
+    {
+        // Get ALL events from the database with no filtering
+        $events = Event::ordered()->get();
+        
+        return view('events.gallery', compact('events'));
+    }
+    
+    /**
      * Display a listing of the events.
      */
     public function index()

@@ -1100,7 +1100,7 @@
             <!-- View All Button -->
             <div class="text-center mt-10">
                 @if($events->isNotEmpty())
-                <a href="{{ route('events.public.show', $events->first()->id) }}" class="inline-block text-white py-3 px-6 rounded-md hover:opacity-90 transition duration-300" style="background-color: #950713;">
+                <a href="{{ route('events.gallery') }}" class="inline-block text-white py-3 px-6 rounded-md hover:opacity-90 transition duration-300" style="background-color: #FF00FF;">
                     View All Events 
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>

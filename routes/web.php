@@ -19,7 +19,10 @@ Route::post('/contact/send', [\App\Http\Controllers\ContactController::class, 's
 Route::get('/event-details/{id}', [EventController::class, 'publicShow'])->name('events.public.show');
 
 // Original event route (might have auth middleware applied somewhere)
-Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{id}', [EventController::class, 'show'])->where('id', '[0-9]+')->name('events.show');
+
+// Event gallery route - displays all events in a modern gallery format
+Route::get('/events/gallery', [EventController::class, 'gallery'])->name('events.gallery');
 
 // School Registration Routes
 Route::get('/schools/register', [\App\Http\Controllers\SchoolRegistrationController::class, 'showRegistrationForm'])->name('school.register');
