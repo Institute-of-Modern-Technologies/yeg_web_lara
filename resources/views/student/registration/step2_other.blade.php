@@ -148,15 +148,7 @@
                     </div>
                 @endif
                 
-                <!-- Debug Information -->
-                <div class="mb-4 p-3 border border-gray-200 rounded-md bg-gray-50">
-                    <h3 class="font-bold text-sm text-gray-700 mb-1">Debug Information</h3>
-                    <div class="text-xs text-gray-600">
-                        <p>Session ID: {{ session()->getId() }}</p>
-                        <p>Program Type ID: {{ session('registration.program_type_id') ?? 'Not set' }}</p>
-                        <p>Previous School Selection: {{ session('registration.school_selection') ?? 'Not set' }}</p>
-                    </div>
-                </div>
+
                 
                 <div class="mb-6">
                     <div class="flex items-center mb-4">
@@ -173,8 +165,7 @@
                 <form action="/students/register/process-step2-other" method="POST" class="mb-8 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                     @csrf
                     <input type="hidden" name="school_selection" value="not_yet">
-                    <input type="hidden" name="debug_program_type" value="{{ session('registration.program_type_id') }}">
-                    <input type="hidden" name="debug_timestamp" value="{{ time() }}">
+
                     
                     <div class="flex items-center mb-4">
                         <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
@@ -197,8 +188,7 @@
                 <form action="/students/register/process-step2-other" method="POST" class="mb-8 bg-white border border-primary rounded-lg p-6 shadow-sm" id="school-selection-form">
                     @csrf
                     <input type="hidden" name="school_selection" value="select_school">
-                    <input type="hidden" name="debug_program_type" value="{{ session('registration.program_type_id') }}">
-                    <input type="hidden" name="debug_timestamp" value="{{ time() }}">
+
                     
                     @if ($errors->any())
                         <div class="mb-4 bg-red-50 border border-red-200 text-red-700 p-4 rounded-md">
