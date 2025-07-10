@@ -385,20 +385,7 @@
                         }
                     </script>
                     @endsection
-                    
-                    <div class="relative inline-block group">
-                        <button class="bg-neon-pink text-white px-4 py-2 rounded-md hover:bg-opacity-90 inline-flex items-center">
-                            Find Out More 
-                            <i class="fas fa-arrow-right ml-2"></i>
-                        </button>
-                        <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden group-hover:block hover:block">
-                            <div class="py-2">
-                                <a href="/students/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Student</a>
-                                <a href="/teachers/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Trainer</a>
-                                <a href="/schools/register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">School</a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 
                 <!-- Right Column - Why Partner With Us -->
