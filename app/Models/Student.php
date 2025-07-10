@@ -15,6 +15,8 @@ class Student extends Model
     
     protected $fillable = [
         'full_name',
+        'first_name',
+        'last_name',
         'age',
         'phone',
         'email',
@@ -27,7 +29,12 @@ class Student extends Model
         'payment_status',
         'status',
         'payer_type',
-        'class'
+        'class',
+        'gender',
+        'date_of_birth',
+        'address',
+        'region',
+        'state'
     ];
     
     /**

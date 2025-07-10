@@ -66,8 +66,19 @@ Route::prefix('students')->name('student.registration.')->group(function () {
     
     // Success page
     Route::get('/register/success', function() {
+        // Check if we have student registration in session
+        if (session()->has('registration.student') && isset(session('registration.student')->id)) {
+            // Get the complete student record from database
+            $student = \App\Models\Student::find(session('registration.student')->id);
+            
+            if ($student) {
+                // Store the complete student record in session
+                session(['registration.student' => $student]);
+            }
+        }
+        
         return view('student.registration.success');
-    })->name('success');
+    })->name('student.registration.success');
 });
 
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type

@@ -399,12 +399,21 @@ class StudentRegistrationController extends Controller
             
             // For further processing
             $studentId = $student->id;
+            
+            // Create comprehensive student object for the session
             $studentObj = (object)[
                 'id' => $studentId,
                 'registration_number' => $registrationNumber,
                 'full_name' => $fullName,
                 'email' => $request->email,
-                'phone' => $request->phone
+                'phone' => $request->phone,
+                'parent_contact' => $request->parent_contact ?? null,
+                'gender' => $request->gender ?? null,
+                'date_of_birth' => $request->date_of_birth ?? null,
+                'address' => $request->address ?? null,
+                'city' => $request->city ?? null,
+                'region' => $request->region ?? null,
+                'class' => $request->class ?? null
             ];
             
             // Note: User account creation is now handled by admin approval process
