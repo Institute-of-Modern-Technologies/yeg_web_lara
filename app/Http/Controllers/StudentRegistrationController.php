@@ -177,8 +177,27 @@ class StudentRegistrationController extends Controller
                 ->orderBy('school_id', 'desc') // Prioritize school-specific fees
                 ->first();
                 
-            // If no fee found, use a default amount
-            $feeAmount = $fee ? $fee->amount : 500; // Default fee of 500 GHC
+            // If no fee found, log an error and don't set a fee amount
+            if (!$fee) {
+                \Log::error('No fee configuration found for program type: ' . $programTypeId . ' and school: ' . $schoolId);
+                // Don't set a fee amount if no configuration is found
+                $feeAmount = null;
+            } else {
+                $feeAmount = $fee->amount;
+                
+                // Check if the school is a partner school and apply discount if applicable
+                if ($request->school_selection === 'select_school' && $schoolId) {
+                    $school = School::find($schoolId);
+                    if ($school && $school->is_partner && $fee->partner_discount > 0) {
+                        $feeAmount = $fee->amount - $fee->partner_discount;
+                        \Log::info('Applied partner school discount', [
+                            'original_fee' => $fee->amount,
+                            'discount' => $fee->partner_discount,
+                            'final_fee' => $feeAmount
+                        ]);
+                    }
+                }
+            }
             
             \Log::info('Fee calculation:', [
                 'fee_found' => (bool)$fee,
@@ -186,8 +205,13 @@ class StudentRegistrationController extends Controller
                 'fee_id' => $fee ? $fee->id : null
             ]);
             
-            // Store fee amount in session
-            session(['registration.fee_amount' => $feeAmount]);
+            // Store fee amount in session only if it's not null
+            if ($feeAmount !== null) {
+                session(['registration.fee_amount' => $feeAmount]);
+            } else {
+                // Clear any previously set fee amount
+                session()->forget('registration.fee_amount');
+            }
             
             // Debug: Log final session values
             \Log::info('Final session state before redirecting to step3:', [
@@ -232,23 +256,38 @@ class StudentRegistrationController extends Controller
         $fee = Fee::where('program_type_id', $programTypeId)
             ->where(function($query) use ($schoolId) {
                 $query->where('school_id', $schoolId)
-                      ->orWhereNull('school_id');
+                    ->orWhereNull('school_id');
             })
             ->where('is_active', 1)
             ->orderBy('school_id', 'desc') // Prioritize school-specific fees
             ->first();
             
-        // If no fee found, use a default amount
-        $feeAmount = $fee ? $fee->amount : 0; // Use dynamic fee from database, or 0 as default
-        
-        // Check if the school is a partner school
-        $school = School::find($schoolId);
-        if ($school && $school->is_partner && $fee) {
-            $feeAmount = $fee->amount - $fee->partner_discount;
+        // If no fee found, log an error and don't set a fee amount
+        if (!$fee) {
+            \Log::error('No fee configuration found for program type: ' . $programTypeId . ' and school: ' . $schoolId);
+            // Don't set a fee amount if no configuration is found
+            $feeAmount = null;
+        } else {
+            $feeAmount = $fee->amount;
+            
+            // Check if the school is a partner school and apply discount if applicable
+            if ($request->school_selection === 'select_school' && $schoolId) {
+                $school = School::find($schoolId);
+                if ($school && $school->is_partner && $fee->partner_discount > 0) {
+                    $feeAmount = $fee->amount - $fee->partner_discount;
+                    \Log::info('Applied partner school discount', [
+                        'original_fee' => $fee->amount,
+                        'discount' => $fee->partner_discount,
+                        'final_fee' => $feeAmount
+                    ]);
+                }
+            }
         }
         
-        // Store fee amount in session
-        session(['registration.fee_amount' => $feeAmount]);
+        // Store fee amount in session only if it's not null
+        if ($feeAmount !== null) {
+            session(['registration.fee_amount' => $feeAmount]);
+        }
         
         // Skip payment page for now and go directly to details form
         return redirect()->route('student.registration.details');

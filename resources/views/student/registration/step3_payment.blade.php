@@ -42,10 +42,12 @@
                                 </div>
                                 @endif
                                 
+                                @if(isset($feeAmount))
                                 <div class="flex justify-between border-b border-gray-200 pb-2">
                                     <span class="text-gray-600">Fee Amount:</span>
                                     <span class="font-medium text-gray-800">GHC {{ number_format($feeAmount, 2) }}</span>
                                 </div>
+                                @endif
                             </div>
                             
                             <div class="mt-4 p-4 bg-white rounded-lg border border-gray-200">

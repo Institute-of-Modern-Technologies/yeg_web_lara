@@ -30,7 +30,9 @@
                         <div class="ml-3">
                             <h3 class="text-sm font-medium text-blue-800">School Program Fee</h3>
                             <div class="mt-2 text-sm text-blue-700">
+                                @if(isset($finalFee))
                                 <p>Your total fee is: <strong>GHC {{ number_format($finalFee, 2) }}</strong></p>
+                                @endif
                                 <p class="mt-1">Please make a payment via Mobile Money to the number below and enter your payment reference number.</p>
                                 <p class="mt-2 font-medium">Mobile Money: 0559999999</p>
                             </div>
