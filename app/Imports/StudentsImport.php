@@ -189,9 +189,37 @@ class StudentsImport
             $student = Student::create($studentData);
             $this->processedCount++;
             
-            // Create user account for the student if they have an email address
-            if (!empty($student->email)) {
-                $this->createStudentUser($student);
+            // Create user account for every student, generating a dummy email if needed
+            if (empty($student->email)) {
+                // Generate a dummy email using school name and student info
+                $schoolName = "school";
+                if ($student->school_id) {
+                    $school = \App\Models\School::find($student->school_id);
+                    if ($school) {
+                        $schoolName = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $school->name));
+                    }
+                }
+                
+                // Create dummy email
+                $namePart = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $student->first_name . $student->last_name));
+                if (empty($namePart)) {
+                    $namePart = 'student' . $student->id;
+                }
+                $dummyEmail = $namePart . '.' . $student->id . '@' . $schoolName . '.example';
+                
+                // Update the student with the dummy email
+                $student->email = $dummyEmail;
+                $student->save();
+                
+                Log::info("Generated dummy email {$dummyEmail} for student ID: {$student->id}");
+            }
+            
+            Log::info("Attempting to create user account for student ID: {$student->id} with email: {$student->email}");
+            $user = $this->createStudentUser($student);
+            if ($user) {
+                Log::info("Successfully created user account with ID: {$user->id} and username: {$user->username}");
+            } else {
+                Log::warning("Failed to create user account for student ID: {$student->id}");
             }
         } catch (\Exception $e) {
             $this->skippedCount++;
