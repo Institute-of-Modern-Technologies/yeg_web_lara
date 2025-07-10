@@ -204,7 +204,7 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::with('payments')->findOrFail($id);
         
         // Check if the student has any related payments
         if ($student->payments->count() > 0) {
@@ -212,10 +212,49 @@ class StudentController extends Controller
                 ->with('error', 'Cannot delete student with payment records. Consider marking them as inactive instead.');
         }
         
-        $student->delete();
+        // Start transaction
+        DB::beginTransaction();
         
-        return redirect()->route('admin.students.index')
-            ->with('success', 'Student deleted successfully.');
+        try {
+            $userDeleted = false;
+            
+            // Delete associated user account if exists
+            if (!empty($student->email)) {
+                $user = User::where('email', $student->email)->first();
+                if ($user) {
+                    // Force delete the user to ensure it's completely removed
+                    $userId = $user->id;
+                    
+                    // Raw delete to bypass any potential issues
+                    DB::table('users')->where('id', $userId)->delete();
+                    
+                    $userDeleted = true;
+                    Log::info("Individual delete: Removed user account for student ID: {$student->id}, email: {$student->email}, user ID: {$userId}");
+                }
+            }
+            
+            // Delete the student
+            $student->delete();
+            
+            // Commit the transaction
+            DB::commit();
+            
+            $message = 'Student deleted successfully';
+            if ($userDeleted) {
+                $message .= ' along with user account';
+            }
+            
+            return redirect()->route('admin.students.index')
+                ->with('success', $message . '.');
+                
+        } catch (\Exception $e) {
+            // Rollback the transaction
+            DB::rollBack();
+            
+            Log::error('Student delete error: ' . $e->getMessage());
+            return redirect()->route('admin.students.index')
+                ->with('error', 'Failed to delete student: ' . $e->getMessage());
+        }
     }
     
     /**
@@ -227,13 +266,14 @@ class StudentController extends Controller
     public function bulkDestroy(Request $request)
     {
         $request->validate([
-            'student_ids' => 'required|array',
-            'student_ids.*' => 'exists:students,id'
+            'selected_students' => 'required|array',
+            'selected_students.*' => 'exists:students,id'
         ]);
         
-        $studentIds = $request->student_ids;
+        $studentIds = $request->selected_students;
         $successCount = 0;
         $failCount = 0;
+        $deletedUserCount = 0;
         
         // Begin transaction
         DB::beginTransaction();
@@ -252,6 +292,26 @@ class StudentController extends Controller
                     continue;
                 }
                 
+                // Delete associated user account if exists
+                if (!empty($student->email)) {
+                    try {
+                        $user = User::where('email', $student->email)->first();
+                        if ($user) {
+                            $userId = $user->id;
+                            
+                            // Use raw query to bypass any potential issues
+                            DB::table('users')->where('id', $userId)->delete();
+                            
+                            $deletedUserCount++;
+                            Log::info("Bulk delete: Removed user account for student ID: {$student->id}, email: {$student->email}, user ID: {$userId}");
+                        } else {
+                            Log::info("No user account found for student ID: {$student->id}, email: {$student->email}");
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Failed to delete user account for student {$student->id}: {$e->getMessage()}");
+                    }                    
+                }
+                
                 $student->delete();
                 $successCount++;
             }
@@ -260,14 +320,20 @@ class StudentController extends Controller
             DB::commit();
             
             if ($failCount > 0) {
-                $message = $successCount . ' student(s) deleted successfully. ' . $failCount . ' student(s) could not be deleted due to existing payment records.';
+                $message = $successCount . ' student(s) deleted successfully (' . $deletedUserCount . ' user accounts). ' . $failCount . ' student(s) could not be deleted due to existing payment records.';
                 return redirect()->route('admin.students.index')->with('warning', $message);
             } else {
-                return redirect()->route('admin.students.index')->with('success', $successCount . ' student(s) deleted successfully.');
+                $message = $successCount . ' student(s) deleted successfully';  
+                if ($deletedUserCount > 0) {
+                    $message .= ' along with ' . $deletedUserCount . ' user account(s)';
+                }
+                $message .= '.';
+                return redirect()->route('admin.students.index')->with('success', $message);
             }
         } catch (\Exception $e) {
             // Rollback the transaction in case of error
             DB::rollBack();
+            Log::error('Bulk delete error: ' . $e->getMessage());
             return redirect()->route('admin.students.index')->with('error', 'An error occurred while deleting students: ' . $e->getMessage());
         }
     }

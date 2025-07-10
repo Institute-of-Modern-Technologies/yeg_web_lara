@@ -5,10 +5,15 @@ namespace App\Imports;
 use App\Models\Student;
 use App\Models\School;
 use App\Models\ProgramType;
+use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Notifications\StudentApprovalNotification;
 
 class StudentsImport
 {
@@ -181,8 +186,13 @@ class StudentsImport
         
         // Create the student
         try {
-            Student::create($studentData);
+            $student = Student::create($studentData);
             $this->processedCount++;
+            
+            // Create user account for the student if they have an email address
+            if (!empty($student->email)) {
+                $this->createStudentUser($student);
+            }
         } catch (\Exception $e) {
             $this->skippedCount++;
             $this->errorMessages[] = "Row {$rowNumber}: Database error - " . $e->getMessage();
@@ -501,5 +511,71 @@ class StudentsImport
     protected function findProgramTypeIdByName($name)
     {
         return $this->programTypeCache[strtolower($name)] ?? null;
+    }
+    
+    /**
+     * Create a user account for a student
+     * 
+     * @param  \App\Models\Student  $student
+     * @return \App\Models\User|null
+     */
+    protected function createStudentUser($student)
+    {
+        // Don't create user account if email is missing
+        if (empty($student->email)) {
+            return null;
+        }
+        
+        // Check if user already exists with this email
+        $existingUser = User::where('email', $student->email)->first();
+        if ($existingUser) {
+            Log::info('User already exists for imported student: ' . $student->id);
+            return $existingUser;
+        }
+        
+        try {
+            // Get or create student user type
+            $studentUserType = UserType::firstOrCreate(
+                ['slug' => 'student'],
+                ['name' => 'Student', 'description' => 'Regular student account']
+            );
+            
+            // Create username from first name or full name
+            $nameParts = explode(' ', $student->full_name);
+            $firstName = $nameParts[0] ?? '';
+            $baseUsername = strtolower($firstName ?: $student->full_name);
+            $username = $baseUsername;
+            $counter = 1;
+            
+            // Check if username exists
+            while (User::where('username', $username)->exists()) {
+                $username = $baseUsername . $counter++;
+            }
+            
+            // Generate a random password
+            $password = Str::random(8);
+            
+            // Create user account
+            $user = User::create([
+                'name' => $student->full_name,
+                'email' => $student->email,
+                'username' => $username,
+                'password' => Hash::make($password),
+                'user_type_id' => $studentUserType->id
+            ]);
+            
+            // Store the plaintext password temporarily to include in notification
+            $user->temp_password = $password;
+            
+            // Send notification with login credentials
+            $student->notify(new StudentApprovalNotification($student, $username, $password));
+            
+            Log::info('User account created for imported student: ' . $student->id);
+            return $user;
+            
+        } catch (\Exception $e) {
+            Log::error('Failed to create user for imported student: ' . $e->getMessage());
+            return null;
+        }
     }
 }
