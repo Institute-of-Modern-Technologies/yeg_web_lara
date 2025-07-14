@@ -134,7 +134,13 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         // Get teachers
         $teachers = \App\Models\Teacher::orderBy('created_at', 'desc')->get();
         
-        return view('admin.dashboard', compact('activeStudents', 'inactiveStudents', 'pendingStudents', 'schools', 'teachers'));
+        // Get pending student registrations for notifications
+        $pendingRegistrations = \App\Models\Student::whereNotIn('status', ['active', 'inactive'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+        
+        return view('admin.dashboard', compact('activeStudents', 'inactiveStudents', 'pendingStudents', 'schools', 'teachers', 'pendingRegistrations'));
     })->name('admin.dashboard');
     
     // Profile Routes

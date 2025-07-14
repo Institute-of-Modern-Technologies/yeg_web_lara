@@ -191,11 +191,61 @@
                     
                     <div class="flex items-center space-x-2 sm:space-x-4">
                         <!-- Notifications -->
-                        <div class="relative">
-                            <button class="text-white focus:outline-none">
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open" class="text-white focus:outline-none relative">
                                 <i class="fas fa-bell text-xl"></i>
-                                <span class="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                                @if(isset($pendingRegistrations) && count($pendingRegistrations) > 0)
+                                    <span class="absolute -top-1 -right-1 bg-[#950713] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">{{ count($pendingRegistrations) }}</span>
+                                @endif
                             </button>
+                            
+                            <!-- Dropdown Notifications Panel -->
+                            <div x-show="open" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden z-50" style="display: none;">
+                                <div class="bg-[#950713] text-white px-4 py-2 flex items-center justify-between">
+                                    <h3 class="text-sm font-semibold">Notifications</h3>
+                                    <span class="text-xs bg-white text-[#950713] px-2 py-1 rounded-full">{{ isset($pendingRegistrations) ? count($pendingRegistrations) : 0 }} New</span>
+                                </div>
+                                
+                                <div class="max-h-64 overflow-y-auto">
+                                    @if(isset($pendingRegistrations) && count($pendingRegistrations) > 0)
+                                        @foreach($pendingRegistrations as $student)
+                                            <a href="{{ route('admin.students.show', $student->id) }}" class="block border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                                <div class="p-3">
+                                                    <div class="flex items-start">
+                                                        <div class="flex-shrink-0 mt-1">
+                                                            <div class="w-8 h-8 rounded-full bg-[#950713]/10 flex items-center justify-center text-[#950713]">
+                                                                <i class="fas fa-user-plus text-sm"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p class="text-sm font-medium text-gray-800">{{ $student->full_name }}</p>
+                                                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                                                <i class="fas fa-clock mr-1 text-[#950713]"></i>
+                                                                New student registration
+                                                            </p>
+                                                            <p class="text-xs text-gray-400 mt-1">
+                                                                {{ $student->created_at->diffForHumans() }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @endforeach
+                                    @else
+                                        <div class="py-4 px-3 text-center text-gray-500 text-sm">
+                                            No pending registrations
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                @if(isset($pendingRegistrations) && count($pendingRegistrations) > 0)
+                                    <div class="bg-gray-50 px-3 py-2 text-center">
+                                        <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="text-sm text-[#950713] hover:text-red-700 font-medium">
+                                            View All Pending Registrations
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         
                         <!-- User dropdown -->
