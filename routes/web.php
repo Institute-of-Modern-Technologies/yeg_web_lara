@@ -123,7 +123,18 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Admin Routes
 Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        // Get student counts by status
+        $activeStudents = \App\Models\Student::where('status', 'active')->count();
+        $inactiveStudents = \App\Models\Student::where('status', 'inactive')->count();
+        $pendingStudents = \App\Models\Student::whereNotIn('status', ['active', 'inactive'])->count();
+        
+        // Get schools
+        $schools = \App\Models\School::withCount('students')->orderBy('name')->get();
+        
+        // Get teachers
+        $teachers = \App\Models\Teacher::orderBy('created_at', 'desc')->get();
+        
+        return view('admin.dashboard', compact('activeStudents', 'inactiveStudents', 'pendingStudents', 'schools', 'teachers'));
     })->name('admin.dashboard');
     
     // Profile Routes

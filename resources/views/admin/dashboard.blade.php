@@ -430,27 +430,188 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
+                <!-- Modernized Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-primary hover:shadow-lg transition-shadow">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-gray-500 text-sm font-medium uppercase">Total Users</p>
-                                <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ \App\Models\User::count() }}</h3>
+                    <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow overflow-hidden relative group">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#950713] to-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="z-index: 0; opacity: 0.05;"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500 text-sm font-medium uppercase">Total Users</p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ \App\Models\User::count() }}</h3>
+                                </div>
+                                <div class="bg-red-100 p-3 rounded-full">
+                                    <i class="fas fa-users text-[#950713] text-xl"></i>
+                                </div>
                             </div>
-                            <div class="bg-red-100 p-3 rounded-full">
-                                <i class="fas fa-users text-primary text-xl"></i>
+                            <div class="flex items-center mt-4">
+                                <span class="text-green-500 flex items-center text-sm">
+                                    <i class="fas fa-arrow-up mr-1"></i> 12%
+                                </span>
+                                <span class="text-gray-400 text-sm ml-2">Since last month</span>
                             </div>
-                        </div>
-                        <div class="flex items-center mt-4">
-                            <span class="text-green-500 flex items-center text-sm">
-                                <i class="fas fa-arrow-up mr-1"></i> 12%
-                            </span>
-                            <span class="text-gray-400 text-sm ml-2">Since last month</span>
                         </div>
                     </div>
                     
-                    <!-- More stat cards here... -->
+                    <!-- Add Student Status Cards and Filter Section -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-4 mt-6">
+                        <div class="bg-white rounded-xl shadow-md p-6 overflow-hidden">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                                    <i class="fas fa-user-graduate mr-3 text-[#950713]"></i>
+                                    Student Management
+                                </h2>
+                            </div>
+                            
+                            <!-- Student Status Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Active Students Card -->
+                                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-green-200 rounded-full opacity-30 group-hover:opacity-40 transition-opacity"></div>
+                                    <div class="relative z-10">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="text-green-700 font-medium text-sm">Active Students</p>
+                                                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ $activeStudents }}</h3>
+                                            </div>
+                                            <div class="bg-white p-3 rounded-full shadow-sm">
+                                                <i class="fas fa-user-check text-green-500 text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center mt-4">
+                                            <a href="{{ route('admin.students.index', ['status' => 'active']) }}" class="text-green-700 font-medium text-sm hover:text-green-800">
+                                                View All <i class="fas fa-arrow-right ml-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Inactive Students Card -->
+                                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-gray-200 rounded-full opacity-30 group-hover:opacity-40 transition-opacity"></div>
+                                    <div class="relative z-10">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="text-gray-500 font-medium text-sm">Inactive Students</p>
+                                                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ $inactiveStudents }}</h3>
+                                            </div>
+                                            <div class="bg-white p-3 rounded-full shadow-sm">
+                                                <i class="fas fa-user-slash text-gray-500 text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center mt-4">
+                                            <a href="{{ route('admin.students.index', ['status' => 'inactive']) }}" class="text-gray-500 font-medium text-sm hover:text-gray-600">
+                                                View All <i class="fas fa-arrow-right ml-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Pending Students Card -->
+                                <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-yellow-200 rounded-full opacity-30 group-hover:opacity-40 transition-opacity"></div>
+                                    <div class="relative z-10">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="text-yellow-700 font-medium text-sm">Pending Students</p>
+                                                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ $pendingStudents }}</h3>
+                                            </div>
+                                            <div class="bg-white p-3 rounded-full shadow-sm">
+                                                <i class="fas fa-user-clock text-yellow-500 text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center mt-4">
+                                            <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="text-yellow-700 font-medium text-sm hover:text-yellow-800">
+                                                View All <i class="fas fa-arrow-right ml-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Schools Card with Filter -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-md p-6 h-full overflow-hidden">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                                    <i class="fas fa-school mr-3 text-[#950713]"></i>
+                                    Schools
+                                </h2>
+                            </div>
+                            
+                            <!-- Schools List -->
+                            <div class="overflow-y-auto" style="max-height: 300px;">
+                                @forelse($schools as $school)
+                                <div class="flex items-center justify-between p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#950713]/10 flex items-center justify-center">
+                                            <i class="fas fa-building text-[#950713]"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-800 font-medium">{{ $school->name }}</p>
+                                            <p class="text-gray-500 text-sm">{{ $school->city }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-gray-800 font-medium">{{ $school->students_count }}</div>
+                                        <div class="text-gray-500 text-sm">Students</div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center py-6 text-gray-500">No schools found</div>
+                                @endforelse
+                            </div>
+                            
+                            <div class="mt-4 text-center">
+                                <a href="{{ route('admin.schools.index') }}" class="text-[#950713] hover:text-red-800 font-medium">
+                                    View All Schools <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trainers Card with Filter -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-md p-6 h-full overflow-hidden">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                                    <i class="fas fa-chalkboard-teacher mr-3 text-[#950713]"></i>
+                                    Trainers
+                                </h2>
+                            </div>
+                            
+                            <!-- Trainers List -->
+                            <div class="overflow-y-auto" style="max-height: 300px;">
+                                @forelse($teachers as $teacher)
+                                <div class="flex items-center p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors rounded-lg">
+                                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-[#950713]/10 flex items-center justify-center mr-3">
+                                        @if($teacher->gender == 'male')
+                                            <i class="fas fa-male text-[#950713]"></i>
+                                        @elseif($teacher->gender == 'female')
+                                            <i class="fas fa-female text-[#950713]"></i>
+                                        @else
+                                            <i class="fas fa-user text-[#950713]"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-800 font-medium">{{ $teacher->name }}</p>
+                                        <p class="text-gray-500 text-sm">{{ $teacher->subject ?? 'General' }}</p>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="text-center py-6 text-gray-500">No trainers found</div>
+                                @endforelse
+                            </div>
+                            
+                            <div class="mt-4 text-center">
+                                <a href="#" class="text-[#950713] hover:text-red-800 font-medium">
+                                    View All Trainers <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- User Management Section -->

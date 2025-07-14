@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Student;
 
 class School extends Model
 {
@@ -25,6 +26,16 @@ class School extends Model
         'logo',
         'status', // pending, approved, rejected
     ];
+    
+    /**
+     * Get the students associated with the school.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
     
     /**
      * Get the status label with appropriate color
