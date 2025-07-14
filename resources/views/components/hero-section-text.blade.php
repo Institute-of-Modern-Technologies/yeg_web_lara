@@ -18,6 +18,14 @@
     
     @if($heroSection->button_text)
     <div class="relative inline-block">
+        @if($heroSection->button_link)
+        {{-- If button_link is provided, make it a regular link button --}}
+        <a href="{{ $heroSection->button_link }}" class="bg-gradient-to-r from-[#950713] to-[#bd0a1a] hover:from-[#7c0510] hover:to-[#950713] inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">
+            <i class="fas fa-arrow-right"></i>
+            <span>{{ $heroSection->button_text }}</span>
+        </a>
+        @else
+        {{-- If no button_link, show the dropdown register button --}}
         <button class="heroRegisterBtn bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">
             <i class="fas fa-user-plus"></i>
             <span>{{ $heroSection->button_text }}</span>
@@ -51,6 +59,7 @@
                 </a>
             </div>
         </div>
+        @endif
     </div>
     @endif
 </div>
