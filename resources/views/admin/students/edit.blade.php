@@ -47,17 +47,31 @@
                 <h2 class="text-lg font-semibold mb-4">Student Information</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Full Name -->
+                    <!-- First Name -->
                     <div>
-                        <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="full_name" id="full_name" value="{{ old('full_name', $student->full_name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="first_name" id="first_name" value="{{ old('first_name', explode(' ', $student->full_name)[0] ?? '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
                     </div>
                     
-                    <!-- Age -->
+                    <!-- Last Name -->
                     <div>
-                        <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Age <span class="text-red-500">*</span></label>
-                        <input type="number" name="age" id="age" min="1" max="100" value="{{ old('age', $student->age) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" readonly required>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="last_name" id="last_name" value="{{ old('last_name', count(explode(' ', $student->full_name)) > 1 ? implode(' ', array_slice(explode(' ', $student->full_name), 1)) : '') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
                     </div>
+                    
+                    <!-- Gender -->
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-500">*</span></label>
+                        <select id="gender" name="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                            <option value="">Select Gender</option>
+                            <option value="male" {{ old('gender', $student->gender) == 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ old('gender', $student->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                            <option value="other" {{ old('gender', $student->gender) == 'other' ? 'selected' : '' }}>Other</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Hidden Age -->
+                    <input type="hidden" name="age" id="age" value="{{ old('age', $student->age) }}" readonly>
                     
                     <!-- Email -->
                     <div>
@@ -77,12 +91,6 @@
                         <input type="text" name="parent_contact" id="parent_contact" value="{{ old('parent_contact', $student->parent_contact) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
                     </div>
                     
-                    <!-- City -->
-                    <div>
-                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-500">*</span></label>
-                        <input type="text" name="city" id="city" value="{{ old('city', $student->city) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
-                    </div>
-                    
                     <!-- Date of Birth -->
                     <div>
                         <label for="date_of_birth" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
@@ -97,7 +105,42 @@
                 </div>
             </div>
             
-            <!-- City is already included in the Student Information section -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-lg font-semibold mb-4">Address Information</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
+                        <input type="text" id="address" name="address" value="{{ old('address', $student->address) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                    </div>
+                    
+                    <!-- City -->
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City/Town <span class="text-red-500">*</span></label>
+                        <input type="text" id="city" name="city" value="{{ old('city', $student->city) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                    </div>
+                    
+                    <!-- Region -->
+                    <div>
+                        <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region <span class="text-red-500">*</span></label>
+                        <select id="region" name="region" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                            <option value="">Select Region</option>
+                            <option value="Greater Accra" {{ old('region', $student->region) == 'Greater Accra' ? 'selected' : '' }}>Greater Accra</option>
+                            <option value="Ashanti" {{ old('region', $student->region) == 'Ashanti' ? 'selected' : '' }}>Ashanti</option>
+                            <option value="Western" {{ old('region', $student->region) == 'Western' ? 'selected' : '' }}>Western</option>
+                            <option value="Eastern" {{ old('region', $student->region) == 'Eastern' ? 'selected' : '' }}>Eastern</option>
+                            <option value="Central" {{ old('region', $student->region) == 'Central' ? 'selected' : '' }}>Central</option>
+                            <option value="Volta" {{ old('region', $student->region) == 'Volta' ? 'selected' : '' }}>Volta</option>
+                            <option value="Northern" {{ old('region', $student->region) == 'Northern' ? 'selected' : '' }}>Northern</option>
+                            <option value="Upper East" {{ old('region', $student->region) == 'Upper East' ? 'selected' : '' }}>Upper East</option>
+                            <option value="Upper West" {{ old('region', $student->region) == 'Upper West' ? 'selected' : '' }}>Upper West</option>
+                            <option value="Bono" {{ old('region', $student->region) == 'Bono' ? 'selected' : '' }}>Bono</option>
+                            <option value="Other" {{ old('region', $student->region) == 'Other' ? 'selected' : '' }}>Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-lg font-semibold mb-4">Program Information</h2>

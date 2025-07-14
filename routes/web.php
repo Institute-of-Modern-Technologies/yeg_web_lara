@@ -54,18 +54,21 @@ Route::prefix('students')->name('student.registration.')->group(function () {
     Route::get('/register/step2-other', function() { return redirect('/students/register'); });
     Route::get('/register/process-step2-other', function() { return redirect('/students/register'); });
     
+    // Student details form
+    Route::get('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'showDetailsForm'])->name('details');
+    Route::post('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'processDetailsForm'])->name('process_details');
+    // Adding matching routes for the /students/ prefix pattern
+    Route::get('/students/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'showDetailsForm']);
+    Route::post('/students/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'processDetailsForm']);
+    
     // Step 3: In School - Who is paying?
     Route::post('/register/step3-inschool', [\App\Http\Controllers\StudentRegistrationController::class, 'processStep3InSchool'])->name('process_step3_inschool');
     
     // Payment processing
     Route::post('/register/payment', [\App\Http\Controllers\StudentRegistrationController::class, 'processPayment'])->name('process_payment');
     
-    // Student details form
-    Route::get('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'showDetailsForm'])->name('details');
-    Route::post('/register/details', [\App\Http\Controllers\StudentRegistrationController::class, 'processDetails'])->name('process_details');
-    
-    // Success page
-    Route::get('/register/success', function() {
+    // Success page - simplify route handling to avoid duplication
+    $successHandler = function() {
         // Check if we have student registration in session
         if (session()->has('registration.student') && isset(session('registration.student')->id)) {
             // Get the complete student record from database
@@ -78,7 +81,11 @@ Route::prefix('students')->name('student.registration.')->group(function () {
         }
         
         return view('student.registration.success');
-    })->name('student.registration.success');
+    };
+    
+    // Register both routes with the same handler
+    Route::get('/register/success', $successHandler)->name('student.registration.success');
+    Route::get('/students/register/success', $successHandler)->name('student.registration.success');
 });
 
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type

@@ -313,40 +313,40 @@ class StudentRegistrationController extends Controller
      */
     public function showDetailsForm()
     {
-        $programTypeId = session('registration.program_type_id');
-        $schoolId = session('registration.school_id');
+        // Ensure we have the program type selected
+        if (!session('registration.program_type_id')) {
+            return redirect()->route('student.registration.step1')
+                ->with('error', 'Please select a program type first.');
+        }
         
-        $programType = ProgramType::findOrFail($programTypeId);
-        $school = $schoolId ? School::findOrFail($schoolId) : null;
+        // Get the program type from the session
+        $programType = ProgramType::findOrFail(session('registration.program_type_id'));
         
-        return view('student.registration.details', compact('programType', 'school'));
+        // Get all schools for the dropdown
+        $schools = School::all();
+        
+        return view('student.registration.details', compact('schools', 'programType'));
     }
     
     /**
-     * Process student details and complete registration
+     * Process the student details form submission
      */
-    /**
-     * Generate a unique registration number for students
-     */
-    private function generateRegistrationNumber()
-    {
-        $year = date('Y');
-        $month = date('m');
-        $prefix = 'YEG'.$year.$month;
-        
-        // Get the count of students registered this month/year
-        $count = Student::where('registration_number', 'like', $prefix.'%')->count();
-        $nextNumber = $count + 1;
-        
-        // Format with leading zeros (e.g., YEG202506001)
-        return $prefix.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-    }
-    
-    public function processDetails(Request $request)
+    public function processDetailsForm(Request $request)
     {
         try {
-            // Simple validation of required fields
-            $validated = $request->validate([
+            // Check for required session data first
+            if (!session()->has('registration.program_type_id')) {
+                return redirect()->route('student.registration.step1')
+                    ->with('error', 'Please select a program type first.');
+            }
+            
+            // Log the incoming request data for debugging
+            \Log::debug('Student registration form submission', [
+                'request_data' => $request->all()
+            ]);
+            
+            // Basic validation for non-conditional fields
+            $baseValidation = [
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'nullable|email|max:255',
@@ -357,44 +357,89 @@ class StudentRegistrationController extends Controller
                 'address' => 'required|string|max:500',
                 'city' => 'required|string|max:255',
                 'region' => 'required|string|max:255',
-            ]);
+                'class' => 'required|string|max:255',
+                'school_selection' => 'required|in:existing,new',
+            ];
+            
+            // Add conditional validation based on school selection
+            if ($request->school_selection === 'existing') {
+                $baseValidation['school_id'] = 'required|exists:schools,id';
+            } else {
+                $baseValidation['school_name'] = 'required|string|max:255';
+            }
+            
+            $validated = $request->validate($baseValidation);
+            
+            // Handle school selection based on form data
+            if ($request->school_selection === 'existing') {
+                // Use selected school
+                session(['registration.school_id' => $request->school_id]);
+            } else {
+                // Create or find school by name
+                $school = School::firstOrCreate(
+                    ['name' => $request->school_name],
+                    [
+                        'status' => 'pending',
+                        'location' => $request->city ?? 'Pending', // Required field
+                        'phone' => '0000000000', // Required field
+                        'owner_name' => 'Pending', // Required field
+                        'email' => 'pending@example.com',
+                        'contact_person' => 'Pending',
+                        'slug' => Str::slug($request->school_name),
+                        'gps_coordinates' => null,
+                        'avg_students' => null,
+                        'logo' => null
+                    ]
+                );
+                session(['registration.school_id' => $school->id]);
+            }
             
             // Generate a unique registration number
             $registrationNumber = $this->generateRegistrationNumber();
             
-            // Basic student information
+            // Combine first and last name into full_name
             $fullName = $request->first_name . ' ' . $request->last_name;
             
-            // Create student record with only the essential fields we know exist
+            // Calculate age from date of birth
+            $age = date_diff(date_create($request->date_of_birth), date_create('today'))->y;
+            
+            // Create student record
             $student = new Student();
             $student->first_name = $request->first_name;
             $student->last_name = $request->last_name;
             $student->full_name = $fullName;
             $student->email = $request->email;
             $student->phone = $request->phone;
+            $student->parent_contact = $request->parent_contact;
+            $student->date_of_birth = $request->date_of_birth;
+            $student->age = $age;
+            $student->gender = $request->gender;
+            $student->address = $request->address;
+            $student->city = $request->city;
+            $student->region = $request->region;
+            $student->class = $request->class;
             $student->registration_number = $registrationNumber;
             $student->status = 'pending';
-            $student->program_type_id = session('registration.program_type_id');
-            $student->school_id = session('registration.school_id') ?? null;
             
-            // Calculate age from date of birth (required by the database)
-            if ($request->date_of_birth) {
-                $student->age = date_diff(date_create($request->date_of_birth), date_create('today'))->y;
-            } else {
-                $student->age = 0; // Default value if date_of_birth is missing
+            // Ensure we have a valid program_type_id
+            $programTypeId = session('registration.program_type_id');
+            if (!$programTypeId) {
+                throw new \Exception('Program type not found in session.');
             }
+            $student->program_type_id = $programTypeId;
             
-            // Set the parent contact field directly from the form
-            $student->parent_contact = $request->parent_contact;
-
-            // Only set these fields if they were successfully added to the database
-            try { $student->date_of_birth = $request->date_of_birth; } catch (\Exception $e) {}
-            try { $student->gender = $request->gender; } catch (\Exception $e) {}
-            try { $student->address = $request->address; } catch (\Exception $e) {}
-            try { $student->city = $request->city; } catch (\Exception $e) {}
-            try { $student->region = $request->region; } catch (\Exception $e) {}
+            // Ensure we have a valid school_id
+            $schoolId = session('registration.school_id');
+            if (!$schoolId) {
+                throw new \Exception('School ID not found in session.');
+            }
+            $student->school_id = $schoolId;
             
-            // Save the student record
+            // Log student object before save
+            \Log::debug('Student object before save', [
+                'student_data' => $student->toArray()
+            ]);
+            
             $student->save();
             
             // For further processing
@@ -416,10 +461,6 @@ class StudentRegistrationController extends Controller
                 'class' => $request->class ?? null
             ];
             
-            // Note: User account creation is now handled by admin approval process
-            // The admin will manually approve students and trigger user account creation
-            \Log::info('Student registered successfully, pending admin approval: ' . $studentId);
-            
             // Get program type name for the success page
             if (session('registration.program_type_id')) {
                 $programType = ProgramType::find(session('registration.program_type_id'));
@@ -436,7 +477,7 @@ class StudentRegistrationController extends Controller
                 }
             }
             
-            // Handle payment creation based on payment type
+            // Handle payment creation based on payment type if available in session
             if (session('registration.payer_type') === 'self') {
                 Payment::create([
                     'student_id' => $studentId,
@@ -445,9 +486,7 @@ class StudentRegistrationController extends Controller
                     'reference_number' => session('registration.payment_reference') ?? 'PAYMENT-' . strtoupper(Str::random(8)),
                     'status' => 'completed'
                 ]);
-            }
-            // Record school payment (to be paid later)
-            elseif (session('registration.payer_type') === 'school') {
+            } elseif (session('registration.payer_type') === 'school') {
                 Payment::create([
                     'student_id' => $studentId,
                     'amount' => session('registration.fee_amount'),
@@ -457,7 +496,6 @@ class StudentRegistrationController extends Controller
                 ]);
             }
             
-            
             // Store student info in session for success page
             session(['registration.student' => $studentObj]);
             session(['registration.registration_number' => $registrationNumber]);
@@ -465,24 +503,46 @@ class StudentRegistrationController extends Controller
             // Clear other registration session data
             session()->forget([
                 'registration.program_type_id',
-                'registration.program_type_name',
                 'registration.school_id',
                 'registration.payer_type',
                 'registration.fee_amount',
                 'registration.payment_reference',
             ]);
             
-            return redirect()->route('student.registration.success');
+            // Flash success message to session
+            session()->flash('success', 'Registration completed successfully! Your registration number is ' . $registrationNumber);
+            
+            // Use absolute URL instead of named route to ensure proper redirection
+            return redirect('/students/register/success');
             
         } catch (\Exception $e) {
             // Log the error and return a friendly message
             \Log::error('Student registration details error: ' . $e->getMessage(), [
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        return redirect()->back()->withInput()->with('error', 'There was a problem saving your registration. Please try again or contact support.');
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // During development, show the actual error message
+            $errorMsg = config('app.debug') ? 'Error: ' . $e->getMessage() : 'There was a problem saving your registration. Please try again or contact support.';
+            return redirect()->back()->withInput()->with('error', $errorMsg);
         }
+    }
+    
+    /**
+     * Generate a unique registration number for students
+     */
+    private function generateRegistrationNumber()
+    {
+        $year = date('Y');
+        $month = date('m');
+        $prefix = 'YEG'.$year.$month;
+        
+        // Get the count of students registered this month/year
+        $count = Student::where('registration_number', 'like', $prefix.'%')->count();
+        $nextNumber = $count + 1;
+        
+        // Format with leading zeros (e.g., YEG202507001)
+        return $prefix.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
     }
 }

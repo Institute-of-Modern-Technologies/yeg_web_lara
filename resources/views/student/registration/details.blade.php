@@ -20,6 +20,33 @@
             }
         }
     </script>
+    <script>
+        // Function to toggle between existing and new school inputs
+        function toggleSchoolSelection() {
+            const existingSchoolSelected = document.getElementById('existing_school').checked;
+            const existingSchoolDiv = document.getElementById('existing_school_div');
+            const newSchoolDiv = document.getElementById('new_school_div');
+            const schoolIdSelect = document.getElementById('school_id');
+            const schoolNameInput = document.getElementById('school_name');
+            
+            if (existingSchoolSelected) {
+                existingSchoolDiv.classList.remove('hidden');
+                newSchoolDiv.classList.add('hidden');
+                schoolIdSelect.setAttribute('required', '');
+                schoolNameInput.removeAttribute('required');
+            } else {
+                existingSchoolDiv.classList.add('hidden');
+                newSchoolDiv.classList.remove('hidden');
+                schoolIdSelect.removeAttribute('required');
+                schoolNameInput.setAttribute('required', '');
+            }
+        }
+        
+        // Initialize form state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleSchoolSelection();
+        });
+    </script>
     <style>
         body {
             font-family: 'Nunito', sans-serif;
@@ -218,6 +245,49 @@
                             @enderror
                         </div>
                     </div>
+
+                    <!-- School Selection -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">School Information</h3>
+                        
+                        <!-- School Selection Type -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">School Selection <span class="text-red-500">*</span></label>
+                            <div class="flex gap-4 mb-3">
+                                <div class="flex items-center">
+                                    <input type="radio" id="existing_school" name="school_selection" value="existing" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" {{ old('school_selection', 'existing') == 'existing' ? 'checked' : '' }} onchange="toggleSchoolSelection()">
+                                    <label for="existing_school" class="ml-2 block text-sm text-gray-700">Select from existing schools</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="new_school" name="school_selection" value="new" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" {{ old('school_selection') == 'new' ? 'checked' : '' }} onchange="toggleSchoolSelection()">
+                                    <label for="new_school" class="ml-2 block text-sm text-gray-700">Enter a new school</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- School Dropdown (for existing schools) -->
+                        <div id="existing_school_div" class="mb-4">
+                            <label for="school_id" class="block text-sm font-medium text-gray-700 mb-1">Select School <span class="text-red-500">*</span></label>
+                            <select id="school_id" name="school_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <option value="">-- Select School --</option>
+                                @foreach(\App\Models\School::all() as $school)
+                                    <option value="{{ $school->id }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('school_id')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        <!-- New School Name (for manual entry) -->
+                        <div id="new_school_div" class="mb-4 hidden">
+                            <label for="school_name" class="block text-sm font-medium text-gray-700 mb-1">School Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="school_name" name="school_name" value="{{ old('school_name') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Enter school name">
+                            <p class="text-sm text-gray-500 mt-1">If your school is not in our list, please enter the name above.</p>
+                            @error('school_name')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     
                     <!-- Address Information -->
                     <div class="mt-8">
@@ -306,7 +376,30 @@
                     mobileMenu.classList.toggle('hidden');
                 });
             }
+            
+            // Initialize the school selection toggle
+            toggleSchoolSelection();
         });
+        
+        function toggleSchoolSelection() {
+            const existingSchoolRadio = document.getElementById('existing_school');
+            const existingSchoolDiv = document.getElementById('existing_school_div');
+            const newSchoolDiv = document.getElementById('new_school_div');
+            const schoolIdSelect = document.getElementById('school_id');
+            const schoolNameInput = document.getElementById('school_name');
+            
+            if (existingSchoolRadio && existingSchoolRadio.checked) {
+                existingSchoolDiv.classList.remove('hidden');
+                newSchoolDiv.classList.add('hidden');
+                schoolIdSelect.setAttribute('required', '');
+                schoolNameInput.removeAttribute('required');
+            } else {
+                existingSchoolDiv.classList.add('hidden');
+                newSchoolDiv.classList.remove('hidden');
+                schoolIdSelect.removeAttribute('required');
+                schoolNameInput.setAttribute('required', '');
+            }
+        }
     </script>
 </body>
 </html>

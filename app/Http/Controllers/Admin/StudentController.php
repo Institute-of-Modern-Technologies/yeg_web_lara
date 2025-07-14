@@ -101,33 +101,79 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'age' => 'required|integer|min:1|max:100',
+        // Validate all other fields first
+        $baseValidation = [
+            'first_name' => 'required|string|max:127',
+            'last_name' => 'required|string|max:127',
             'email' => 'nullable|email|max:255|unique:students,email',
             'phone' => 'nullable|string|max:20',
             'parent_contact' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
+            'gender' => 'required|string|in:male,female,other',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'region' => 'required|string|max:100',
             'class' => 'required|string|max:255',
-            'school_id' => 'required|exists:schools,id',
             'program_type_id' => 'required|exists:program_types,id',
-        ]);
+            'school_selection' => 'required|in:existing,new',
+        ];
+        
+        // Add conditional validation based on school selection
+        if ($request->school_selection === 'existing') {
+            $baseValidation['school_id'] = 'required|exists:schools,id';
+        } else {
+            $baseValidation['school_name'] = 'required|string|max:255';
+        }
+        
+        $validated = $request->validate($baseValidation);
+        
+        // Combine first and last name into full_name
+        $fullName = $request->first_name . ' ' . $request->last_name;
+        
+        // Calculate age from date of birth
+        $birthDate = new \DateTime($request->date_of_birth);
+        $today = new \DateTime('today');
+        $age = $birthDate->diff($today)->y;
         
         // Generate a unique registration number
         $registrationNumber = 'YEG' . date('y') . str_pad(Student::count() + 1, 5, '0', STR_PAD_LEFT);
         
+        // Handle school selection
+        $schoolId = null;
+        if ($request->school_selection === 'existing') {
+            $schoolId = $request->school_id;
+        } else {
+            // Create a new school or get existing one with the same name
+            $school = School::firstOrCreate(
+                ['name' => $request->school_name],
+                [
+                    'status' => 'pending',
+                    'slug' => \Illuminate\Support\Str::slug($request->school_name),
+                    'address' => 'Pending',
+                    'contact_person' => 'Pending',
+                    'email' => 'pending@example.com',
+                    'phone' => '0000000000',
+                ]
+            );
+            $schoolId = $school->id;
+        }
+        
         // Create the student data array with all required fields
         $studentData = [
-            'full_name' => $request->full_name,
-            'age' => $request->age,
+            'full_name' => $fullName,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'age' => $age,
             'email' => $request->email,
             'phone' => $request->phone,
             'parent_contact' => $request->parent_contact,
+            'gender' => $request->gender,
+            'address' => $request->address,
             'city' => $request->city,
+            'region' => $request->region,
             'date_of_birth' => $request->date_of_birth,
             'class' => $request->class,
-            'school_id' => $request->school_id,
+            'school_id' => $schoolId,
             'program_type_id' => $request->program_type_id,
             'registration_number' => $registrationNumber,
             'status' => 'active'
@@ -162,12 +208,15 @@ class StudentController extends Controller
         $originalStatus = $student->status;
         
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'age' => 'required|integer|min:1|max:100',
+            'first_name' => 'required|string|max:127',
+            'last_name' => 'required|string|max:127',
             'email' => 'nullable|email|max:255|unique:students,email,' . $student->id,
             'phone' => 'nullable|string|max:20',
             'parent_contact' => 'required|string|max:20',
+            'gender' => 'required|string|in:male,female,other',
+            'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
+            'region' => 'required|string|max:100',
             'date_of_birth' => 'required|date',
             'class' => 'required|string|max:255',
             'school_id' => 'required|exists:schools,id',
@@ -175,10 +224,34 @@ class StudentController extends Controller
             'status' => 'required|string|in:active,inactive,completed',
         ]);
         
+        // Combine first and last name into full_name
+        $fullName = $request->first_name . ' ' . $request->last_name;
+        
+        // Calculate age from date of birth
+        $birthDate = new \DateTime($request->date_of_birth);
+        $today = new \DateTime('today');
+        $age = $birthDate->diff($today)->y;
+        
         // Check if status is being changed to 'active' (approved)
         $isBeingApproved = ($originalStatus != 'active' && $request->status == 'active');
         
-        $student->update($validated);
+        // Update student with all fields
+        $student->update([
+            'full_name' => $fullName,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'parent_contact' => $request->parent_contact,
+            'gender' => $request->gender,
+            'address' => $request->address,
+            'city' => $request->city,
+            'region' => $request->region,
+            'date_of_birth' => $request->date_of_birth,
+            'age' => $age,
+            'class' => $request->class,
+            'school_id' => $request->school_id,
+            'program_type_id' => $request->program_type_id,
+            'status' => $request->status,
+        ]);
         
         // If student is being approved, create a user account if it doesn't exist
         if ($isBeingApproved) {
