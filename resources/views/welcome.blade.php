@@ -1522,42 +1522,7 @@
             </div>
             
             <!-- Pricing Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <!-- Card 1: YEG Partnered School -->
-                <div class="bg-white rounded-lg border border-cyan-200 p-6 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex justify-center mb-4">
-                        <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-school text-cyan-500"></i>
-                        </div>
-                    </div>
-                    
-                    <h3 class="text-lg font-bold text-gray-800 text-center mb-4">YEG Partnered School</h3>
-                    
-                    <div class="flex items-baseline justify-center mb-6">
-                        <span class="text-cyan-500 text-sm font-medium">GHC</span>
-                        <span class="text-3xl font-bold text-cyan-500 mx-1">150</span>
-                        <span class="text-gray-400 text-sm">- 350</span>
-                    </div>
-                    
-                    <p class="text-sm text-gray-600 mb-6">
-                        Pricing varies based on resources provided, including number of tutors, internet access, and learning materials.
-                    </p>
-                    
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 bg-cyan-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
-                                <i class="fas fa-check text-cyan-500 text-xs"></i>
-                            </div>
-                            <span class="text-sm text-gray-600">Access to YEG curriculum</span>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 bg-cyan-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
-                                <i class="fas fa-check text-cyan-500 text-xs"></i>
-                            </div>
-                            <span class="text-sm text-gray-600">School-integrated learning</span>
-                        </li>
-                    </ul>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 
                 <!-- Card 2: Weekend & Vacation YEG -->
                 <div class="bg-white rounded-lg border border-pink-200 p-6 shadow-sm hover:shadow-md transition-shadow">
