@@ -38,6 +38,27 @@ class Student extends Model
     ];
     
     /**
+     * Get the first name from the full_name
+     */
+    public function getFirstNameAttribute()
+    {
+        // Split the full name and return the first part
+        $nameParts = explode(' ', $this->full_name);
+        return $nameParts[0] ?? '';
+    }
+    
+    /**
+     * Get the last name from the full_name
+     */
+    public function getLastNameAttribute()
+    {
+        // Split the full name and return everything after the first name
+        $nameParts = explode(' ', $this->full_name);
+        array_shift($nameParts); // Remove the first element (first name)
+        return implode(' ', $nameParts); // Return the rest as the last name
+    }
+    
+    /**
      * Get the program type associated with the student.
      */
     public function programType()

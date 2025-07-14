@@ -59,67 +59,66 @@
     </div>
     @endif
 
-    <!-- Main Content Area -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <!-- Filter Sidebar -->
-        <div class="md:col-span-1">
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <h2 class="text-lg font-medium text-gray-900 mb-4">Filter Students</h2>
-                <form action="{{ route('admin.students.index') }}" method="GET" id="filter-form">
-                    <div class="space-y-4">
-                        <!-- School Filter -->
-                        <div>
-                            <label for="school_id" class="block text-sm font-medium text-gray-700">School</label>
-                            <select id="school_id" name="school_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
-                                <option value="">All Schools</option>
-                                @foreach($schools as $school)
-                                    <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <!-- Program Type Filter -->
-                        <div>
-                            <label for="program_type_id" class="block text-sm font-medium text-gray-700">Program Type</label>
-                            <select id="program_type_id" name="program_type_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
-                                <option value="">All Programs</option>
-                                @foreach($programTypes as $programType)
-                                    <option value="{{ $programType->id }}" {{ $programTypeId == $programType->id ? 'selected' : '' }}>{{ $programType->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <!-- Status Filter -->
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select id="status" name="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
-                                <option value="">All Status</option>
-                                <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pending Approval</option>
-                                <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                <option value="completed" {{ $status == 'completed' ? 'selected' : '' }}>Completed</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Filter Buttons -->
-                        <div class="pt-3 flex flex-col space-y-2">
-                            <button type="submit" class="w-full px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors">
-                                Apply Filters
-                            </button>
-                            
-                            @if($schoolId || $programTypeId || $status)
-                                <a href="{{ route('admin.students.index') }}" class="w-full px-4 py-2 bg-gray-200 text-gray-700 text-center text-sm font-medium rounded-md hover:bg-gray-300 transition-colors">
-                                    Clear Filters
-                                </a>
-                            @endif
-                        </div>
+    <!-- Filter Section - Moved to Top -->
+    <div class="mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-4">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">Filter Students</h2>
+            <form action="{{ route('admin.students.index') }}" method="GET" id="filter-form">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- School Filter -->
+                    <div>
+                        <label for="school_id" class="block text-sm font-medium text-gray-700">School</label>
+                        <select id="school_id" name="school_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                            <option value="">All Schools</option>
+                            @foreach($schools as $school)
+                                <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </form>
-            </div>
+                    
+                    <!-- Program Type Filter -->
+                    <div>
+                        <label for="program_type_id" class="block text-sm font-medium text-gray-700">Program Type</label>
+                        <select id="program_type_id" name="program_type_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                            <option value="">All Programs</option>
+                            @foreach($programTypes as $programType)
+                                <option value="{{ $programType->id }}" {{ $programTypeId == $programType->id ? 'selected' : '' }}>{{ $programType->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <!-- Status Filter -->
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select id="status" name="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md">
+                            <option value="">All Status</option>
+                            <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>Pending Approval</option>
+                            <option value="active" {{ $status == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ $status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="completed" {{ $status == 'completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex items-end space-x-2">
+                        <button type="submit" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors">
+                            Apply Filters
+                        </button>
+                        
+                        @if($schoolId || $programTypeId || $status)
+                            <a href="{{ route('admin.students.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 text-center text-sm font-medium rounded-md hover:bg-gray-300 transition-colors">
+                                Clear Filters
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </form>
         </div>
-        
-        <!-- Students List -->
-        <div class="md:col-span-3">
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Students List - Now Full Width -->
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div class="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-200">
                     <div class="flex items-center space-x-3">

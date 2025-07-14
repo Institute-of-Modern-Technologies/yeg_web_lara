@@ -73,7 +73,7 @@
             <a href="mailto:contact@youngexpertsgroup.com" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                 <i class="fa-regular fa-envelope"></i>
             </a>
-            <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+            <a href="https://fb.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                 <i class="fab fa-facebook-f"></i>
             </a>
             <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
@@ -82,8 +82,11 @@
             <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                 <i class="fab fa-tiktok"></i>
             </a>
-            <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+            <a href="https://www.instagram.com/young_experts_group/" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
                 <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://x.com/YoungExpertsG" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                <i class="fab fa-twitter"></i>
             </a>
         </div>
         

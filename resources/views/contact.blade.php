@@ -243,7 +243,7 @@
                                 <a href="mailto:yeg@imtghana.com" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
                                     <i class="far fa-envelope"></i>
                                 </a>
-                                <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
+                                <a href="https://fb.com/youngexpertsgroup" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
                                 <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
@@ -252,8 +252,11 @@
                                 <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
                                     <i class="fab fa-tiktok"></i>
                                 </a>
-                                <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
+                                <a href="https://www.instagram.com/young_experts_group/" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
                                     <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://x.com/YoungExpertsG" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
+                                    <i class="fab fa-twitter"></i>
                                 </a>
                             </div>
                         </div>

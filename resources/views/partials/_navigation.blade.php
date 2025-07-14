@@ -87,7 +87,7 @@
             <a href="mailto:contact@youngexpertsgroup.com" class="social-icon text-gray-600 hover:text-primary">
                 <i class="fa-regular fa-envelope"></i>
             </a>
-            <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-blue-600">
+            <a href="https://fb.com/youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-blue-600">
                 <i class="fab fa-facebook-f"></i>
             </a>
             <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="social-icon text-gray-600 hover:text-red-600">
@@ -96,8 +96,11 @@
             <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-pink-500">
                 <i class="fab fa-tiktok"></i>
             </a>
-            <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="social-icon text-gray-600 hover:text-purple-600">
+            <a href="https://www.instagram.com/young_experts_group/" target="_blank" class="social-icon text-gray-600 hover:text-purple-600">
                 <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://x.com/YoungExpertsG" target="_blank" class="social-icon text-gray-600 hover:text-gray-800">
+                <i class="fab fa-twitter"></i>
             </a>
         </div>
     </div>
@@ -234,7 +237,7 @@
                 <a href="mailto:contact@youngexpertsgroup.com" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
                     <i class="fa-regular fa-envelope"></i>
                 </a>
-                <a href="https://www.facebook.com/youngexpertsgroup" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
+                <a href="https://fb.com/youngexpertsgroup" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
                     <i class="fab fa-facebook-f"></i>
                 </a>
                 <a href="https://www.youtube.com/shorts/x_kUqKoTZR8" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
@@ -243,8 +246,11 @@
                 <a href="https://www.tiktok.com/@youngexpertsgroup" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
                     <i class="fab fa-tiktok"></i>
                 </a>
-                <a href="https://www.instagram.com/youngexpertsgroup" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
+                <a href="https://www.instagram.com/young_experts_group/" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
                     <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://x.com/YoungExpertsG" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
+                    <i class="fab fa-twitter"></i>
                 </a>
             </div>
         </div>
