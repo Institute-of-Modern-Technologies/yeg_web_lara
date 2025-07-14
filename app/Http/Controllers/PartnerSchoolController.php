@@ -52,10 +52,13 @@ class PartnerSchoolController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048|dimensions:min_width=100,min_height=100',
             'website_url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
             'display_order' => 'integer|min:0',
+        ], [
+            'image.dimensions' => 'The image must be at least 100x100 pixels.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif, svg.',
         ]);
         
         if ($validator->fails()) {
@@ -66,10 +69,19 @@ class PartnerSchoolController extends Controller
         
         // Handle image upload
         $imagePath = null;
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/partner-schools'), $imageName);
+            // Generate a clean, unique filename
+            $imageName = time() . '_' . uniqid() . '_' . preg_replace('/[^A-Za-z0-9\-\.]/', '', str_replace(' ', '-', $image->getClientOriginalName()));
+            
+            // Ensure the directory exists
+            $directory = public_path('storage/partner-schools');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            // Move the uploaded file
+            $image->move($directory, $imageName);
             $imagePath = 'partner-schools/' . $imageName;
         }
         
@@ -118,10 +130,13 @@ class PartnerSchoolController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048|dimensions:min_width=100,min_height=100',
             'website_url' => 'nullable|url|max:255',
             'is_active' => 'boolean',
             'display_order' => 'integer|min:0',
+        ], [
+            'image.dimensions' => 'The image must be at least 100x100 pixels.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif, svg.',
         ]);
         
         if ($validator->fails()) {
@@ -130,8 +145,8 @@ class PartnerSchoolController extends Controller
                 ->withInput();
         }
         
-        // Handle image upload if new image is provided
-        if ($request->hasFile('image')) {
+        // Handle image upload if a new image is provided
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
             // Delete old image if it exists
             if ($partnerSchool->image_path) {
                 $oldImagePath = public_path('storage/' . $partnerSchool->image_path);
@@ -140,10 +155,19 @@ class PartnerSchoolController extends Controller
                 }
             }
             
-            // Store new image
+            // Store new image with improved handling
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/partner-schools'), $imageName);
+            // Generate a clean, unique filename
+            $imageName = time() . '_' . uniqid() . '_' . preg_replace('/[^A-Za-z0-9\-\.]/', '', str_replace(' ', '-', $image->getClientOriginalName()));
+            
+            // Ensure the directory exists
+            $directory = public_path('storage/partner-schools');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            // Move the uploaded file
+            $image->move($directory, $imageName);
             $partnerSchool->image_path = 'partner-schools/' . $imageName;
         }
         

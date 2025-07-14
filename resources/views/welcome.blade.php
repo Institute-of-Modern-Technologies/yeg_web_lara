@@ -475,7 +475,7 @@
                         
                         <!-- Stats 1 -->
                         <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">500</h2>
+                            <h2 class="text-4xl font-bold text-purple-800">500+</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF STUDENTS<br>
                                 <span class="text-xs normal-case">learning with</span><br>
@@ -485,7 +485,7 @@
                         
                         <!-- Stats 2 -->
                         <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">100</h2>
+                            <h2 class="text-4xl font-bold text-purple-800">10+</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF SCHOOLS<br>
                                 <span class="text-xs normal-case">partner schools</span><br>
@@ -816,8 +816,22 @@
                         @foreach($partnerSchools as $index => $school)
                         <div class="school-slide flex-shrink-0 w-full {{ $index > 0 ? 'hidden' : '' }}" data-index="{{ $index }}">
                             <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
-                                <div class="aspect-w-16 aspect-h-9 relative">
-                                    <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="w-full object-cover">
+                                <div class="aspect-w-16 aspect-h-9 relative flex items-center justify-center p-8 bg-white">
+                                    <!-- School logo with robust fallback -->
+                                    <div class="school-logo-container flex items-center justify-center h-full w-full">
+                                        @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
+                                            <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                            <div class="hidden text-center">
+                                                <img src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
+                                                <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
+                                            </div>
+                                        @else
+                                            <div class="text-center">
+                                                <img src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
+                                                <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
                                     
                                     <!-- School Name Badge -->
                                     <div class="absolute bottom-6 left-6">
@@ -840,13 +854,71 @@
                         @endforeach
                     </div>
                 </div>
-                
                 <!-- Carousel Navigation Dots -->
                 <div class="flex justify-center mt-6 space-x-2">
                     @foreach($partnerSchools as $index => $school)
-                    <button class="school-nav-dot w-3 h-3 rounded-full {{ $index == 0 ? 'bg-cyan-400' : 'bg-gray-400' }}" data-index="{{ $index }}"></button>
+                    <button class="school-nav-dot w-3 h-3 rounded-full {{ $index == 0 ? 'bg-[#950713]' : 'bg-gray-400' }}" data-index="{{ $index }}"></button>
                     @endforeach
                 </div>
+                
+                <!-- School Carousel Script -->
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const slides = document.querySelectorAll('.school-slide');
+                    const dots = document.querySelectorAll('.school-nav-dot');
+                    const totalSlides = slides.length;
+                    let currentIndex = 0;
+                    let autoplayInterval;
+                    
+                    // Initialize first slide
+                    if (slides.length > 0) {
+                        slides[0].classList.remove('hidden');
+                    }
+                    
+                    // Show slide by index
+                    function showSlide(index) {
+                        // Hide all slides
+                        slides.forEach(slide => slide.classList.add('hidden'));
+                        
+                        // Show current slide
+                        slides[index].classList.remove('hidden');
+                        
+                        // Update navigation dots
+                        dots.forEach(dot => dot.classList.replace('bg-[#950713]', 'bg-gray-400'));
+                        dots[index].classList.replace('bg-gray-400', 'bg-[#950713]');
+                        
+                        currentIndex = index;
+                    }
+                    
+                    // Add click events to dots
+                    dots.forEach(dot => {
+                        dot.addEventListener('click', function() {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            showSlide(index);
+                            restartAutoplay();
+                        });
+                    });
+                    
+                    // Autoplay function
+                    function startAutoplay() {
+                        if (totalSlides > 1) {
+                            autoplayInterval = setInterval(() => {
+                                const nextIndex = (currentIndex + 1) % totalSlides;
+                                showSlide(nextIndex);
+                            }, 5000); // Change slide every 5 seconds
+                        }
+                    }
+                    
+                    // Restart autoplay
+                    function restartAutoplay() {
+                        clearInterval(autoplayInterval);
+                        startAutoplay();
+                    }
+                    
+                    // Start autoplay
+                    startAutoplay();
+                });
+                </script>
                 
                 <!-- Carousel Navigation Arrows (only if more than one school) -->
                 @if($partnerSchools->count() > 1)
