@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Force Montserrat font on every element in the welcome page */
+    #welcome-page *:not(.fas):not(.far):not(.fa):not(.fab) {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+</style>
+<div id="welcome-page" class="font-montserrat">
 
     <!-- Hero Section with Carousel -->
     <section id="hero-section" class="hero-section relative overflow-hidden min-h-[600px] md:min-h-[700px] bg-primary">
@@ -599,7 +606,7 @@
                         <a href="{{ route('career.guidance') }}" class="block">
                             <div class="border border-teal-300 rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700 font-montserrat">Career Guidance</span>
+                                    <span class="text-gray-700 font-semibold font-montserrat">Career Guidance</span>
                                     <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
                                         <i class="fas fa-chevron-right text-xs"></i>
                                     </div>
@@ -611,7 +618,7 @@
                         <a href="{{ route('programs') }}" class="block">
                             <div class="border border-teal-300 rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700 font-montserrat">Our Programs</span>
+                                    <span class="text-gray-700 font-semibold font-montserrat">Our Programs</span>
                                     <div class="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center text-teal-500">
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </div>
@@ -624,7 +631,7 @@
                         <a href="{{ route('enrollment') }}" class="block">
                             <div class="border border-[#950713] rounded-md overflow-hidden">
                                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
-                                    <span class="text-gray-700 font-montserrat">Enrollment and rates</span>
+                                    <span class="text-gray-700 font-semibold font-montserrat">Enrollment and rates</span>
                                     <div class="w-6 h-6 bg-[#ffcb05]/20 rounded-full flex items-center justify-center text-[#950713]">
                                         <i class="fas fa-arrow-right text-xs"></i>
                                     </div>
@@ -636,14 +643,14 @@
                 
                 <!-- Right Column - FAQ Questions -->
                 <div class="lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-6 text-gray-800">FAQ'S</h3>
+                    <h3 class="text-lg font-semibold mb-6 text-gray-800 font-montserrat">FAQ'S</h3>
                     
                     <!-- FAQ Accordion -->
                     <div class="space-y-4" id="faq-accordion">
                         <!-- Question 1 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">What is the Young Experts Group (YEG)?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">What is the Young Experts Group (YEG)?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -658,7 +665,7 @@
                         <!-- Question 2 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">Who can join the YEG program?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">Who can join the YEG program?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -673,7 +680,7 @@
                         <!-- Question 3 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">What will participants learn?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">What will participants learn?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -688,7 +695,7 @@
                         <!-- Question 4 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">How is the program structured?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">How is the program structured?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -703,7 +710,7 @@
                         <!-- Question 5 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">What makes YEG different from regular tech classes?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">What makes YEG different from regular tech classes?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -718,7 +725,7 @@
                         <!-- Question 6 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">What do students receive at the end of the program?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">What do students receive at the end of the program?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -733,7 +740,7 @@
                         <!-- Question 7 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">Where is YEG held?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">Where is YEG held?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -748,7 +755,7 @@
                         <!-- Question 8 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">How do we register our child or school?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">How do we register our child or school?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -763,7 +770,7 @@
                         <!-- Question 9 -->
                         <div class="border border-gray-200 rounded-md overflow-hidden">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
-                                <h4 class="text-gray-700">Is there a cost to participate?</h4>
+                                <h4 class="text-gray-700 font-semibold font-montserrat">Is there a cost to participate?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
                                     <i class="fas fa-chevron-down text-xs"></i>
                                 </div>
@@ -1863,5 +1870,6 @@
             }
         });
     </script>
+</div>
 @endsection
 

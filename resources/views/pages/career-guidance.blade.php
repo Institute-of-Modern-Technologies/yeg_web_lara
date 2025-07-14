@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Force Montserrat font on every element in the career guidance page */
+    #career-guidance-page *:not(.fas):not(.far):not(.fa):not(.fab) {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+</style>
+<div id="career-guidance-page" class="font-montserrat">
 <!-- Google Fonts Import for Kid-friendly fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,9 +266,9 @@
     
     <!-- Call to Action -->
     <div class="text-center">
-        <h2 class="text-3xl font-bold text-white mb-5 title-font"><i class="fas fa-rocket mr-2"></i>Launch Your Future</h2>
-        <p class="text-white mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">The careers of tomorrow start with the skills we build today. Let YEG help guide your child's journey!</p>
-        <a href="{{ url('schools/register') }}" class="inline-block px-8 py-4 bg-primary hover:bg-primary/90 text-white body-font font-medium rounded-md transition-all duration-300">
+        <h2 class="text-3xl font-bold text-white mb-5 title-font font-montserrat"><i class="fas fa-rocket mr-2"></i>Launch Your Future</h2>
+        <p class="text-white mb-8 font-montserrat bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">The careers of tomorrow start with the skills we build today. Let YEG help guide your child's journey!</p>
+        <a href="{{ url('schools/register') }}" class="inline-block px-8 py-4 bg-primary hover:bg-primary/90 text-white font-montserrat font-medium rounded-md transition-all duration-300">
             BEGIN CAREER EXPLORATION
         </a>
     </div>
@@ -269,4 +276,5 @@
 
 <!-- Padding for bottom spacing -->
 <div class="pb-16"></div>
+</div>
 @endsection

@@ -5,11 +5,16 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
     
+    /* Force Montserrat font on every element in the programs page */
+    #programs-page *:not(.fas):not(.far):not(.fa):not(.fab) {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+    
     .title-font {
-        font-family: 'Fredoka One', cursive;
+        font-family: 'Montserrat', sans-serif !important;
     }
     .body-font {
-        font-family: 'Fredoka', sans-serif;
+        font-family: 'Montserrat', sans-serif !important;
     }
     .montserrat-font {
         font-family: 'Montserrat', sans-serif;
@@ -69,6 +74,7 @@
     }
 </style>
 
+<div id="programs-page" class="font-montserrat">
 <!-- Hero Section with Background Image that fills entire section -->
 <div class="relative overflow-hidden">
     <!-- Background image covering entire hero section -->
@@ -258,7 +264,7 @@
                 <img src="https://images.pexels.com/photos/5621949/pexels-photo-5621949.jpeg" alt="Teaching approach with students" class="rounded-lg shadow-xl" />
             </div>
             <div class="md:w-1/2 md:pl-10">
-                <h2 class="text-4xl font-bold text-[#950713] mb-6 title-font">Our Teaching Approach</h2>
+                <h2 class="text-4xl font-bold text-[#950713] mb-6 font-montserrat">Our Teaching Approach</h2>
                 <div class="w-24 h-1 bg-[#ffcb05] mb-6"></div>
                 
                 <div class="mb-6">
@@ -335,4 +341,5 @@
         animation: float 6s ease-in-out infinite;
     }
 </style>
+</div>
 @endsection

@@ -5,16 +5,22 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
     
+    /* Force Montserrat font on every element in the about page */
+    #about-page *:not(.fas):not(.far):not(.fa):not(.fab) {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+    
     .title-font {
-        font-family: 'Fredoka One', cursive;
+        font-family: 'Montserrat', sans-serif !important;
     }
     .body-font {
-        font-family: 'Fredoka', sans-serif;
+        font-family: 'Montserrat', sans-serif !important;
     }
     .montserrat-font {
         font-family: 'Montserrat', sans-serif;
     }
 </style>
+<div id="about-page" class="font-montserrat">
 <!-- Full Page Background with Image -->
 <div class="fixed inset-0 -z-10">
     <img src="{{ asset('images/image.png') }}" alt="Background" class="w-full h-full object-cover">
@@ -240,7 +246,7 @@
     
     <!-- Call to Action -->
     <div class="text-center">
-        <h2 class="text-3xl font-bold text-white mb-5 title-font"><i class="fas fa-comments mr-2"></i>Join the Movement</h2>
+        <h2 class="text-3xl font-bold text-white mb-5 font-montserrat"><i class="fas fa-comments mr-2"></i>Join the Movement</h2>
         <p class="text-white mb-8 body-font bg-[#0f5687]/50 py-3 px-4 rounded-md font-bold inline-block mx-auto">Whether you're a parent, educator, or school administrator — YEG is your partner in building Ghana's future-ready youth. Let's shape the next generation together.</p>
         <a href="{{ url('schools/register') }}" class="inline-block px-8 py-4 bg-primary hover:bg-primary/90 text-white body-font font-medium rounded-md transition-all duration-300">
             ENROLL TODAY
@@ -310,5 +316,6 @@
         animation: float 6s ease-in-out infinite;
     }
 </style>
+</div>
 
 @endsection
