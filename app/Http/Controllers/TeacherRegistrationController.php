@@ -53,10 +53,23 @@ class TeacherRegistrationController extends Controller
         $validated['preferred_locations'] = json_encode($request->preferred_locations);
         
         // Create the teacher record
-        Teacher::create($validated);
+        $teacher = Teacher::create($validated);
         
-        // Redirect to success page
+        // Generate a reference number
+        $referenceNumber = 'TR-' . str_pad($teacher->id, 4, '0', STR_PAD_LEFT);
+        
+        // Prepare session data for success page
+        $sessionData = [
+            'name' => $teacher->name,
+            'email' => $teacher->email,
+            'phone' => $teacher->phone,
+            'program_applied' => $teacher->program_applied,
+            'reference_number' => $referenceNumber
+        ];
+        
+        // Redirect to success page with teacher data in session
         return redirect()->route('teacher.register.success')
+            ->with('teacher', $sessionData)
             ->with('success', 'Your teacher registration has been submitted successfully!');
     }
     
