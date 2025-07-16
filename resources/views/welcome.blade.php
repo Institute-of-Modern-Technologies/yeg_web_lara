@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!-- AOS CSS Library -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
 <style>
     /* Force Montserrat font on every element in the welcome page */
     #welcome-page *:not(.fas):not(.far):not(.fa):not(.fab) {
@@ -67,8 +71,8 @@
         <!-- Default Hero Section (Shown when no hero sections are configured) -->
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
-            <div class="absolute inset-0 w-full h-full">
-                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover">
+            <div class="absolute inset-0 w-full h-full parallax-bg" id="hero-parallax-bg">
+                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover parallax-img fade-in-bg">
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -76,15 +80,15 @@
             <!-- Text Content -->
             <div class="relative h-full flex items-end pb-16 justify-start pl-8 md:pl-16 lg:pl-24">
                 <div class="container-fluid px-0">
-                    <div class="max-w-2xl text-center py-6 px-8">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg">
-                            <span class="text-white">Get </span>
-                            <span class="text-secondary">CAREER-READY</span>
+                    <div class="max-w-2xl text-center py-6 px-8" data-aos="fade-up" data-aos-delay="300">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight text-shadow-lg" data-aos="zoom-in" data-aos-delay="100" aria-label="Get Career Ready">
+                            <span class="headline-word text-white">Get</span>
+                            <span class="headline-word text-secondary">CAREER-READY</span>
                         </h1>
-                        <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md">
+                        <h2 class="text-2xl md:text-3xl mb-4 font-light text-shadow-md" data-aos="fade-up" data-aos-delay="250">
                             <span class="text-white">Nurturing Future Innovators</span>
                         </h2>
-                        <div class="relative inline-block">
+                        <div class="relative inline-block" data-aos="zoom-in" data-aos-delay="400">
                             <button class="heroRegisterBtn bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 inline-block text-lg px-6 py-3 rounded-md shadow-lg text-white font-medium flex items-center space-x-2">
                                 <i class="fas fa-user-plus"></i>
                                 <span>Join Us Today</span>
@@ -161,33 +165,34 @@
     </section>
 
     <!-- Our Stages Section -->
-    <section id="our-stages" class="py-16 bg-white">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12 text-primary">Our Stages</h2>
+    <section id="our-stages" class="py-16 bg-white relative overflow-hidden">
+        <div id="our-stages-bg"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-primary" data-aos="fade-up" data-aos-delay="100">Our Stages</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 <!-- Discover Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;" data-aos="flip-up" data-aos-delay="300">
                     <div class="text-3xl mb-3" style="color: #950713;">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users icon-animated"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2" style="color: #950713;">Discover</h3>
                     <p class="text-sm" style="color: #950713;">Transforming Ideas<br>into Innovation.</p>
                 </div>
                 
                 <!-- Build Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;" data-aos="fade-right" data-aos-delay="400">
                     <div class="text-3xl mb-3" style="color: #950713;">
-                        <i class="fas fa-university"></i>
+                        <i class="fas fa-university icon-animated"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2" style="color: #950713;">Build</h3>
                     <p class="text-sm" style="color: #950713;">Crafting the Next<br>Big Thing.</p>
                 </div>
                 
                 <!-- Mastery Card -->
-                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;">
+                <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;" data-aos="fade-left" data-aos-delay="500">
                     <div class="text-3xl mb-3" style="color: #950713;">
-                        <i class="fas fa-bell"></i>
+                        <i class="fas fa-bell icon-animated"></i>
                     </div>
                     <h3 class="text-lg font-bold mb-2" style="color: #950713;">Mastery</h3>
                     <p class="text-sm" style="color: #950713;">Where Skill Meets<br>Innovation.</p>
@@ -200,8 +205,8 @@
     <section id="about" class="py-16 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-10">
-                <h2 class="text-4xl font-bold mb-4">Welcome</h2>
-                <p class="text-lg">
+                <h2 class="text-4xl font-bold mb-4" data-aos="fade-up" data-aos-delay="100">Welcome</h2>
+                <p class="text-lg" data-aos="fade-up" data-aos-delay="200">
                     Equipping young minds with skills in 
                     <span style="color: #950713;">Technology</span>, 
                     <span class="bg-yellow-400 text-black px-1">Entrepreneurship</span>, 
@@ -212,7 +217,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 <!-- Left Column - Our Program -->
-                <div class="border border-gray-200 rounded-md p-6 relative">
+                <div class="border border-gray-200 rounded-md p-6 relative" data-aos="zoom-in" data-aos-delay="300">
                     <div class="flex items-center mb-4">
                         <div class="bg-neon-pink text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
                             <i class="fas fa-graduation-cap"></i>
@@ -425,11 +430,13 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left Column - Blog Posts -->
                 <div class="lg:col-span-2">
-                    <h4 class="text-sm mb-2">HAPPENINGS AT <span class="text-secondary font-bold" style="color: #ffcb05 !important;">YOUNG EXPERTS</span></h4>
-                    <h2 class="text-3xl font-bold mb-8">
-                        This Week at<span class="text-secondary" style="color: #ffcb05 !important;"> Young Experts </span><span class="text-cyan-400">GROUP</span>:
-                        <br>where your ideas come to life!
-                    </h2>
+                    <div data-aos="fade-right">
+                        <h4 class="text-sm mb-2">HAPPENINGS AT <span class="text-secondary font-bold" style="color: #ffcb05 !important;">YOUNG EXPERTS</span></h4>
+                        <h2 class="text-3xl font-bold mb-8">
+                            This Week at<span class="text-secondary" style="color: #ffcb05 !important;"> Young Experts </span><span class="text-cyan-400">GROUP</span>:
+                            <br>where your ideas come to life!
+                        </h2>
+                    </div>
                     
                     @php
                         // Get active happenings ordered by display_order and recent date
@@ -438,7 +445,7 @@
                     
                     @forelse($happenings as $happening)
                     <!-- Blog Post -->
-                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6">
+                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="flex-shrink-0 mr-4">
                             <div class="relative rounded-md overflow-hidden w-32 h-32">
                                 @if($happening->media_type == 'image')
@@ -477,12 +484,12 @@
                 
                 <!-- Right Column - Stats/Register -->
                 <div class="lg:col-span-1">
-                    <div class="bg-white text-black rounded-md p-6">
+                    <div class="bg-white text-black rounded-md p-6" data-aos="fade-left">
                         <h3 class="text-sm text-center mb-4">FUN FACTS ABOUT <span class="text-secondary font-bold">YOUNG EXPERTS</span></h3>
                         
                         <!-- Stats 1 -->
-                        <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">500+</h2>
+                        <div class="text-center mb-6" data-aos="flip-up" data-aos-delay="200">
+                            <h2 class="text-4xl font-bold text-[#950713] counter-value">500+</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF STUDENTS<br>
                                 <span class="text-xs normal-case">learning with</span><br>
@@ -491,8 +498,8 @@
                         </div>
                         
                         <!-- Stats 2 -->
-                        <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">10+</h2>
+                        <div class="text-center mb-6" data-aos="flip-up" data-aos-delay="400">
+                            <h2 class="text-4xl font-bold text-[#950713] counter-value">10+</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF SCHOOLS<br>
                                 <span class="text-xs normal-case">partner schools</span><br>
@@ -501,8 +508,8 @@
                         </div>
                         
                         <!-- Stats 3 -->
-                        <div class="text-center mb-6">
-                            <h2 class="text-4xl font-bold text-purple-800">50+</h2>
+                        <div class="text-center mb-6" data-aos="flip-up" data-aos-delay="600">
+                            <h2 class="text-4xl font-bold text-[#950713] counter-value">50+</h2>
                             <p class="text-xs uppercase text-gray-600">
                                 NUMBER OF TRAINERS<br>
                                 <span class="text-xs normal-case">available at</span><br>
@@ -643,12 +650,12 @@
                 
                 <!-- Right Column - FAQ Questions -->
                 <div class="lg:col-span-2">
-                    <h3 class="text-lg font-semibold mb-6 text-gray-800 font-montserrat">FAQ'S</h3>
+                    <h3 class="text-lg font-semibold mb-6 text-[#950713] font-montserrat" data-aos="fade-up">FAQ'S</h3>
                     
                     <!-- FAQ Accordion -->
                     <div class="space-y-4" id="faq-accordion">
                         <!-- Question 1 -->
-                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                        <div class="border border-gray-200 rounded-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
                                 <h4 class="text-gray-700 font-semibold font-montserrat">What is the Young Experts Group (YEG)?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
@@ -663,7 +670,7 @@
                         </div>
                         
                         <!-- Question 2 -->
-                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                        <div class="border border-gray-200 rounded-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
                                 <h4 class="text-gray-700 font-semibold font-montserrat">Who can join the YEG program?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
@@ -678,7 +685,7 @@
                         </div>
                         
                         <!-- Question 3 -->
-                        <div class="border border-gray-200 rounded-md overflow-hidden">
+                        <div class="border border-gray-200 rounded-md overflow-hidden" data-aos="fade-up" data-aos-delay="300">
                             <div class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 faq-question" onclick="toggleFaq(this)">
                                 <h4 class="text-gray-700 font-semibold font-montserrat">What will participants learn?</h4>
                                 <div class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 faq-icon">
@@ -1141,9 +1148,9 @@
     <section id="about-us" class="py-16 bg-gray-50">
         <div class="container mx-auto px-6">
             <!-- Header -->
-            <div class="text-center mb-14">
+            <div class="text-center mb-14" data-aos="fade-up">
                 <h2 class="text-3xl font-bold mb-4">
-                    Why <span class="text-neon-pink">Young</span> <span class="bg-black text-yellow-400 px-2">Experts</span> <span class="text-cyan-400">Group</span> is the best Solution for Innovation
+                    Why <span class="text-[#950713]">Young</span> <span class="bg-black text-yellow-400 px-2">Experts</span> <span class="text-cyan-400">Group</span> is the best Solution for Innovation
                 </h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
                     Our comprehensive curriculum covers all key subjects with expert trainers and innovative methods.
@@ -1153,44 +1160,44 @@
             <!-- Program Features -->
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-6xl mx-auto">
                 <!-- Coding -->
-                <div class="text-center">
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
                         <img src="{{ asset('images/coding.png') }}" alt="Coding" class="w-16 h-16 object-contain">
                     </div>
-                    <h3 class="text-primary font-bold mb-2">Coding</h3>
+                    <h3 class="text-[#950713] font-bold mb-2">Coding</h3>
                     <p class="text-gray-600 text-sm">
                         Learn programming skills through interactive and project-based learning
                     </p>
                 </div>
                 
                 <!-- Digital Marketing -->
-                <div class="text-center">
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
                     <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
                         <img src="{{ asset('images/digital-marketing.png') }}" alt="Digital Marketing" class="w-16 h-16 object-contain">
                     </div>
-                    <h3 class="text-primary font-bold mb-2">Digital Marketing</h3>
+                    <h3 class="text-[#950713] font-bold mb-2">Digital Marketing</h3>
                     <p class="text-gray-600 text-sm">
                         Develop business skills and strategies to bring ideas to market
                     </p>
                 </div>
                 
                 <!-- Graphics Design -->
-                <div class="text-center">
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
                         <img src="{{ asset('images/graphic-designing.png') }}" alt="Graphics Design" class="w-16 h-16 object-contain">
                     </div>
-                    <h3 class="text-primary font-bold mb-2">Graphics Design</h3>
+                    <h3 class="text-[#950713] font-bold mb-2">Graphics Design</h3>
                     <p class="text-gray-600 text-sm">
                         Explore creative design principles through hands-on projects
                     </p>
                 </div>
                 
                 <!-- Entrepreneurship -->
-                <div class="text-center">
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
                         <img src="{{ asset('images/Enterpreneurship.png') }}" alt="Entrepreneurship" class="w-16 h-16 object-contain">
                     </div>
-                    <h3 class="text-primary font-bold mb-2">Entrepreneurship</h3>
+                    <h3 class="text-[#950713] font-bold mb-2">Entrepreneurship</h3>
                     <p class="text-gray-600 text-sm">
                         Develop business skills and strategies to bring ideas to market
                     </p>
@@ -1299,8 +1306,8 @@
     <section id="testimonials" class="py-16 bg-white">
         <div class="container mx-auto px-6">
             <!-- Header -->
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-primary mb-3">What Our Community Says</h2>
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-[#950713] mb-3">What Our Community Says</h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
                     Hear from our students, parents, and community members about their experiences with
                     our educational programs.
@@ -1318,7 +1325,7 @@
                     <div class="testimonials-slider flex">
                         @forelse($testimonials as $key => $testimonial)
                             <div class="testimonial-card flex-shrink-0 w-full md:w-1/3 px-4">
-                                <div class="bg-white rounded-lg border border-gray-200 p-6 h-full">
+                                <div class="bg-white rounded-lg border border-gray-200 p-6 h-full" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                                     <!-- Person Info -->
                                     <div class="flex items-center mb-4">
                                         <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
@@ -1520,7 +1527,7 @@
     <section id="pricing" class="py-16" style="background-color: rgba(0, 255, 255, 0.1);">
         <div class="container mx-auto px-6">
             <!-- Header -->
-            <div class="text-center mb-12">
+            <div class="text-center mb-12" data-aos="fade-up">
                 <h2 class="text-3xl font-bold mb-4" style="color: #950713;">Pricing</h2>
                 <p class="text-gray-600 max-w-3xl mx-auto">
                     Young Experts Group offers flexible pricing options to accommodate different 
@@ -1532,10 +1539,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 
                 <!-- Card 2: Weekend & Vacation YEG -->
-                <div class="bg-white rounded-lg border border-pink-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg border border-pink-200 p-6 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-right" data-aos-delay="100">
                     <div class="flex flex-col space-y-4">
                         <!-- Weekend YEG -->
-                        <div>
+                        <div data-aos="fade-up" data-aos-delay="150">
                             <div class="flex justify-center mb-4">
                                 <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
                                     <i class="fas fa-calendar-day text-pink-500"></i>
@@ -1552,7 +1559,7 @@
                         </div>
                         
                         <!-- Vacation YEG -->
-                        <div>
+                        <div data-aos="fade-up" data-aos-delay="250">
                             <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Vacation YEG</h3>
                             
                             <div class="flex items-baseline justify-center mb-6">
@@ -1563,7 +1570,7 @@
                         </div>
                         
                         <!-- After-School YEG -->
-                        <div>
+                        <div data-aos="fade-up" data-aos-delay="350">
                             <h3 class="text-lg font-bold text-gray-800 text-center mb-4">After-School YEG</h3>
                             
                             <div class="flex items-baseline justify-center mb-2">
@@ -1576,7 +1583,7 @@
                 </div>
                 
                 <!-- Card 3: Weekend & Vacation YEG -->
-                <div class="bg-white rounded-lg border border-yellow-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg border border-yellow-200 p-6 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-left" data-aos-delay="200">
                     <div class="flex justify-center mb-4">
                         <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-umbrella-beach text-yellow-500"></i>
@@ -1613,7 +1620,7 @@
             </div>
             
             <!-- Important Note -->
-            <div class="max-w-5xl mx-auto mt-8 bg-white border rounded-lg p-4" style="border-color: #950713;">
+            <div class="max-w-5xl mx-auto mt-8 bg-white border rounded-lg p-4" style="border-color: #950713;" data-aos="fade-up" data-aos-delay="400">
                 <div class="flex">
                     <div class="flex-shrink-0 mr-3">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background-color: rgba(149, 7, 19, 0.1);">
@@ -1636,238 +1643,514 @@
 
 @section('scripts')
     <script>
-        // Registration dropdowns functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Helper function to handle dropdown functionality
-            function setupDropdown(buttonId, menuId, buttonSelector) {
-                const button = buttonId ? document.getElementById(buttonId) : buttonSelector;
-                const menu = buttonId ? document.getElementById(menuId) : buttonSelector && buttonSelector.nextElementSibling;
-                const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
-                
-                if (button && menu) {
-                    // Toggle dropdown on button click
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        menu.classList.toggle('hidden');
-                        if (chevronIcon) {
-                            chevronIcon.classList.toggle('rotate-180');
-                        }
-                    });
-                    
-                    // Close dropdown when clicking outside
-                    document.addEventListener('click', function(event) {
-                        if (!button.contains(event.target) && !menu.contains(event.target)) {
-                            menu.classList.add('hidden');
-                            if (chevronIcon) {
-                                chevronIcon.classList.remove('rotate-180');
-                            }
-                        }
-                    });
-                }
-            }
-            
-            // Setup all dropdowns
-            setupDropdown('registerDropdownButton', 'registerDropdownMenu');
-            setupDropdown('happeningsRegisterBtn', 'happeningsDropdownMenu');
-            
-            // Handle hero section dropdown
-            const heroButtons = document.querySelectorAll('.heroRegisterBtn');
-            heroButtons.forEach(button => {
-                const menu = button.nextElementSibling;
-                const chevron = button.querySelector('.fa-chevron-down');
-                
-                if (button && menu) {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        menu.classList.toggle('hidden');
-                        if (chevron) {
-                            chevron.classList.toggle('rotate-180');
-                        }
-                    });
-                    
-                    document.addEventListener('click', function(event) {
-                        if (!button.contains(event.target) && !menu.contains(event.target)) {
-                            menu.classList.add('hidden');
-                            if (chevron) {
-                                chevron.classList.remove('rotate-180');
-                            }
-                        }
-                    });
-                }
-            });
-        });
+    // --- Parallax Effect for Hero ---
+    document.addEventListener('scroll', function() {
+      var bg = document.getElementById('hero-parallax-bg');
+      if (bg) {
+        var scrollY = window.scrollY;
+        var speed = 0.3; // Adjust for faster/slower parallax
+        var yPos = -(scrollY * speed);
+        bg.style.transform = 'translate3d(0, ' + yPos + 'px, 0)';
         
-        // Toggle FAQ accordion items
-        function toggleFaq(element) {
-            // Get the answer panel (next sibling after the question)
-            const answer = element.nextElementSibling;
-            const icon = element.querySelector('.faq-icon i');
+        // Fade out as you scroll down
+        var opacity = 1 - (scrollY / 1000);
+        opacity = Math.max(opacity, 0.3); // Don't let it fade completely
+        var img = document.querySelector('.parallax-img');
+        if (img) {
+          img.style.opacity = opacity;
+        }
+      }
+    });
+    
+    // Initialize once on page load for immediate effect
+    document.addEventListener('DOMContentLoaded', function() {
+      var bg = document.getElementById('hero-parallax-bg');
+      if (bg) {
+        bg.style.transform = 'translate3d(0, 0, 0)';
+      }
+    });
+    
+    // Registration dropdowns functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Helper function to handle dropdown functionality
+        function setupDropdown(buttonId, menuId, buttonSelector) {
+            const button = buttonId ? document.getElementById(buttonId) : buttonSelector;
+            const menu = buttonId ? document.getElementById(menuId) : buttonSelector && buttonSelector.nextElementSibling;
+            const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
             
-            // Toggle the display of the answer
-            if (answer.style.display === 'none' || !answer.style.display) {
-                answer.style.display = 'block';
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-                element.classList.add('bg-gray-50');
-            } else {
-                answer.style.display = 'none';
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-                element.classList.remove('bg-gray-50');
+            if (button && menu) {
+                // Toggle dropdown on button click
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menu.classList.toggle('hidden');
+                    if (chevronIcon) {
+                        chevronIcon.classList.toggle('rotate-180');
+                    }
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!button.contains(event.target) && !menu.contains(event.target)) {
+                        menu.classList.add('hidden');
+                        if (chevronIcon) {
+                            chevronIcon.classList.remove('rotate-180');
+                        }
+                    }
+                });
             }
         }
-
-        $(document).ready(function() {
-            // Hero Carousel functionality with smooth transitions
-            $('.carousel-dot').click(function() {
-                if (isTransitioning) return; // Prevent rapid clicking
-                
-                isTransitioning = true;
-                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
-                
-                const slideId = $(this).data('slide');
-                
-                // Update dots immediately
-                $('.carousel-dot').removeClass('active');
-                $(this).addClass('active');
-                
-                // Smoothly transition between slides
-                $('.carousel-item').removeClass('active');
-                $('#' + slideId).addClass('active');
-            });
+        
+        // Setup all dropdowns
+        setupDropdown('registerDropdownButton', 'registerDropdownMenu');
+        setupDropdown('happeningsRegisterBtn', 'happeningsDropdownMenu');
+        
+        // Handle hero section dropdown
+        const heroButtons = document.querySelectorAll('.heroRegisterBtn');
+        heroButtons.forEach(button => {
+            const menu = button.nextElementSibling;
+            const chevron = button.querySelector('.fa-chevron-down');
             
-            // Hero Carousel Navigation Arrows
-            $('.carousel-prev').click(function() {
-                // Don't proceed if a transition is already happening
-                if (isTransitioning) return;
-                
-                isTransitioning = true;
-                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
-                
-                const activeDot = $('.carousel-dot.active');
-                let prevDot = activeDot.prev('.carousel-dot');
-                
-                // If no previous dot, go to the last dot (loop back)
-                if (prevDot.length === 0) {
-                    prevDot = $('.carousel-dot:last');
-                }
-                
-                // Update dots immediately
-                $('.carousel-dot').removeClass('active');
-                prevDot.addClass('active');
-                
-                // Get slide ID and update slides with smooth transition
-                const slideId = prevDot.data('slide');
-                $('.carousel-item').removeClass('active');
-                $('#' + slideId).addClass('active');
-            });
-            
-            $('.carousel-next').click(function() {
-                // Don't proceed if a transition is already happening
-                if (isTransitioning) return;
-                
-                isTransitioning = true;
-                setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
-                
-                const activeDot = $('.carousel-dot.active');
-                let nextDot = activeDot.next('.carousel-dot');
-                
-                // If no next dot, go to the first dot (loop)
-                if (nextDot.length === 0) {
-                    nextDot = $('.carousel-dot:first');
-                }
-                
-                // Update dots immediately
-                $('.carousel-dot').removeClass('active');
-                nextDot.addClass('active');
-                
-                // Get slide ID and update slides with smooth transition
-                const slideId = nextDot.data('slide');
-                $('.carousel-item').removeClass('active');
-                $('#' + slideId).addClass('active');
-            });
-            
-            // Auto-rotate carousel every 6 seconds with smooth transitions
-            let carouselInterval;
-            let isTransitioning = false;
-            
-            function startCarouselAutoplay() {
-                carouselInterval = setInterval(function() {
-                    if (!isTransitioning && $('.carousel-item').length > 1) {
-                        $('.carousel-next').click();
+            if (button && menu) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menu.classList.toggle('hidden');
+                    if (chevron) {
+                        chevron.classList.toggle('rotate-180');
                     }
-                }, 6000);
-            }
-            
-            function stopCarouselAutoplay() {
-                clearInterval(carouselInterval);
-            }
-            
-            // Start autoplay on page load if there are hero sections
-            if ($('.carousel-dot').length > 1) {
-                startCarouselAutoplay();
-            }
-            
-            // Pause autoplay when user interacts with carousel
-            $('.carousel-dot, .carousel-prev, .carousel-next').on('mouseenter', function() {
-                stopCarouselAutoplay();
-            }).on('mouseleave', function() {
-                // Restart autoplay shortly after user stops interaction
-                setTimeout(startCarouselAutoplay, 2000);
-            });
-            
-            // Also handle click events to reset the timer
-            $('.carousel-dot, .carousel-prev, .carousel-next').on('click', function() {
-                stopCarouselAutoplay();
-                // Restart autoplay after user interaction
-                setTimeout(startCarouselAutoplay, 6000);
-            });
-            
-            // Category toggle functionality for FAQs
-            $('.categories .border').click(function() {
-                // Handle category selection logic here
-                console.log('Category clicked');
-            });
-            
-            // Testimonials Carousel functionality
-            let currentSlide = 0;
-            const testimonialCards = $('.testimonial-card');
-            const totalSlides = Math.ceil(testimonialCards.length / 3);
-            const dots = $('.carousel-dots button');
-            
-            // Initialize dots
-            dots.eq(0).addClass('active');
-            
-            // Previous button
-            $('.carousel-nav-btn:first-child').click(function() {
-                if (currentSlide > 0) {
-                    currentSlide--;
-                    updateTestimonialsSlider();
-                }
-            });
-            
-            // Next button
-            $('.carousel-nav-btn:last-child').click(function() {
-                if (currentSlide < totalSlides - 1) {
-                    currentSlide++;
-                    updateTestimonialsSlider();
-                }
-            });
-            
-            // Dot navigation
-            dots.click(function() {
-                currentSlide = $(this).index();
-                updateTestimonialsSlider();
-            });
-            
-            function updateTestimonialsSlider() {
-                const translateValue = -currentSlide * 100 + '%';
-                $('.testimonials-slider').css('transform', 'translateX(' + translateValue + ')');
+                });
                 
-                // Update active dot
-                dots.removeClass('bg-neon-pink').addClass('bg-gray-300');
-                dots.eq(currentSlide).removeClass('bg-gray-300').addClass('bg-neon-pink');
+                document.addEventListener('click', function(event) {
+                    if (!button.contains(event.target) && !menu.contains(event.target)) {
+                        menu.classList.add('hidden');
+                        if (chevron) {
+                            chevron.classList.remove('rotate-180');
+                        }
+                    }
+                });
             }
+        });
+    });
+    
+    // Toggle FAQ accordion items
+    function toggleFaq(element) {
+        // Get the answer panel (next sibling after the question)
+        const answer = element.nextElementSibling;
+        const icon = element.querySelector('.faq-icon i');
+        
+        // Toggle the display of the answer
+        if (answer.style.display === 'none' || !answer.style.display) {
+            answer.style.display = 'block';
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+            element.classList.add('bg-gray-50');
+        } else {
+            answer.style.display = 'none';
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+            element.classList.remove('bg-gray-50');
+        }
+    }
+
+    $(document).ready(function() {
+        // Hero Carousel functionality with smooth transitions
+        $('.carousel-dot').click(function() {
+            if (isTransitioning) return; // Prevent rapid clicking
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const slideId = $(this).data('slide');
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            $(this).addClass('active');
+            
+            // Smoothly transition between slides
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+        });
+        
+        // Hero Carousel Navigation Arrows
+        $('.carousel-prev').click(function() {
+            // Don't proceed if a transition is already happening
+            if (isTransitioning) return;
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const activeDot = $('.carousel-dot.active');
+            let prevDot = activeDot.prev('.carousel-dot');
+            
+            // If no previous dot, go to the last dot (loop back)
+            if (prevDot.length === 0) {
+                prevDot = $('.carousel-dot:last');
+            }
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            prevDot.addClass('active');
+            
+            // Get slide ID and update slides with smooth transition
+            const slideId = prevDot.data('slide');
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+        });
+        
+        $('.carousel-next').click(function() {
+            // Don't proceed if a transition is already happening
+            if (isTransitioning) return;
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const activeDot = $('.carousel-dot.active');
+            let nextDot = activeDot.next('.carousel-dot');
+            
+            // If no next dot, go to the first dot (loop)
+            if (nextDot.length === 0) {
+                nextDot = $('.carousel-dot:first');
+            }
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            nextDot.addClass('active');
+            
+            // Get slide ID and update slides with smooth transition
+            const slideId = nextDot.data('slide');
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+        });
+        
+        // Auto-rotate carousel every 6 seconds with smooth transitions
+        let carouselInterval;
+        let isTransitioning = false;
+        
+        function startCarouselAutoplay() {
+            carouselInterval = setInterval(function() {
+                if (!isTransitioning && $('.carousel-item').length > 1) {
+                    $('.carousel-next').click();
+                }
+            }, 6000);
+        }
+        
+        function stopCarouselAutoplay() {
+            clearInterval(carouselInterval);
+        }
+        
+        // Start autoplay on page load if there are hero sections
+        if ($('.carousel-dot').length > 1) {
+            startCarouselAutoplay();
+        }
+        
+        // Pause autoplay when user interacts with carousel
+        $('.carousel-dot, .carousel-prev, .carousel-next').on('mouseenter', function() {
+            stopCarouselAutoplay();
+        }).on('mouseleave', function() {
+            // Restart autoplay shortly after user stops interaction
+            setTimeout(startCarouselAutoplay, 2000);
+        });
+        
+        // Also handle click events to reset the timer
+        $('.carousel-dot, .carousel-prev, .carousel-next').on('click', function() {
+            stopCarouselAutoplay();
+            // Restart autoplay after user interaction
+            setTimeout(startCarouselAutoplay, 6000);
+        });
+        
+        // Category toggle functionality for FAQs
+        $('.categories .border').click(function() {
+            // Handle category selection logic here
+            console.log('Category clicked');
+        });
+        
+        // Testimonials Carousel functionality
+        let currentSlide = 0;
+        const testimonialCards = $('.testimonial-card');
+        const totalSlides = Math.ceil(testimonialCards.length / 3);
+        const dots = $('.carousel-dots button');
+        
+        // Initialize dots
+        dots.eq(0).addClass('active');
+        
+        // Previous button
+        $('.carousel-nav-btn:first-child').click(function() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateTestimonialsSlider();
+            }
+        });
+        
+        // Next button
+        $('.carousel-nav-btn:last-child').click(function() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateTestimonialsSlider();
+            }
+        });
+        
+        // Dot navigation
+        dots.click(function() {
+            currentSlide = $(this).index();
+            updateTestimonialsSlider();
+        });
+        
+        function updateTestimonialsSlider() {
+            const translateValue = -currentSlide * 100 + '%';
+            $('.testimonials-slider').css('transform', 'translateX(' + translateValue + ')');
+            
+            // Update active dot
+            dots.removeClass('bg-neon-pink').addClass('bg-gray-300');
+            dots.eq(currentSlide).removeClass('bg-gray-300').addClass('bg-neon-pink');
+        }
+    });
+
+    // Registration dropdowns functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Helper function to handle dropdown functionality
+        function setupDropdown(buttonId, menuId, buttonSelector) {
+            const button = buttonId ? document.getElementById(buttonId) : buttonSelector;
+            const menu = buttonId ? document.getElementById(menuId) : buttonSelector && buttonSelector.nextElementSibling;
+            const chevronIcon = button ? button.querySelector('.fa-chevron-down') : null;
+            
+            if (button && menu) {
+                // Toggle dropdown on button click
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menu.classList.toggle('hidden');
+                    if (chevronIcon) {
+                        chevronIcon.classList.toggle('rotate-180');
+                    }
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!button.contains(event.target) && !menu.contains(event.target)) {
+                        menu.classList.add('hidden');
+                        if (chevronIcon) {
+                            chevronIcon.classList.remove('rotate-180');
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Setup all dropdowns
+        setupDropdown('registerDropdownButton', 'registerDropdownMenu');
+        setupDropdown('happeningsRegisterBtn', 'happeningsDropdownMenu');
+        
+        // Handle hero section dropdown
+        const heroButtons = document.querySelectorAll('.heroRegisterBtn');
+        heroButtons.forEach(button => {
+            const menu = button.nextElementSibling;
+            const chevron = button.querySelector('.fa-chevron-down');
+            
+            if (button && menu) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    menu.classList.toggle('hidden');
+                    if (chevron) {
+                        chevron.classList.toggle('rotate-180');
+                    }
+                });
+                
+                document.addEventListener('click', function(event) {
+                    if (!button.contains(event.target) && !menu.contains(event.target)) {
+                        menu.classList.add('hidden');
+                        if (chevron) {
+                            chevron.classList.remove('rotate-180');
+                        }
+                    }
+                });
+            }
+        });
+    });
+    
+    // Toggle FAQ accordion items
+    function toggleFaq(element) {
+        // Get the answer panel (next sibling after the question)
+        const answer = element.nextElementSibling;
+        const icon = element.querySelector('.faq-icon i');
+        
+        // Toggle the display of the answer
+        if (answer.style.display === 'none' || !answer.style.display) {
+            answer.style.display = 'block';
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+            element.classList.add('bg-gray-50');
+        } else {
+            answer.style.display = 'none';
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+            element.classList.remove('bg-gray-50');
+        }
+    }
+
+    $(document).ready(function() {
+        // Hero Carousel functionality with smooth transitions
+        $('.carousel-dot').click(function() {
+            if (isTransitioning) return; // Prevent rapid clicking
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const slideId = $(this).data('slide');
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            $(this).addClass('active');
+            
+            // Smoothly transition between slides
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+            });
+            
+        // Hero Carousel Navigation Arrows
+        $('.carousel-prev').click(function() {
+            // Don't proceed if a transition is already happening
+            if (isTransitioning) return;
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const activeDot = $('.carousel-dot.active');
+            let prevDot = activeDot.prev('.carousel-dot');
+            
+            // If no previous dot, go to the last dot (loop back)
+            if (prevDot.length === 0) {
+                prevDot = $('.carousel-dot:last');
+            }
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            prevDot.addClass('active');
+            
+            // Get slide ID and update slides with smooth transition
+            const slideId = prevDot.data('slide');
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+            });
+            
+        $('.carousel-next').click(function() {
+            // Don't proceed if a transition is already happening
+            if (isTransitioning) return;
+            
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000); // Match transition duration
+            
+            const activeDot = $('.carousel-dot.active');
+            let nextDot = activeDot.next('.carousel-dot');
+            
+            // If no next dot, go to the first dot (loop)
+            if (nextDot.length === 0) {
+                nextDot = $('.carousel-dot:first');
+            }
+            
+            // Update dots immediately
+            $('.carousel-dot').removeClass('active');
+            nextDot.addClass('active');
+            
+            // Get slide ID and update slides with smooth transition
+            const slideId = nextDot.data('slide');
+            $('.carousel-item').removeClass('active');
+            $('#' + slideId).addClass('active');
+            });
+            
+        // Auto-rotate carousel every 6 seconds with smooth transitions
+        let carouselInterval;
+        let isTransitioning = false;
+        
+        function startCarouselAutoplay() {
+            carouselInterval = setInterval(function() {
+                if (!isTransitioning && $('.carousel-item').length > 1) {
+                    $('.carousel-next').click();
+                }
+            }, 6000);
+        }
+        
+        function stopCarouselAutoplay() {
+            clearInterval(carouselInterval);
+        }
+        
+        // Start autoplay on page load if there are hero sections
+        if ($('.carousel-dot').length > 1) {
+            startCarouselAutoplay();
+        }
+            
+        // Pause autoplay when user interacts with carousel
+        $('.carousel-dot, .carousel-prev, .carousel-next').on('mouseenter', function() {
+            stopCarouselAutoplay();
+        }).on('mouseleave', function() {
+            // Restart autoplay shortly after user stops interaction
+            setTimeout(startCarouselAutoplay, 2000);
+        });
+        
+        // Also handle click events to reset the timer
+        $('.carousel-dot, .carousel-prev, .carousel-next').on('click', function() {
+            stopCarouselAutoplay();
+            // Restart autoplay after user interaction
+            setTimeout(startCarouselAutoplay, 6000);
+        });
+            
+        // Category toggle functionality for FAQs
+        $('.categories .border').click(function() {
+            // Handle category selection logic here
+            console.log('Category clicked');
+        });
+        
+        // Testimonials Carousel functionality
+        let currentSlide = 0;
+        const testimonialCards = $('.testimonial-card');
+        const totalSlides = Math.ceil(testimonialCards.length / 3);
+        const dots = $('.carousel-dots button');
+        
+        // Initialize dots
+        dots.eq(0).addClass('active');
+        
+        // Previous button
+        $('.carousel-nav-btn:first-child').click(function() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateTestimonialsSlider();
+            }
+        });
+        
+        // Next button
+        $('.carousel-nav-btn:last-child').click(function() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateTestimonialsSlider();
+            }
+        });
+            
+        // Dot navigation
+        dots.click(function() {
+            currentSlide = $(this).index();
+            updateTestimonialsSlider();
+        });
+        
+        function updateTestimonialsSlider() {
+            const translateValue = -currentSlide * 100 + '%';
+            $('.testimonials-slider').css('transform', 'translateX(' + translateValue + ')');
+            
+            // Update active dot
+            dots.removeClass('bg-neon-pink').addClass('bg-gray-300');
+            dots.eq(currentSlide).removeClass('bg-gray-300').addClass('bg-neon-pink');
+        }
+        });
+    </script>
+
+    <!-- AOS Library and Initialization -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: false,
+                mirror: false,
+                offset: 100,
+                delay: 100
+            });
         });
     </script>
 </div>

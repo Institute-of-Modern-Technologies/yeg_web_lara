@@ -372,10 +372,9 @@
                                     <span class="sidebar-link-text">Students</span>
                                 </a>
                                 
-                                <a href="#" class="flex items-center py-2 px-4 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white">
+                                <a href="{{ route('admin.trainers.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.trainers.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-chalkboard-teacher w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Trainers</span>
-                                    <!-- Route not created yet: admin.trainers.index -->
                                 </a>
                             </div>
                         </div>

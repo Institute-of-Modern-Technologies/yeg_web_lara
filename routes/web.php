@@ -292,6 +292,18 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     ]);
     Route::post('/school-logos/update-order', ['\App\Http\Controllers\Admin\SchoolLogoController', 'updateOrder'])->name('admin.school-logos.update-order');
     Route::patch('/school-logos/{id}/toggle-active', ['\App\Http\Controllers\Admin\SchoolLogoController', 'toggleActive'])->name('admin.school-logos.toggle-active');
+    
+    // Trainer Management Routes
+    Route::resource('trainers', '\App\Http\Controllers\Admin\TrainerController')->names([
+        'index' => 'admin.trainers.index',
+        'create' => 'admin.trainers.create',
+        'store' => 'admin.trainers.store',
+        'show' => 'admin.trainers.show',
+        'edit' => 'admin.trainers.edit',
+        'update' => 'admin.trainers.update',
+        'destroy' => 'admin.trainers.destroy'
+    ]);
+    Route::patch('/trainers/{trainer}/update-status', ['\App\Http\Controllers\Admin\TrainerController', 'updateStatus'])->name('admin.trainers.update-status');
 });
 
 // School Admin Routes
