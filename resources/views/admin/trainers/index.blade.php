@@ -57,58 +57,81 @@
                                 @else
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Unknown</span>
                                 @endif
-                                
-                                <div class="mt-2 flex space-x-1">
-                                    @if($trainer->status != 'approved')
-                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="approved">
-                                        <button type="submit" class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition-colors">
-                                            Approve
-                                        </button>
-                                    </form>
-                                    @endif
-                                    
-                                    @if($trainer->status != 'rejected')
-                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="rejected">
-                                        <button type="submit" class="text-xs px-2 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200 transition-colors">
-                                            Reject
-                                        </button>
-                                    </form>
-                                    @endif
-                                    
-                                    @if($trainer->status != 'pending')
-                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="pending">
-                                        <button type="submit" class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded hover:bg-yellow-200 transition-colors">
-                                            Mark Pending
-                                        </button>
-                                    </form>
-                                    @endif
-                                </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('admin.trainers.show', $trainer) }}" class="text-blue-600 hover:text-blue-900 transition-colors" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.trainers.edit', $trainer) }}" class="text-indigo-600 hover:text-indigo-900 transition-colors" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.trainers.destroy', $trainer) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 transition-colors" title="Delete" 
-                                            onclick="return confirm('Are you sure you want to delete this trainer?')">
-                                            <i class="fas fa-trash"></i>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium relative">
+                                <div class="flex justify-center items-center">
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button @click.prevent="open = !open" class="text-gray-500 hover:text-[#950713]">
+                                            <i class="fas fa-ellipsis-v"></i>
                                         </button>
-                                    </form>
+                                        <div x-show="open" @click.away="open = false" 
+                                            class="fixed inset-0 flex items-center z-[1000]" 
+                                            style="background-color: rgba(0,0,0,0.2);"
+                                            x-cloak>
+                                            <div class="bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none w-64 max-w-md ml-auto mr-8" 
+                                                 @click.stop>
+                                                <div class="flex justify-between items-center p-3 border-b">
+                                                    <h3 class="font-medium">Actions</h3>
+                                                    <button @click="open = false" class="text-gray-400 hover:text-[#950713]">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="py-1">
+                                                    <a href="{{ route('admin.trainers.show', $trainer) }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                        <i class="fas fa-eye mr-2"></i> View Details
+                                                    </a>
+                                                    <a href="{{ route('admin.trainers.edit', $trainer) }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                        <i class="fas fa-edit mr-2"></i> Edit
+                                                    </a>
+                                                    
+                                                    @if($trainer->status != 'approved')
+                                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="block">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="status" value="approved">
+                                                        <button type="submit" class="w-full text-left text-green-600 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                            <i class="fas fa-user-check mr-2"></i> Approve
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                    
+                                                    @if($trainer->status != 'rejected')
+                                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="block">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="status" value="rejected">
+                                                        <button type="submit" class="w-full text-left text-red-600 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                            <i class="fas fa-user-times mr-2"></i> Reject
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                    
+                                                    @if($trainer->status != 'pending')
+                                                    <form action="{{ route('admin.trainers.update-status', $trainer) }}" method="POST" class="block">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <input type="hidden" name="status" value="pending">
+                                                        <button type="submit" class="w-full text-left text-yellow-600 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                            <i class="fas fa-user-clock mr-2"></i> Mark Pending
+                                                        </button>
+                                                    </form>
+                                                    @endif
+                                                    
+                                                    <form action="{{ route('admin.trainers.destroy', $trainer) }}" method="POST" class="block">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" onclick="event.preventDefault(); confirmDelete('{{ $trainer->id }}');" class="w-full text-left text-red-600 block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#950713] transition-colors">
+                                                            <i class="fas fa-trash-alt mr-2"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form id="delete-form-{{ $trainer->id }}" action="{{ route('admin.trainers.destroy', $trainer) }}" method="POST" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -126,3 +149,41 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Trainer delete confirmation
+    function confirmDelete(trainerId) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+            focusCancel: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form
+                document.getElementById(`delete-form-${trainerId}`).submit();
+                
+                // Show deletion in progress message
+                Swal.fire({
+                    title: 'Deleting...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            }
+        });
+    }
+</script>
+@endpush
