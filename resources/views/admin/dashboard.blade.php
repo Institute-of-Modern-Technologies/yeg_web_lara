@@ -535,21 +535,21 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Inactive Students Card -->
-                                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                                    <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-gray-200 rounded-full opacity-30 group-hover:opacity-40 transition-opacity"></div>
+                                <!-- Available Trainers Card -->
+                                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-red-200 rounded-full opacity-30 group-hover:opacity-40 transition-opacity"></div>
                                     <div class="relative z-10">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <p class="text-gray-500 font-medium text-sm">Inactive Students</p>
-                                                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ $inactiveStudents }}</h3>
+                                                <p class="text-[#950713] font-medium text-sm">Available Trainers</p>
+                                                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ $approvedTrainers }}</h3>
                                             </div>
                                             <div class="bg-white p-3 rounded-full shadow-sm">
-                                                <i class="fas fa-user-slash text-gray-500 text-xl"></i>
+                                                <i class="fas fa-chalkboard-teacher text-[#950713] text-xl"></i>
                                             </div>
                                         </div>
                                         <div class="flex items-center mt-4">
-                                            <a href="{{ route('admin.students.index', ['status' => 'inactive']) }}" class="text-gray-500 font-medium text-sm hover:text-gray-600">
+                                            <a href="{{ route('admin.trainers.index', ['status' => 'approved']) }}" class="text-[#950713] font-medium text-sm hover:text-red-800">
                                                 View All <i class="fas fa-arrow-right ml-1"></i>
                                             </a>
                                         </div>

@@ -4,9 +4,14 @@
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Trainers Management</h1>
-        <a href="{{ route('admin.trainers.create') }}" class="px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-lg shadow-sm transition-all duration-300">
-            <i class="fas fa-plus mr-2"></i>Add New Trainer
-        </a>
+        <div class="flex space-x-3">
+            <a href="{{ route('admin.trainers.create-accounts') }}" class="px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-lg shadow-sm transition-all duration-300">
+                <i class="fas fa-user-plus mr-2"></i>Create Accounts for Approved Trainers
+            </a>
+            <a href="{{ route('admin.trainers.create') }}" class="px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-lg shadow-sm transition-all duration-300">
+                <i class="fas fa-plus mr-2"></i>Add New Trainer
+            </a>
+        </div>
     </div>
 
     @if(session('success'))

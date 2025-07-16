@@ -125,8 +125,12 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::get('/dashboard', function () {
         // Get student counts by status
         $activeStudents = \App\Models\Student::where('status', 'active')->count();
-        $inactiveStudents = \App\Models\Student::where('status', 'inactive')->count();
         $pendingStudents = \App\Models\Student::whereNotIn('status', ['active', 'inactive'])->count();
+        
+        // Get trainer counts
+        $trainersCount = \App\Models\Teacher::count();
+        $approvedTrainers = \App\Models\Teacher::where('status', 'approved')->count();
+        $pendingTrainers = \App\Models\Teacher::where('status', 'pending')->count();
         
         // Get schools
         $schools = \App\Models\School::withCount('students')->orderBy('name')->get();
@@ -140,7 +144,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
             ->take(5)
             ->get();
         
-        return view('admin.dashboard', compact('activeStudents', 'inactiveStudents', 'pendingStudents', 'schools', 'teachers', 'pendingRegistrations'));
+        return view('admin.dashboard', compact('activeStudents', 'pendingStudents', 'trainersCount', 'approvedTrainers', 'pendingTrainers', 'schools', 'teachers', 'pendingRegistrations'));
     })->name('admin.dashboard');
     
     // Profile Routes
@@ -303,7 +307,8 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'update' => 'admin.trainers.update',
         'destroy' => 'admin.trainers.destroy'
     ]);
-    Route::patch('/trainers/{trainer}/update-status', ['\App\Http\Controllers\Admin\TrainerController', 'updateStatus'])->name('admin.trainers.update-status');
+    Route::patch('/trainers/{trainer}/status', ['\App\Http\Controllers\Admin\TrainerController', 'updateStatus'])->name('admin.trainers.update-status');
+    Route::get('/trainers/create-accounts', ['\App\Http\Controllers\Admin\TrainerController', 'createAccountsForApprovedTrainers'])->name('admin.trainers.create-accounts');
 });
 
 // School Admin Routes
