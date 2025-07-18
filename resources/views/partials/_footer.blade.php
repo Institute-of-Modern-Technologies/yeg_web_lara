@@ -86,7 +86,7 @@
                 <i class="fab fa-instagram"></i>
             </a>
             <a href="https://x.com/YoungExpertsG" target="_blank" class="w-10 h-10 bg-white bg-opacity-10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
-                <i class="fab fa-twitter"></i>
+                <span class="font-extrabold" style="font-size: 16px;">X</span>
             </a>
         </div>
         

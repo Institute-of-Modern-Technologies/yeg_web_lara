@@ -16,11 +16,31 @@ class TrainerController extends Controller
     /**
      * Display a listing of the trainers.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $trainers = Teacher::orderBy('created_at', 'desc')->get();
+        $query = Teacher::query();
+        
+        // Apply search filter
+        if ($request->filled('search')) {
+            $searchTerm = '%' . $request->search . '%';
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm)
+                  ->orWhere('email', 'like', $searchTerm)
+                  ->orWhere('phone', 'like', $searchTerm);
+            });
+        }
+        
+        // Apply status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        // Get results ordered by most recent
+        $trainers = $query->orderBy('created_at', 'desc')->get();
+        
         return view('admin.trainers.index', compact('trainers'));
     }
 

@@ -32,9 +32,21 @@ class StudentController extends Controller
         $schoolId = $request->input('school_id');
         $programTypeId = $request->input('program_type_id');
         $status = $request->input('status', '');
+        $search = $request->input('search', '');
         
         // Start with a base query
         $query = Student::query();
+        
+        // Apply search if provided
+        if ($search) {
+            $searchTerm = '%' . $search . '%';
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('registration_number', 'like', $searchTerm)
+                  ->orWhere('full_name', 'like', $searchTerm)
+                  ->orWhere('email', 'like', $searchTerm)
+                  ->orWhere('phone', 'like', $searchTerm);
+            });
+        }
         
         // Apply filters if provided
         if ($schoolId) {

@@ -16,11 +16,29 @@ class SchoolController extends Controller
     /**
      * Display a listing of the schools.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $schools = School::latest()->paginate(10);
+        $query = School::query();
+        
+        // Apply search if provided
+        if ($request->filled('search')) {
+            $searchTerm = '%' . $request->search . '%';
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm)
+                  ->orWhere('email', 'like', $searchTerm)
+                  ->orWhere('phone', 'like', $searchTerm)
+                  ->orWhere('location', 'like', $searchTerm);
+            });
+        }
+        
+        $schools = $query->latest()->paginate(10);
+        
+        // Preserve search parameters in pagination
+        $schools->appends($request->only('search'));
+        
         return view('admin.schools.index', compact('schools'));
     }
 

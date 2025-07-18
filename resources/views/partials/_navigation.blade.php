@@ -100,7 +100,7 @@
                 <i class="fab fa-instagram"></i>
             </a>
             <a href="https://x.com/YoungExpertsG" target="_blank" class="social-icon text-gray-600 hover:text-gray-800">
-                <i class="fab fa-twitter"></i>
+                <span class="font-extrabold" style="font-size: 16px;">X</span>
             </a>
         </div>
     </div>
@@ -250,7 +250,7 @@
                     <i class="fab fa-instagram"></i>
                 </a>
                 <a href="https://x.com/YoungExpertsG" target="_blank" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 text-white hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1">
-                    <i class="fab fa-twitter"></i>
+                    <span class="font-extrabold" style="font-size: 16px;">X</span>
                 </a>
             </div>
         </div>

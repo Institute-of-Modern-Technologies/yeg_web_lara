@@ -256,7 +256,7 @@
                                     <i class="fab fa-instagram"></i>
                                 </a>
                                 <a href="https://x.com/YoungExpertsG" target="_blank" class="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary flex items-center justify-center transition duration-300">
-                                    <i class="fab fa-twitter"></i>
+                                    <span class="font-extrabold" style="font-size: 16px;">X</span>
                                 </a>
                             </div>
                         </div>

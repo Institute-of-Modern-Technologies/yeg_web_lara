@@ -4,7 +4,7 @@
 <div class="p-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Manage Schools</h1>
-        <a href="{{ route('admin.schools.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+        <a href="{{ route('admin.schools.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-red-800 transition-all duration-300 flex items-center w-full sm:w-auto justify-center">
             <i class="fas fa-plus mr-2"></i>
             <span>Register New School</span>
         </a>
@@ -24,14 +24,32 @@
 
     <!-- School List -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 class="font-semibold text-gray-800 flex items-center">
-                <i class="fas fa-school mr-2 text-primary"></i>
-                <span>Registered Schools</span>
-            </h2>
-            <div class="relative w-full sm:w-auto">
-                <input type="text" id="school-search" placeholder="Search schools..." class="w-full sm:w-auto pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
-                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+        <div class="px-0 sm:px-0 py-0 border-b border-gray-200 bg-gradient-to-r from-primary to-red-800 text-white">
+            <div class="p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 class="font-semibold text-white flex items-center">
+                    <i class="fas fa-school mr-2"></i>
+                    <span>Registered Schools</span>
+                </h2>
+            </div>
+            <div class="bg-white rounded-t-lg mx-4 sm:mx-6 p-4 -mb-px shadow-lg transform -translate-y-1">
+                <form action="{{ route('admin.schools.index') }}" method="GET" class="flex flex-col sm:flex-row items-center gap-3">
+                    <div class="relative w-full sm:flex-grow group">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors duration-300">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <input type="text" id="search" name="search" value="{{ request('search') }}" placeholder="Search by name, email, location..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary shadow-sm transition-all duration-300">
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button type="submit" class="px-4 py-2.5 bg-primary text-white rounded-lg shadow-md hover:bg-red-800 transition-all duration-300 flex items-center justify-center min-w-[90px] group w-full sm:w-auto">
+                            <i class="fas fa-search mr-2 group-hover:animate-pulse"></i>Search
+                        </button>
+                        @if(request('search'))
+                        <a href="{{ route('admin.schools.index') }}" class="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-md transition-all duration-300 flex items-center justify-center min-w-[90px] w-full sm:w-auto">
+                            <i class="fas fa-times mr-2"></i>Clear
+                        </a>
+                        @endif
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -44,19 +62,19 @@
         <div class="block md:hidden">
             <div class="space-y-4 p-4">
                 @foreach($schools as $school)
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div class="bg-white rounded-lg shadow-md border border-gray-100 p-4 hover:shadow-lg transition-all duration-300">
                     <div class="flex items-center mb-3 gap-3">
-                        <div class="flex-shrink-0 h-12 w-12">
+                        <div class="flex-shrink-0 h-14 w-14">
                             @if($school->logo)
-                            <img class="h-12 w-12 rounded-full object-cover" src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo">
+                            <img class="h-14 w-14 rounded-full object-cover shadow-sm" src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo">
                             @else
-                            <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                <i class="fas fa-school text-gray-400"></i>
+                            <div class="h-14 w-14 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center shadow-sm">
+                                <i class="fas fa-school text-primary text-lg"></i>
                             </div>
                             @endif
                         </div>
-                        <div>
-                            <h3 class="font-bold text-gray-900">{{ $school->name }}</h3>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-gray-900 truncate">{{ $school->name }}</h3>
                             @php
                                 $statusAttr = [
                                     'active' => ['class' => 'bg-green-100 text-green-800', 'icon' => 'fa-check-circle', 'label' => 'Approved'],
@@ -64,57 +82,75 @@
                                     'rejected' => ['class' => 'bg-red-100 text-red-800', 'icon' => 'fa-times-circle', 'label' => 'Rejected']
                                 ][$school->status] ?? ['class' => 'bg-gray-100 text-gray-800', 'icon' => 'fa-question-circle', 'label' => 'Unknown'];
                             @endphp
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusAttr['class'] }}">
+                            <span class="inline-flex items-center px-2.5 py-0.5 mt-1 rounded-full text-xs font-medium {{ $statusAttr['class'] }}">
                                 <i class="fas {{ $statusAttr['icon'] }} mr-1"></i>
                                 {{ $statusAttr['label'] }}
                             </span>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-3 text-sm mb-4">
-                        <div>
-                            <span class="block text-gray-500">Contact</span>
-                            <span>{{ $school->phone }}</span>
-                            @if($school->email)
-                            <span class="block text-blue-500">{{ $school->email }}</span>
-                            @endif
+                    <div class="space-y-2 text-sm mb-4">
+                        <div class="flex items-start gap-2">
+                            <div class="text-gray-400 w-5 pt-0.5"><i class="fas fa-phone"></i></div>
+                            <div>{{ $school->phone ?: 'No phone number' }}</div>
                         </div>
-                        <div>
-                            <span class="block text-gray-500">Owner</span>
-                            <span>{{ $school->owner_name }}</span>
-                            <span class="block">{{ $school->owner_phone }}</span>
+                        @if($school->email)
+                        <div class="flex items-start gap-2">
+                            <div class="text-gray-400 w-5 pt-0.5"><i class="fas fa-envelope"></i></div>
+                            <div class="text-blue-600 break-all">{{ $school->email }}</div>
+                        </div>
+                        @endif
+                        <div class="flex items-start gap-2">
+                            <div class="text-gray-400 w-5 pt-0.5"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>{{ $school->city ?? 'N/A' }}{{ $school->state ? ', '.$school->state : '' }}</div>
                         </div>
                     </div>
                     
-                    <div class="border-t pt-3 flex justify-end space-x-3">
+                    <div class="border-t border-gray-100 pt-3 flex flex-wrap justify-end gap-2">
+                        <a href="{{ route('admin.schools.show', $school->id) }}" class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors flex items-center">
+                            <i class="fas fa-eye mr-1.5"></i> View
+                        </a>
+                        
+                        <a href="{{ route('admin.schools.edit', $school->id) }}" class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors flex items-center">
+                            <i class="fas fa-edit mr-1.5"></i> Edit
+                        </a>
+
+                        <button onclick="confirmDelete({{ $school->id }})" class="px-3 py-1.5 text-xs bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors flex items-center">
+                            <i class="fas fa-trash-alt mr-1.5"></i> Delete
+                        </button>
+                        
+                        <!-- Status change dropdown -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="text-indigo-600 hover:bg-indigo-50 p-2 rounded-md">
-                                <i class="fas fa-exchange-alt mr-1"></i> Status
-                            </button>
-                            <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" style="display: none;">
-                                <div class="py-1">
-                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}">
+                            <button @click="open = !open" class="px-3 py-1.5 text-xs bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 transition-colors flex items-center">
+                                <i class="fas fa-exchange-alt mr-1.5"></i> Status
+                            <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 overflow-hidden" style="display: none;">
+                                <div class="py-1 text-xs">
+                                    <div class="px-3 py-2 bg-gray-50 text-gray-500 font-medium">Change status to:</div>
+                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PATCH')
+                                        @method('PUT')
                                         <input type="hidden" name="status" value="active">
-                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-green-700 hover:bg-gray-100">
-                                            <i class="fas fa-check-circle mr-2"></i> Approve
+                                        <button type="submit" class="w-full px-4 py-2 text-sm text-left text-green-700 hover:bg-green-50 flex items-center transition-colors duration-200">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            Approve School
                                         </button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}">
+                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PATCH')
+                                        @method('PUT')
                                         <input type="hidden" name="status" value="pending">
-                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-yellow-700 hover:bg-gray-100">
-                                            <i class="fas fa-clock mr-2"></i> Mark as Pending
+                                        <button type="submit" class="w-full px-4 py-2 text-sm text-left text-yellow-600 hover:bg-yellow-50 flex items-center transition-colors duration-200">
+                                            <i class="fas fa-clock mr-2"></i>
+                                            Mark as Pending
                                         </button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}">
+                                    <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PATCH')
+                                        @method('PUT')
                                         <input type="hidden" name="status" value="rejected">
-                                        <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-700 hover:bg-gray-100">
-                                            <i class="fas fa-times-circle mr-2"></i> Reject
+                                        <button type="submit" class="w-full px-4 py-2 text-sm text-left text-red-700 hover:bg-red-50 flex items-center transition-colors duration-200">
+                                            <i class="fas fa-times-circle mr-2"></i>
+                                            Reject School
                                         </button>
                                     </form>
                                 </div>
@@ -305,25 +341,71 @@
         });
     }
     
-    // Filter schools
+    // Listen to all status form submissions
     document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('school-search');
-        
-        if (searchInput) {
-            searchInput.addEventListener('keyup', function() {
-                const searchValue = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#schools-table-body tr');
+        const statusForms = document.querySelectorAll('.status-form');
+        statusForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const status = this.querySelector('input[name="status"]').value;
+                const originalForm = this;
                 
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
+                // Configure alert based on status
+                let config = {
+                    title: '',
+                    text: '',
+                    icon: 'question',
+                    confirmButtonColor: '#950713', // Brand color
+                    cancelButtonColor: '#6B7280'
+                };
+                
+                if (status === 'active') {
+                    config.title = 'Approve School';
+                    config.text = 'Are you sure you want to approve this school?';
+                    config.icon = 'question';
+                    config.confirmButtonColor = '#10B981'; // Green for approve
+                } else if (status === 'rejected') {
+                    config.title = 'Reject School';
+                    config.text = 'Are you sure you want to reject this school?';
+                    config.icon = 'warning';
+                    config.confirmButtonColor = '#EF4444'; // Red for reject
+                } else if (status === 'pending') {
+                    config.title = 'Mark as Pending';
+                    config.text = 'Are you sure you want to mark this school as pending?';
+                    config.icon = 'info';
+                    config.confirmButtonColor = '#F59E0B'; // Yellow for pending
+                }
+                
+                Swal.fire({
+                    title: config.title,
+                    text: config.text,
+                    icon: config.icon,
+                    showCancelButton: true,
+                    confirmButtonColor: config.confirmButtonColor,
+                    cancelButtonColor: config.cancelButtonColor,
+                    confirmButtonText: 'Yes, proceed',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true,
+                    focusCancel: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit the original form
+                        originalForm.removeEventListener('submit', arguments.callee);
+                        originalForm.submit();
+                        
+                        // Show processing message
+                        Swal.fire({
+                            title: 'Processing...',
+                            text: 'Please wait',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
                     }
                 });
             });
-        }
+        });
     });
 </script>
 @endsection
