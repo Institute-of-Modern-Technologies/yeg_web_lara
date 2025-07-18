@@ -45,9 +45,11 @@
                 </div>
                 <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
                     @if($student->status == 'pending')
-                        <a href="{{ route('admin.students.approve', $student->id) }}" class="px-4 py-2 bg-yellow-500 text-white rounded-md text-sm font-medium hover:bg-yellow-600 transition-colors flex items-center">
+                        <form method="POST" action="{{ route('admin.students.approve', $student->id) }}" class="inline-block">@csrf
+                            <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-red-800 transition-colors flex items-center">
                             <i class="fas fa-user-check mr-2"></i> Approve
-                        </a>
+                            </button>
+                        </form>
                     @endif
                     <a href="{{ route('admin.students.edit', $student->id) }}" class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm font-medium hover:bg-blue-600 transition-colors flex items-center">
                         <i class="fas fa-edit mr-2"></i> Edit

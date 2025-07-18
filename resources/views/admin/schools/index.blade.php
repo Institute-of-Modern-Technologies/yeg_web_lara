@@ -1,7 +1,7 @@
 @extends('admin.dashboard')
 
 @section('content')
-<div class="p-6">
+<div class="p-6" x-data="{ isMobile: window.innerWidth < 768 }" x-init="window.addEventListener('resize', () => { isMobile = window.innerWidth < 768 })">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Manage Schools</h1>
         <a href="{{ route('admin.schools.create') }}" class="px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-red-800 transition-all duration-300 flex items-center w-full sm:w-auto justify-center">
@@ -59,7 +59,7 @@
         </div>
         @else
         <!-- Mobile Card View (visible on small screens) -->
-        <div class="block md:hidden">
+        <div class="block md:hidden" x-show="isMobile">
             <div class="space-y-4 p-4">
                 @foreach($schools as $school)
                 <div class="bg-white rounded-lg shadow-md border border-gray-100 p-4 hover:shadow-lg transition-all duration-300">
@@ -121,15 +121,17 @@
                         
                         <!-- Status change dropdown -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="px-3 py-1.5 text-xs bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 transition-colors flex items-center">
+                            <button @click="open = !open" class="px-3 py-1.5 text-xs bg-primary bg-opacity-10 text-primary rounded-md hover:bg-opacity-20 transition-colors flex items-center">
                                 <i class="fas fa-exchange-alt mr-1.5"></i> Status
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </button>
                             <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 overflow-hidden" style="display: none;">
                                 <div class="py-1 text-xs">
                                     <div class="px-3 py-2 bg-gray-50 text-gray-500 font-medium">Change status to:</div>
                                     <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PUT')
-                                        <input type="hidden" name="status" value="active">
+                                        @method('PATCH')
+                                        <input type="hidden" name="status" value="approved">
                                         <button type="submit" class="w-full px-4 py-2 text-sm text-left text-green-700 hover:bg-green-50 flex items-center transition-colors duration-200">
                                             <i class="fas fa-check-circle mr-2"></i>
                                             Approve School
@@ -137,7 +139,7 @@
                                     </form>
                                     <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PUT')
+                                        @method('PATCH')
                                         <input type="hidden" name="status" value="pending">
                                         <button type="submit" class="w-full px-4 py-2 text-sm text-left text-yellow-600 hover:bg-yellow-50 flex items-center transition-colors duration-200">
                                             <i class="fas fa-clock mr-2"></i>
@@ -146,7 +148,7 @@
                                     </form>
                                     <form method="POST" action="{{ route('admin.schools.update-status', $school->id) }}" class="status-form">
                                         @csrf
-                                        @method('PUT')
+                                        @method('PATCH')
                                         <input type="hidden" name="status" value="rejected">
                                         <button type="submit" class="w-full px-4 py-2 text-sm text-left text-red-700 hover:bg-red-50 flex items-center transition-colors duration-200">
                                             <i class="fas fa-times-circle mr-2"></i>
@@ -156,12 +158,6 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('admin.schools.edit', $school->id) }}" class="text-blue-600 hover:bg-blue-50 p-2 rounded-md">
-                            <i class="fas fa-edit mr-1"></i> Edit
-                        </a>
-                        <button onclick="confirmDelete({{ $school->id }})" class="text-red-600 hover:bg-red-50 p-2 rounded-md">
-                            <i class="fas fa-trash-alt mr-1"></i> Delete
-                        </button>
                         <form id="delete-form-{{ $school->id }}" action="{{ route('admin.schools.destroy', $school->id) }}" method="POST" class="hidden">
                             @csrf
                             @method('DELETE')
@@ -177,7 +173,7 @@
         </div>
         
         <!-- Desktop Table View (hidden on small screens) -->
-        <div class="hidden md:block overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto" x-show="!isMobile">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>

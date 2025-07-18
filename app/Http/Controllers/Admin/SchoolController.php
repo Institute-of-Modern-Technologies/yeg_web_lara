@@ -96,6 +96,20 @@ class SchoolController extends Controller
         $school = School::findOrFail($id);
         return view('admin.schools.edit', compact('school'));
     }
+    
+    /**
+     * Display the specified school.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $school = School::findOrFail($id);
+        // Get students associated with this school
+        $students = $school->students()->latest()->paginate(10);
+        return view('admin.schools.show', compact('school', 'students'));
+    }
 
     /**
      * Update the specified school in storage.

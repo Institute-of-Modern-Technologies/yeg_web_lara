@@ -214,9 +214,12 @@
                                                                     <i class="fas fa-edit mr-2"></i> Edit
                                                                 </a>
                                                                 @if($student->status == 'pending')
-                                                                <a href="{{ route('admin.students.approve', $student->id) }}" class="text-yellow-600 block px-4 py-2 text-sm hover:bg-gray-100">
-                                                                    <i class="fas fa-user-check mr-2"></i> Approve
-                                                                </a>
+                                                                <form method="POST" action="{{ route('admin.students.approve', $student->id) }}" class="block">
+                                                                    @csrf
+                                                                    <button type="submit" class="text-primary block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left">
+                                                                        <i class="fas fa-user-check mr-2"></i> Approve
+                                                                    </button>
+                                                                </form>
                                                                 @endif
                                                                 <button onclick="event.preventDefault(); confirmDelete({{ $student->id }});" class="text-red-600 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
                                                                     <i class="fas fa-trash-alt mr-2"></i> Delete

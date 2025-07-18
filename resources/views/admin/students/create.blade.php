@@ -1,5 +1,40 @@
 @extends('admin.dashboard')
 
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        border-color: #D1D5DB !important;
+        border-radius: 0.375rem !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+        padding-left: 12px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+    .select2-dropdown {
+        border-color: #D1D5DB !important;
+        border-radius: 0.375rem !important;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #950713 !important;
+        color: white !important;
+    }
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: rgba(149, 7, 19, 0.1) !important;
+    }
+    /* Style for new entries */
+    .select2-results__option .select2-highlighted-new {
+        font-style: italic;
+        color: #950713;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="p-6">
     <div class="space-y-6">
@@ -161,38 +196,21 @@
                         </select>
                     </div>
                     
-                    <!-- School Selection Type -->
+                    <!-- School Selection (combined field) -->
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">School Selection <span class="text-red-500">*</span></label>
-                        <div class="flex gap-4 mb-3">
-                            <div class="flex items-center">
-                                <input type="radio" id="existing_school" name="school_selection" value="existing" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" checked onchange="toggleSchoolSelection()">
-                                <label for="existing_school" class="ml-2 block text-sm text-gray-700">Select from existing schools</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="radio" id="new_school" name="school_selection" value="new" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" onchange="toggleSchoolSelection()">
-                                <label for="new_school" class="ml-2 block text-sm text-gray-700">Enter a new school</label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- School Dropdown (for existing schools) -->
-                    <div id="existing_school_div" class="md:col-span-2">
-                        <label for="school_id" class="block text-sm font-medium text-gray-700 mb-1">Select School <span class="text-red-500">*</span></label>
-                        <select name="school_id" id="school_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
-                            <option value="">Select School</option>
+                        <label for="school_input" class="block text-sm font-medium text-gray-700 mb-1">School <span class="text-red-500">*</span></label>
+                        <select name="school_input" id="school_input" class="school-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
+                            <option value="">Select existing school or type a new one</option>
                             @foreach($schools as $school)
-                            <option value="{{ $school->id }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>
+                            <option value="{{ $school->id }}" {{ old('school_input') == $school->id ? 'selected' : '' }}>
                                 {{ $school->name }}
                             </option>
                             @endforeach
                         </select>
-                    </div>
-                    
-                    <!-- New School Name (for manual entry) -->
-                    <div id="new_school_div" class="md:col-span-2 hidden">
-                        <label for="school_name" class="block text-sm font-medium text-gray-700 mb-1">School Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="school_name" name="school_name" value="{{ old('school_name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Enter school name">
+                        <input type="hidden" name="is_new_school" id="is_new_school" value="0">
+                        <input type="hidden" name="school_id" id="school_id_hidden">
+                        <input type="hidden" name="school_name" id="school_name_hidden">
+                        <div class="mt-1 text-xs text-gray-500">Type to search existing schools or enter a new school name</div>
                     </div>
                 </div>
             </div>
@@ -208,6 +226,9 @@
         </form>
     </div>
 </div>
+    <!-- Include jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         function calculateAge() {
             const dob = document.getElementById('date_of_birth').value;
@@ -227,31 +248,65 @@
             }
         }
         
-        function toggleSchoolSelection() {
-            const existingSchoolRadio = document.getElementById('existing_school');
-            const existingSchoolDiv = document.getElementById('existing_school_div');
-            const newSchoolDiv = document.getElementById('new_school_div');
-            const schoolIdSelect = document.getElementById('school_id');
-            const schoolNameInput = document.getElementById('school_name');
+        // Initialize the school select2 with custom handling for new schools
+        function initSchoolSelect() {
+            if (!window.jQuery) return;
             
-            if (existingSchoolRadio.checked) {
-                existingSchoolDiv.classList.remove('hidden');
-                newSchoolDiv.classList.add('hidden');
-                schoolIdSelect.setAttribute('required', '');
-                schoolNameInput.removeAttribute('required');
-            } else {
-                existingSchoolDiv.classList.add('hidden');
-                newSchoolDiv.classList.remove('hidden');
-                schoolIdSelect.removeAttribute('required');
-                schoolNameInput.setAttribute('required', '');
-            }
+            $('#school_input').select2({
+                placeholder: 'Select existing school or type a new one',
+                allowClear: true,
+                tags: true, // Allow creating new tags
+                createTag: function(params) {
+                    // This creates a new option for entered text
+                    return {
+                        id: 'new:' + params.term,
+                        text: params.term + ' (New)',
+                        newTag: true
+                    };
+                },
+                templateResult: function(data) {
+                    var $result = $('<span></span>');
+                    
+                    if (data.id && data.id.toString().startsWith('new:')) {
+                        // Highlight new schools in your brand color
+                        $result.text(data.text.replace(' (New)', ''));
+                        $result.append(' <span style="color: #950713; font-style: italic;">(New School)</span>');
+                    } else {
+                        $result.text(data.text);
+                    }
+                    
+                    return $result;
+                }
+            }).on('select2:select', function(e) {
+                const data = e.params.data;
+                
+                // Check if it's a new school (entered by user) or an existing one
+                if (data.id.toString().startsWith('new:')) {
+                    // It's a new school name entered by user
+                    const schoolName = data.text;
+                    $('#is_new_school').val('1');
+                    $('#school_id_hidden').val('');
+                    $('#school_name_hidden').val(schoolName);
+                } else {
+                    // It's an existing school
+                    $('#is_new_school').val('0');
+                    $('#school_id_hidden').val(data.id);
+                    $('#school_name_hidden').val('');
+                }
+            });
         }
         
         // Initialize the form when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            toggleSchoolSelection();
             if (document.getElementById('date_of_birth').value) {
                 calculateAge();
+            }
+            
+            // Initialize Select2 for school selection
+            if (window.jQuery) {
+                $(document).ready(function() {
+                    initSchoolSelect();
+                });
             }
         });
     </script>

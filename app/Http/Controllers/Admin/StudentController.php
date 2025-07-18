@@ -127,15 +127,9 @@ class StudentController extends Controller
             'region' => 'required|string|max:100',
             'class' => 'required|string|max:255',
             'program_type_id' => 'required|exists:program_types,id',
-            'school_selection' => 'required|in:existing,new',
+            'school_input' => 'required|string',
+            'is_new_school' => 'required|in:0,1',
         ];
-        
-        // Add conditional validation based on school selection
-        if ($request->school_selection === 'existing') {
-            $baseValidation['school_id'] = 'required|exists:schools,id';
-        } else {
-            $baseValidation['school_name'] = 'required|string|max:255';
-        }
         
         $validated = $request->validate($baseValidation);
         
@@ -152,15 +146,25 @@ class StudentController extends Controller
         
         // Handle school selection
         $schoolId = null;
-        if ($request->school_selection === 'existing') {
-            $schoolId = $request->school_id;
+        if ($request->is_new_school == '0') {
+            // Using an existing school
+            $schoolId = $request->school_id_hidden;
         } else {
             // Create a new school or get existing one with the same name
+            $schoolName = $request->school_name_hidden;
+            
+            // Prevent creating empty or invalid schools
+            if (empty($schoolName)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['school_input' => 'Please select an existing school or enter a valid new school name']);
+            }
+            
             $school = School::firstOrCreate(
-                ['name' => $request->school_name],
+                ['name' => $schoolName],
                 [
                     'status' => 'pending',
-                    'slug' => \Illuminate\Support\Str::slug($request->school_name),
+                    'slug' => \Illuminate\Support\Str::slug($schoolName),
                     'address' => 'Pending',
                     'contact_person' => 'Pending',
                     'email' => 'pending@example.com',

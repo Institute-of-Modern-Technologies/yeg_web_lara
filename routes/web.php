@@ -252,6 +252,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'index' => 'admin.schools.index',
         'create' => 'admin.schools.create',
         'store' => 'admin.schools.store',
+        'show' => 'admin.schools.show',
         'edit' => 'admin.schools.edit',
         'update' => 'admin.schools.update',
         'destroy' => 'admin.schools.destroy'
@@ -283,7 +284,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');
     Route::put('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'update'])->name('admin.students.update');
     Route::delete('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'destroy'])->name('admin.students.destroy');
-    Route::get('/students/{student}/approve', ['\App\Http\Controllers\Admin\StudentController', 'approveStudent'])->name('admin.students.approve');
+    Route::post('/students/{student}/approve', ['\App\Http\Controllers\Admin\StudentController', 'approveStudent'])->name('admin.students.approve');
     
     // School Logo Management Routes
     Route::resource('school-logos', '\App\Http\Controllers\Admin\SchoolLogoController')->names([
