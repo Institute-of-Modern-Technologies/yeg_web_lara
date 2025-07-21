@@ -352,7 +352,7 @@ class StudentRegistrationController extends Controller
                 'email' => 'nullable|email|max:255',
                 'phone' => 'nullable|string|max:20',
                 'parent_contact' => 'required|string|max:20',
-                'date_of_birth' => 'required|date',
+                'date_of_birth' => 'required|date|before:today|before_or_equal:'.now()->subYears(4)->format('Y-m-d'),
                 'gender' => 'required|in:male,female,other',
                 'address' => 'required|string|max:500',
                 'city' => 'required|string|max:255',

@@ -42,9 +42,44 @@
             }
         }
         
-        // Initialize form state on page load
+        // Function to validate date of birth
+        function validateDateOfBirth() {
+            const dobInput = document.getElementById('date_of_birth');
+            const dobError = document.getElementById('dob-error');
+            const dobValue = new Date(dobInput.value);
+            const today = new Date();
+            
+            // Calculate minimum allowed date (4 years ago from today)
+            const minDate = new Date();
+            minDate.setFullYear(today.getFullYear() - 4);
+            
+            // Check if date is in the future or less than 4 years old
+            if (dobValue > today || dobValue > minDate) {
+                dobError.classList.remove('hidden');
+                dobInput.classList.add('border-red-500');
+                return false;
+            } else {
+                dobError.classList.add('hidden');
+                dobInput.classList.remove('border-red-500');
+                return true;
+            }
+        }
+        
+        // Initialize form state and validation on page load
         document.addEventListener('DOMContentLoaded', function() {
             toggleSchoolSelection();
+            
+            // Add event listener to date of birth field
+            const dobInput = document.getElementById('date_of_birth');
+            dobInput.addEventListener('change', validateDateOfBirth);
+            
+            // Add form submission validation
+            const form = document.getElementById('student-registration-form');
+            form.addEventListener('submit', function(event) {
+                if (!validateDateOfBirth()) {
+                    event.preventDefault();
+                }
+            });
         });
     </script>
     <style>
@@ -218,7 +253,9 @@
                         
                         <div>
                             <label for="date_of_birth" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
-                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" required>
+                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ old('date_of_birth') }}" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" max="{{ now()->format('Y-m-d') }}" required>
+                            <p class="text-xs text-gray-500 mt-1">Student must be at least 4 years old</p>
+                            <div id="dob-error" class="text-red-500 text-sm mt-1 hidden">Student must be at least 4 years old and date cannot be in the future.</div>
                             @error('date_of_birth')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror

@@ -48,6 +48,107 @@
             height: 20px;
             background: linear-gradient(to bottom right, transparent 49%, white 50%);
         }
+        
+        /* Modern Print Styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .success-container {
+                border: none;
+                box-shadow: none;
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            
+            .header-banner {
+                background-image: none !important;
+                background-color: #950713 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            .header-banner::after {
+                display: none;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            footer, header, nav, .action-buttons {
+                display: none !important;
+            }
+            
+            /* Clean margins and optimize space */
+            .print-container {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .print-p-0 {
+                padding: 0 !important;
+            }
+            
+            /* Add a page break before specific sections if needed */
+            .print-break-before {
+                page-break-before: always;
+            }
+            
+            /* Ensure text is black for better printing */
+            p, h1, h2, h3, span, div {
+                color: black !important;
+            }
+            
+            /* Exceptions for brand color */
+            .brand-color, .text-primary, .brand-text {
+                color: #950713 !important;
+            }
+            
+            /* Improve contrast for better printing */
+            .bg-gray-50 {
+                background-color: white !important;
+                border: 1px solid #e5e7eb !important;
+            }
+            
+            /* Add a watermark for official look */
+            .print-watermark {
+                display: block !important;
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                opacity: 0.1;
+                z-index: 1000;
+                transform: rotate(-45deg);
+                font-size: 60px;
+                color: #950713 !important;
+                font-weight: bold;
+            }
+            
+            /* Add print-specific header with logo and date */
+            .print-header {
+                display: block !important;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            
+            /* Format registration number for better visibility */
+            .registration-number {
+                font-size: 1.2em !important;
+                font-weight: bold !important;
+            }
+            
+            /* Set page margins */
+            @page {
+                margin: 0.5cm;
+            }
+        }
         .success-icon {
             background-color: #950713;
             color: white;
@@ -89,12 +190,58 @@
             opacity: 0.8;
             flex-shrink: 0;
         }
+        
+        /* Modern button animations */
+        @keyframes shine {
+            from { transform: translateX(-100%) skewX(45deg); }
+            to { transform: translateX(200%) skewX(45deg); }
+        }
+        
+        .group:hover .animate-shine {
+            animation: shine 1s ease-in-out;
+        }
+        
+        /* Print button ripple effect */
+        #printButton::after {
+            content: '';
+            position: absolute;
+            border-radius: inherit;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: white;
+            transform: scale(0);
+            opacity: 0.3;
+            transition: all 0.4s ease-out;
+        }
+        
+        #printButton:active::after {
+            transform: scale(2);
+            opacity: 0;
+            transition: 0s;
+        }
     </style>
 </head>
 <body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Watermark visible only when printing -->
+    <div class="print-watermark hidden">OFFICIAL YEG RECORD</div>
 
-    <div class="py-12 px-4 flex-grow pb-24">
+    <div class="py-12 px-4 flex-grow pb-24 print-container">
         <div class="container mx-auto">
+            <!-- Print-only header with logo and date -->
+            <div class="hidden print-header">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <h2 class="text-2xl font-bold brand-text">Young Experts Group</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm">Printed on: <span id="print-date">{{ date('F j, Y') }}</span></p>
+                        <p class="text-sm">Registration Record</p>
+                    </div>
+                </div>
+            </div>
+            
             <div class="max-w-4xl mx-auto bg-white success-container">
                 <div class="header-banner py-12 px-8 relative">
                     <h1 class="text-3xl md:text-4xl font-bold text-white">Registration Successful</h1>
@@ -133,12 +280,12 @@
                                 @if(session('registration.student'))
                                     <div class="mt-4 flex items-center bg-gray-50 rounded-lg p-3 border-l-4 border-primary">
                                         <span class="font-medium text-gray-700">Registration Number:</span>
-                                        <span class="ml-2 px-3 py-1 bg-primary text-white font-semibold rounded">{{ session('registration.student')->registration_number }}</span>
+                                        <span class="ml-2 px-3 py-1 bg-primary text-white font-semibold rounded registration-number">{{ session('registration.student')->registration_number }}</span>
                                     </div>
                                 @elseif(session('registration.registration_number'))
                                     <div class="mt-4 flex justify-between items-center bg-gray-50 border border-gray-200 px-6 py-3 rounded-lg shadow-sm">
                                         <span class="text-gray-700">Registration Number:</span>
-                                        <span class="text-xl font-bold text-primary bg-primary bg-opacity-5 px-4 py-2 rounded-md">{{ session('registration.registration_number') }}</span>
+                                        <span class="text-xl font-bold text-primary bg-primary bg-opacity-5 px-4 py-2 rounded-md registration-number">{{ session('registration.registration_number') }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -315,7 +462,7 @@
                                     </svg>
                                     <div>
                                         <p class="text-sm font-medium text-gray-800">Important Note:</p>
-                                        <p class="text-sm text-gray-600 mt-1">If you don't receive your credentials within 48 hours of approval, please contact our admin at <a href="mailto:intghanabranch@gmail.com" class="text-primary hover:underline font-medium">intghanabranch@gmail.com</a> or call <a href="tel:+233547147313" class="text-primary hover:underline font-medium">0547147313</a>.</p>
+                                        <p class="text-sm text-gray-600 mt-1">If you don't receive your credentials within 48 hours of approval, please contact our admin at <a href="mailto:imtghanabranch@gmail.com" class="text-primary hover:underline font-medium">imtghanabranch@gmail.com</a> or call <a href="tel:+233547147313" class="text-primary hover:underline font-medium">0547147313</a>.</p>
                                     </div>
                                 </div>
                             </div>
@@ -323,22 +470,23 @@
                     </div>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-                    <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center sm:justify-between mt-8">
-                    <a href="{{ url('/') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center shadow-sm border border-gray-200">
-                        <svg class="h-5 w-5 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Home
-                    </a>
-                    
-                    <button onclick="window.print()" class="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-opacity-90 transition-all flex items-center justify-center shadow-md">
-                        <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                        Print Registration Details
-                    </button>
+                <!-- Action Buttons - marked as no-print for clean printing -->
+                <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 no-print">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center sm:justify-between mt-8 action-buttons">
+                        <a href="{{ url('/') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center shadow-sm border border-gray-200">
+                            <svg class="h-5 w-5 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to Home
+                        </a>
+                        
+                        <button onclick="window.print()" id="printButton" class="bg-primary text-white px-6 py-3 rounded-xl font-medium hover:bg-opacity-90 transition-all flex items-center justify-center shadow-md relative overflow-hidden group">
+                            <div class="absolute inset-0 w-3 bg-white bg-opacity-20 skew-x-[45deg] group-hover:animate-shine"></div>
+                            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            Print Registration Details
+                        </button>
                 </div>
             </div>
         </div>
