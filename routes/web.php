@@ -138,11 +138,32 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         // Get teachers
         $teachers = \App\Models\Teacher::orderBy('created_at', 'desc')->get();
         
-        // Get pending student registrations for notifications
-        $pendingRegistrations = \App\Models\Student::whereNotIn('status', ['active', 'inactive'])
+        // Get all pending registrations for notifications (students, teachers, schools)
+        $pendingStudentRegistrations = \App\Models\Student::whereNotIn('status', ['active', 'inactive'])
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->select('id', 'full_name', 'created_at')
+            ->selectRaw("'student' as type")
             ->get();
+            
+        $pendingTeacherRegistrations = \App\Models\Teacher::where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->select('id', 'name as full_name', 'created_at')
+            ->selectRaw("'teacher' as type")
+            ->get();
+            
+        $pendingSchoolRegistrations = \App\Models\School::where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->select('id', 'name as full_name', 'created_at')
+            ->selectRaw("'school' as type")
+            ->get();
+            
+        // Combine all pending registrations and sort by most recent
+        $allPendingRegistrations = $pendingStudentRegistrations->concat($pendingTeacherRegistrations)
+            ->concat($pendingSchoolRegistrations)
+            ->sortByDesc('created_at');
+            
+        // Take the most recent 10 for notifications
+        $pendingRegistrations = $allPendingRegistrations->take(10);
         
         return view('admin.dashboard', compact('activeStudents', 'pendingStudents', 'trainersCount', 'approvedTrainers', 'pendingTrainers', 'schools', 'teachers', 'pendingRegistrations'));
     })->name('admin.dashboard');

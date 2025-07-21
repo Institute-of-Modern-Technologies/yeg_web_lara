@@ -238,6 +238,22 @@
                                             <i class="fas fa-envelope text-gray-400 w-5"></i>
                                             <span class="ml-2 truncate">{{ $student->email }}</span>
                                         </div>
+                                        
+                                        <!-- Parent Contact (New) -->
+                                        <div class="flex items-center">
+                                            <i class="fas fa-user-friends text-gray-400 w-5"></i>
+                                            <span class="ml-2 truncate">{{ $student->parent_contact ?: 'No parent contact' }}</span>
+                                        </div>
+                                        
+                                        <!-- Program Type (New) -->
+                                        <div class="flex items-center">
+                                            <i class="fas fa-graduation-cap text-gray-400 w-5"></i>
+                                            <span class="ml-2 truncate">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#950713]/10 text-[#950713]">
+                                                    {{ $student->programType ? $student->programType->name : 'Not assigned' }}
+                                                </span>
+                                            </span>
+                                        </div>
                                         <div class="flex items-center">
                                             <i class="fas fa-school text-gray-400 w-5"></i>
                                             <span class="ml-2 truncate text-[#950713] font-medium">{{ $student->display_school_name }}</span>
@@ -290,15 +306,31 @@
                                             <!-- Student Info -->
                                             <div>
                                                 <p class="text-base font-medium text-gray-900">{{ $student->first_name }} {{ $student->last_name }}</p>
-                                                <div class="flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 mt-1">
+                                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-500 mt-2">
+                                                    <!-- Email -->
                                                     <span class="flex items-center">
-                                                        <i class="fas fa-envelope mr-1.5"></i>
-                                                        {{ $student->email }}
+                                                        <i class="fas fa-envelope mr-1.5 text-gray-400"></i>
+                                                        <span class="truncate">{{ $student->email }}</span>
                                                     </span>
-                                                    <span class="hidden sm:inline mx-1.5">•</span>
+                                                    
+                                                    <!-- Parent Contact (New) -->
                                                     <span class="flex items-center">
-                                                        <i class="fas fa-school mr-1.5"></i>
-                                                        <span class="text-[#950713] font-medium">{{ $student->display_school_name }}</span>
+                                                        <i class="fas fa-user-friends mr-1.5 text-gray-400"></i>
+                                                        <span class="truncate">{{ $student->parent_contact ?: 'No parent contact' }}</span>
+                                                    </span>
+                                                    
+                                                    <!-- School -->
+                                                    <span class="flex items-center">
+                                                        <i class="fas fa-school mr-1.5 text-gray-400"></i>
+                                                        <span class="text-[#950713] font-medium truncate">{{ $student->display_school_name }}</span>
+                                                    </span>
+                                                    
+                                                    <!-- Program Type (New) -->
+                                                    <span class="flex items-center">
+                                                        <i class="fas fa-graduation-cap mr-1.5 text-gray-400"></i>
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#950713]/10 text-[#950713]">
+                                                            {{ $student->programType ? $student->programType->name : 'Not assigned' }}
+                                                        </span>
                                                     </span>
                                                 </div>
                                             </div>

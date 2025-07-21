@@ -208,23 +208,43 @@
                                 
                                 <div class="max-h-64 overflow-y-auto">
                                     @if(isset($pendingRegistrations) && count($pendingRegistrations) > 0)
-                                        @foreach($pendingRegistrations as $student)
-                                            <a href="{{ route('admin.students.show', $student->id) }}" class="block border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        @foreach($pendingRegistrations as $registration)
+                                            @php
+                                                // Set appropriate route and icon based on registration type
+                                                $route = '';
+                                                $icon = '';
+                                                $typeText = '';
+                                                
+                                                if($registration->type === 'student') {
+                                                    $route = route('admin.students.show', $registration->id);
+                                                    $icon = 'fa-user-graduate';
+                                                    $typeText = 'New student registration';
+                                                } elseif($registration->type === 'teacher') {
+                                                    $route = route('admin.trainers.show', $registration->id);
+                                                    $icon = 'fa-chalkboard-teacher';
+                                                    $typeText = 'New trainer registration';
+                                                } elseif($registration->type === 'school') {
+                                                    $route = route('admin.schools.show', $registration->id);
+                                                    $icon = 'fa-school';
+                                                    $typeText = 'New school registration';
+                                                }
+                                            @endphp
+                                            <a href="{{ $route }}" class="block border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                                 <div class="p-3">
                                                     <div class="flex items-start">
                                                         <div class="flex-shrink-0 mt-1">
                                                             <div class="w-8 h-8 rounded-full bg-[#950713]/10 flex items-center justify-center text-[#950713]">
-                                                                <i class="fas fa-user-plus text-sm"></i>
+                                                                <i class="fas {{ $icon }} text-sm"></i>
                                                             </div>
                                                         </div>
                                                         <div class="ml-3">
-                                                            <p class="text-sm font-medium text-gray-800">{{ $student->full_name }}</p>
+                                                            <p class="text-sm font-medium text-gray-800">{{ $registration->full_name }}</p>
                                                             <p class="text-xs text-gray-500 mt-1 flex items-center">
                                                                 <i class="fas fa-clock mr-1 text-[#950713]"></i>
-                                                                New student registration
+                                                                {{ $typeText }}
                                                             </p>
                                                             <p class="text-xs text-gray-400 mt-1">
-                                                                {{ $student->created_at->diffForHumans() }}
+                                                                {{ \Carbon\Carbon::parse($registration->created_at)->diffForHumans() }}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -239,10 +259,19 @@
                                 </div>
                                 
                                 @if(isset($pendingRegistrations) && count($pendingRegistrations) > 0)
-                                    <div class="bg-gray-50 px-3 py-2 text-center">
-                                        <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="text-sm text-[#950713] hover:text-red-700 font-medium">
-                                            View All Pending Registrations
-                                        </a>
+                                    <div class="bg-gray-50 px-3 py-3">
+                                        <p class="text-xs text-gray-600 mb-2 font-medium">View all pending registrations:</p>
+                                        <div class="flex justify-center space-x-3">
+                                            <a href="{{ route('admin.students.index', ['status' => 'pending']) }}" class="px-2 py-1 text-xs bg-[#950713]/10 text-[#950713] rounded flex items-center">
+                                                <i class="fas fa-user-graduate mr-1"></i> Students
+                                            </a>
+                                            <a href="{{ route('admin.trainers.index', ['status' => 'pending']) }}" class="px-2 py-1 text-xs bg-[#950713]/10 text-[#950713] rounded flex items-center">
+                                                <i class="fas fa-chalkboard-teacher mr-1"></i> Trainers
+                                            </a>
+                                            <a href="{{ route('admin.schools.index', ['status' => 'pending']) }}" class="px-2 py-1 text-xs bg-[#950713]/10 text-[#950713] rounded flex items-center">
+                                                <i class="fas fa-school mr-1"></i> Schools
+                                            </a>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
