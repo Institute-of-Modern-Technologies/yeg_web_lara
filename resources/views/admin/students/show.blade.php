@@ -257,7 +257,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500">School Name</p>
-                                        <p class="font-medium text-gray-900">{{ $student->school->name ?? 'N/A' }}</p>
+                                        <p class="font-medium text-[#950713]">{{ $student->display_school_name }}</p>
                                     </div>
                                 </div>
                             </div>

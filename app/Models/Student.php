@@ -22,6 +22,7 @@ class Student extends Model
         'email',
         'parent_contact',
         'school_id',
+        'school_name',
         'city',
         'program_type_id',
         'registration_number',
@@ -72,6 +73,19 @@ class Student extends Model
     public function school()
     {
         return $this->belongsTo(School::class);
+    }
+    
+    /**
+     * Get the display school name (either from relationship or manually entered)
+     */
+    public function getDisplaySchoolNameAttribute()
+    {
+        if (!empty($this->school_name)) {
+            return $this->school_name; // Return manually entered name
+        } elseif ($this->school) {
+            return $this->school->name; // Return related school name
+        }
+        return 'Not specified'; // Fallback
     }
     
     /**

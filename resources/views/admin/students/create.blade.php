@@ -195,23 +195,64 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
+            </div>
+            
+            <!-- School Information Section -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-lg font-semibold mb-4">School Information</h2>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">School <span class="text-red-500">*</span></label>
                     
-                    <!-- School Selection (combined field) -->
-                    <div class="md:col-span-2">
-                        <label for="school_input" class="block text-sm font-medium text-gray-700 mb-1">School <span class="text-red-500">*</span></label>
-                        <select name="school_input" id="school_input" class="school-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
-                            <option value="">Select existing school or type a new one</option>
+                    <!-- Option tabs -->
+                    <div class="flex border-b border-gray-200 mb-4">
+                        <button type="button" id="select-school-tab" 
+                            class="py-2 px-4 border-b-2 border-[#950713] text-[#950713] font-medium text-sm focus:outline-none"
+                            onclick="switchTab('select')">
+                            Select from List
+                        </button>
+                        <button type="button" id="enter-school-tab" 
+                            class="py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm focus:outline-none"
+                            onclick="switchTab('enter')">
+                            Enter Manually
+                        </button>
+                    </div>
+                    
+                    <!-- Hidden input to track which method is selected -->
+                    <input type="hidden" name="school_selection_method" id="school_selection_method" value="select">
+                    
+                    <!-- Select school option -->
+                    <div id="select-school-content" class="animate-fade-in">
+                        <select id="school_id" name="school_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-50">
+                            <option value="">-- Select School --</option>
                             @foreach($schools as $school)
-                            <option value="{{ $school->id }}" {{ old('school_input') == $school->id ? 'selected' : '' }}>
-                                {{ $school->name }}
-                            </option>
+                                <option value="{{ $school->id }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
                             @endforeach
                         </select>
-                        <input type="hidden" name="is_new_school" id="is_new_school" value="0">
-                        <input type="hidden" name="school_id" id="school_id_hidden">
-                        <input type="hidden" name="school_name" id="school_name_hidden">
-                        <div class="mt-1 text-xs text-gray-500">Type to search existing schools or enter a new school name</div>
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle text-[#950713] mr-1"></i>
+                            Select the student's school from the list.
+                        </p>
                     </div>
+                    
+                    <!-- Enter school manually option -->
+                    <div id="enter-school-content" class="hidden animate-fade-in">
+                        <input type="text" id="school_name" name="school_name" placeholder="Enter school name" value="{{ old('school_name') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-50">
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle text-[#950713] mr-1"></i>
+                            If the school is not in our list, please enter the name here. It will be added as a pending school.
+                        </p>
+                    </div>
+                    
+                    @error('school_id')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                    
+                    @error('school_name')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             
@@ -248,52 +289,138 @@
             }
         }
         
-        // Initialize the school select2 with custom handling for new schools
-        function initSchoolSelect() {
-            if (!window.jQuery) return;
-            
-            $('#school_input').select2({
-                placeholder: 'Select existing school or type a new one',
+        /**
+         * Toggle between existing school selection and new school input
+         */
+        function toggleSchoolSelection(type) {
+            if (type === 'existing') {
+                document.getElementById('existing_school_container').classList.remove('hidden');
+                document.getElementById('new_school_container').classList.add('hidden');
+                document.getElementById('school_id').setAttribute('required', 'required');
+                document.getElementById('school_name').removeAttribute('required');
+                document.getElementById('school_name').value = '';
+            } else {
+                document.getElementById('existing_school_container').classList.add('hidden');
+                document.getElementById('new_school_container').classList.remove('hidden');
+                document.getElementById('school_id').removeAttribute('required');
+                document.getElementById('school_name').setAttribute('required', 'required');
+                document.getElementById('school_id').value = '';
+                
+                // If Select2 is initialized
+                if (window.jQuery && $.fn.select2) {
+                    $('#school_id').val(null).trigger('change');
+                }
+            }
+        }
+        
+        // Initialize Select2 for school dropdown with tagging support
+        function initializeSelect2() {
+            $('#school_id').select2({
+                placeholder: 'Select a school or type to add a new one',
                 allowClear: true,
-                tags: true, // Allow creating new tags
+                width: '100%',
+                // Modern styling with brand color
+                theme: 'classic',
+                tags: true,
                 createTag: function(params) {
-                    // This creates a new option for entered text
                     return {
-                        id: 'new:' + params.term,
-                        text: params.term + ' (New)',
+                        id: params.term,
+                        text: params.term,
                         newTag: true
                     };
                 },
                 templateResult: function(data) {
-                    var $result = $('<span></span>');
+                    if (!data.id) return data.text;
                     
-                    if (data.id && data.id.toString().startsWith('new:')) {
-                        // Highlight new schools in your brand color
-                        $result.text(data.text.replace(' (New)', ''));
-                        $result.append(' <span style="color: #950713; font-style: italic;">(New School)</span>');
-                    } else {
-                        $result.text(data.text);
+                    var $result = $('<span></span>');
+                    $result.text(data.text);
+                    
+                    if (data.newTag) {
+                        $result = $('<span><span class="text-[#950713] mr-1">New:</span>' + data.text + '</span>');
                     }
                     
                     return $result;
-                }
-            }).on('select2:select', function(e) {
-                const data = e.params.data;
-                
-                // Check if it's a new school (entered by user) or an existing one
-                if (data.id.toString().startsWith('new:')) {
-                    // It's a new school name entered by user
-                    const schoolName = data.text;
-                    $('#is_new_school').val('1');
-                    $('#school_id_hidden').val('');
-                    $('#school_name_hidden').val(schoolName);
-                } else {
-                    // It's an existing school
-                    $('#is_new_school').val('0');
-                    $('#school_id_hidden').val(data.id);
-                    $('#school_name_hidden').val('');
-                }
+                },
+                templateSelection: function(data) {
+                    if (!data.id) return data.text;
+                    
+                    if (data.newTag) {
+                        return $('<span><span class="text-[#950713] mr-1">New:</span><span style="color: #950713; font-weight: 500;">' + data.text + '</span></span>');
+                    }
+                    
+                    return $('<span style="color: #950713; font-weight: 500;">' + data.text + '</span>');
+                },
+                // Custom styling for the dropdown
+                dropdownCssClass: 'select2-dropdown-school'
             });
+            
+            // Add custom CSS for the Select2 dropdown
+            $('<style>\n\
+                .select2-container--classic .select2-selection--single {\n\
+                    height: 38px;\n\
+                    padding: 4px;\n\
+                    font-size: 16px;\n\
+                    border: 1px solid #d1d5db;\n\
+                }\n\
+                .select2-container--classic .select2-selection--single .select2-selection__rendered {\n\
+                    line-height: 28px;\n\
+                    padding-left: 8px;\n\
+                }\n\
+                .select2-container--classic .select2-selection--single .select2-selection__arrow {\n\
+                    height: 36px;\n\
+                }\n\
+                .select2-container--classic .select2-results__option--highlighted[aria-selected] {\n\
+                    background-color: #950713 !important;\n\
+                    color: white;\n\
+                }\n\
+                .select2-container--classic .select2-selection--single:focus {\n\
+                    border-color: #950713 !important;\n\
+                    box-shadow: 0 0 0 3px rgba(149, 7, 19, 0.25);\n\
+                }\n\
+                .select2-container--classic.select2-container--open .select2-dropdown {\n\
+                    border-color: #950713;\n\
+                }\n\
+                .select2-container--classic .select2-results__option {\n\
+                    padding: 8px;\n\
+                    font-size: 15px;\n\
+                }\n\
+            </style>').appendTo('head');
+        }
+        
+        // Function to switch between tabs for school selection
+        function switchTab(tab) {
+            // Update tab styles
+            if (tab === 'select') {
+                document.getElementById('select-school-tab').classList.add('border-[#950713]', 'text-[#950713]');
+                document.getElementById('select-school-tab').classList.remove('border-transparent', 'text-gray-500');
+                document.getElementById('enter-school-tab').classList.add('border-transparent', 'text-gray-500');
+                document.getElementById('enter-school-tab').classList.remove('border-[#950713]', 'text-[#950713]');
+                
+                // Show/hide content
+                document.getElementById('select-school-content').classList.remove('hidden');
+                document.getElementById('enter-school-content').classList.add('hidden');
+                
+                // Reset the manual input
+                document.getElementById('school_name').value = '';
+                
+                // Update the hidden input to track the active tab
+                document.getElementById('school_selection_method').value = 'select';
+            } else {
+                document.getElementById('enter-school-tab').classList.add('border-[#950713]', 'text-[#950713]');
+                document.getElementById('enter-school-tab').classList.remove('border-transparent', 'text-gray-500');
+                document.getElementById('select-school-tab').classList.add('border-transparent', 'text-gray-500');
+                document.getElementById('select-school-tab').classList.remove('border-[#950713]', 'text-[#950713]');
+                
+                // Show/hide content
+                document.getElementById('enter-school-content').classList.remove('hidden');
+                document.getElementById('select-school-content').classList.add('hidden');
+                
+                // Reset the dropdown
+                document.getElementById('school_id').value = '';
+                
+                // Update the hidden input to track the active tab
+                document.getElementById('school_selection_method').value = 'enter';
+            }
         }
         
         // Initialize the form when the page loads
@@ -302,12 +429,41 @@
                 calculateAge();
             }
             
-            // Initialize Select2 for school selection
-            if (window.jQuery) {
-                $(document).ready(function() {
-                    initSchoolSelect();
-                });
-            }
+            // Add form validation for school selection
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const selectionMethod = document.getElementById('school_selection_method').value;
+                let isValid = true;
+                
+                if (selectionMethod === 'select') {
+                    if (!document.getElementById('school_id').value) {
+                        e.preventDefault();
+                        const errorMsg = document.querySelector('#school_id_error') || document.createElement('p');
+                        errorMsg.id = 'school_id_error';
+                        errorMsg.className = 'text-red-500 text-xs mt-1';
+                        errorMsg.textContent = 'Please select a school from the list.';
+                        
+                        if (!document.querySelector('#school_id_error')) {
+                            document.getElementById('school_id').parentNode.appendChild(errorMsg);
+                        }
+                        isValid = false;
+                    }
+                } else { // 'enter' tab is active
+                    if (!document.getElementById('school_name').value) {
+                        e.preventDefault();
+                        const errorMsg = document.querySelector('#school_name_error') || document.createElement('p');
+                        errorMsg.id = 'school_name_error';
+                        errorMsg.className = 'text-red-500 text-xs mt-1';
+                        errorMsg.textContent = 'Please enter a school name.';
+                        
+                        if (!document.querySelector('#school_name_error')) {
+                            document.getElementById('school_name').parentNode.appendChild(errorMsg);
+                        }
+                        isValid = false;
+                    }
+                }
+                
+                return isValid;
+            });
         });
     </script>
 @endsection

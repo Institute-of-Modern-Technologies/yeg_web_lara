@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Notifications\StudentApprovalNotification;
+use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
@@ -127,8 +128,7 @@ class StudentController extends Controller
             'region' => 'required|string|max:100',
             'class' => 'required|string|max:255',
             'program_type_id' => 'required|exists:program_types,id',
-            'school_input' => 'required|string',
-            'is_new_school' => 'required|in:0,1',
+            'school_selection_method' => 'required|in:select,enter',
         ];
         
         $validated = $request->validate($baseValidation);
@@ -144,35 +144,8 @@ class StudentController extends Controller
         // Generate a unique registration number
         $registrationNumber = 'YEG' . date('y') . str_pad(Student::count() + 1, 5, '0', STR_PAD_LEFT);
         
-        // Handle school selection
-        $schoolId = null;
-        if ($request->is_new_school == '0') {
-            // Using an existing school
-            $schoolId = $request->school_id_hidden;
-        } else {
-            // Create a new school or get existing one with the same name
-            $schoolName = $request->school_name_hidden;
-            
-            // Prevent creating empty or invalid schools
-            if (empty($schoolName)) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['school_input' => 'Please select an existing school or enter a valid new school name']);
-            }
-            
-            $school = School::firstOrCreate(
-                ['name' => $schoolName],
-                [
-                    'status' => 'pending',
-                    'slug' => \Illuminate\Support\Str::slug($schoolName),
-                    'address' => 'Pending',
-                    'contact_person' => 'Pending',
-                    'email' => 'pending@example.com',
-                    'phone' => '0000000000',
-                ]
-            );
-            $schoolId = $school->id;
-        }
+        // Handle school selection - returns [school_id, school_name]
+        $schoolData = $this->handleSchoolSelection($request);
         
         // Create the student data array with all required fields
         $studentData = [
@@ -189,7 +162,8 @@ class StudentController extends Controller
             'region' => $request->region,
             'date_of_birth' => $request->date_of_birth,
             'class' => $request->class,
-            'school_id' => $schoolId,
+            'school_id' => $schoolData['school_id'],
+            'school_name' => $schoolData['school_name'],
             'program_type_id' => $request->program_type_id,
             'registration_number' => $registrationNumber,
             'status' => 'active'
@@ -209,6 +183,52 @@ class StudentController extends Controller
         $programTypes = ProgramType::where('is_active', true)->orderBy('name')->get();
         
         return view('admin.students.edit', compact('student', 'schools', 'programTypes'));
+    }
+
+    /**
+     * Helper method to handle school selection from the form
+     * This supports the tab-based approach (Select from List/Enter Manually)
+     * Manually entered school names are stored directly with the student record
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array  School data [id, name]
+     */
+    private function handleSchoolSelection(Request $request)
+    {
+        // Check which tab was selected using the hidden field
+        $selectionMethod = $request->input('school_selection_method', 'select');
+        
+        if ($selectionMethod === 'select') {
+            // Validate only school_id when "Select from List" tab is active
+            if (!$request->filled('school_id')) {
+                throw ValidationException::withMessages(['school_id' => ['Please select a school from the list.']]);
+            }
+            
+            $request->validate([
+                'school_id' => 'required|exists:schools,id',
+            ]);
+            
+            // Return school_id with null school_name
+            return [
+                'school_id' => $request->school_id,
+                'school_name' => null
+            ];
+        } else { // $selectionMethod === 'enter'
+            // Validate only school_name when "Enter Manually" tab is active
+            if (!$request->filled('school_name')) {
+                throw ValidationException::withMessages(['school_name' => ['Please enter a school name.']]);
+            }
+            
+            $request->validate([
+                'school_name' => 'required|string|max:255',
+            ]);
+            
+            // Return null school_id with the manually entered school name
+            return [
+                'school_id' => null,
+                'school_name' => $request->school_name
+            ];
+        }
     }
 
     /**
@@ -235,7 +255,7 @@ class StudentController extends Controller
             'region' => 'required|string|max:100',
             'date_of_birth' => 'required|date',
             'class' => 'required|string|max:255',
-            'school_id' => 'required|exists:schools,id',
+            'school_selection_method' => 'required|in:select,enter',
             'program_type_id' => 'required|exists:program_types,id',
             'status' => 'required|string|in:active,inactive,completed',
         ]);
@@ -251,6 +271,9 @@ class StudentController extends Controller
         // Check if status is being changed to 'active' (approved)
         $isBeingApproved = ($originalStatus != 'active' && $request->status == 'active');
         
+        // Handle school selection - returns [school_id, school_name]
+        $schoolData = $this->handleSchoolSelection($request);
+        
         // Update student with all fields
         $student->update([
             'full_name' => $fullName,
@@ -264,7 +287,8 @@ class StudentController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'age' => $age,
             'class' => $request->class,
-            'school_id' => $request->school_id,
+            'school_id' => $schoolData['school_id'],
+            'school_name' => $schoolData['school_name'],
             'program_type_id' => $request->program_type_id,
             'status' => $request->status,
         ]);

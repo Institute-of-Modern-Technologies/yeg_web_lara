@@ -240,7 +240,7 @@
                                         </div>
                                         <div class="flex items-center">
                                             <i class="fas fa-school text-gray-400 w-5"></i>
-                                            <span class="ml-2 truncate">{{ $student->school->name ?? 'N/A' }}</span>
+                                            <span class="ml-2 truncate text-[#950713] font-medium">{{ $student->display_school_name }}</span>
                                         </div>
                                         <div class="flex items-center">
                                             <i class="fas fa-graduation-cap text-gray-400 w-5"></i>
@@ -298,7 +298,7 @@
                                                     <span class="hidden sm:inline mx-1.5">•</span>
                                                     <span class="flex items-center">
                                                         <i class="fas fa-school mr-1.5"></i>
-                                                        {{ $student->school->name ?? 'N/A' }}
+                                                        <span class="text-[#950713] font-medium">{{ $student->display_school_name }}</span>
                                                     </span>
                                                 </div>
                                             </div>

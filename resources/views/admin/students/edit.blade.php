@@ -1,5 +1,40 @@
 @extends('admin.dashboard')
 
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        border-color: #D1D5DB !important;
+        border-radius: 0.375rem !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 36px !important;
+        padding-left: 12px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+    .select2-dropdown {
+        border-color: #D1D5DB !important;
+        border-radius: 0.375rem !important;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #950713 !important;
+        color: white !important;
+    }
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: rgba(149, 7, 19, 0.1) !important;
+    }
+    /* Style for new entries */
+    .select2-results__option .select2-highlighted-new {
+        font-style: italic;
+        color: #950713;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="p-6">
     <div class="space-y-6">
@@ -159,17 +194,61 @@
                         </select>
                     </div>
                     
-                    <!-- School -->
-                    <div>
-                        <label for="school_id" class="block text-sm font-medium text-gray-700 mb-1">School <span class="text-red-500">*</span></label>
-                        <select name="school_id" id="school_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" required>
-                            <option value="">Select School</option>
-                            @foreach($schools as $school)
-                            <option value="{{ $school->id }}" {{ old('school_id', $student->school_id) == $school->id ? 'selected' : '' }}>
-                                {{ $school->name }}
-                            </option>
-                            @endforeach
-                        </select>
+                    <!-- School Information -->
+                    <div class="md:col-span-2">
+                        <label class="block text-lg font-medium text-gray-700 mb-3">School <span class="text-red-500">*</span></label>
+                        
+                        <!-- Store current school ID for reference -->
+                        <input type="hidden" id="school_id_hidden" value="{{ $student->school_id }}">
+                        
+                        <!-- Option tabs -->
+                        <div class="flex border-b border-gray-200 mb-4">
+                            <button type="button" id="select-school-tab" 
+                                class="py-2 px-4 border-b-2 border-[#950713] text-[#950713] font-medium text-sm focus:outline-none"
+                                onclick="switchTab('select')">
+                                Select from List
+                            </button>
+                            <button type="button" id="enter-school-tab" 
+                                class="py-2 px-4 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm focus:outline-none"
+                                onclick="switchTab('enter')">
+                                Enter Manually
+                            </button>
+                        </div>
+                        
+                        <!-- Hidden input to track which method is selected -->
+                        <input type="hidden" name="school_selection_method" id="school_selection_method" value="{{ !empty($student->school_name) ? 'enter' : 'select' }}">
+                        
+                        <!-- Select school option -->
+                        <div id="select-school-content" class="animate-fade-in">
+                            <select id="school_id" name="school_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-50">
+                                <option value="">-- Select School --</option>
+                                @foreach($schools as $school)
+                                    <option value="{{ $school->id }}" {{ old('school_id', $student->school_id) == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-info-circle text-[#950713] mr-1"></i>
+                                Select the student's school from the list.
+                            </p>
+                        </div>
+                        
+                        <!-- Enter school manually option -->
+                        <div id="enter-school-content" class="hidden animate-fade-in">
+                            <input type="text" id="school_name" name="school_name" placeholder="Enter school name" value="{{ old('school_name') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-50">
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-info-circle text-[#950713] mr-1"></i>
+                                If the school is not in our list, please enter the name here. It will be added as a pending school.
+                            </p>
+                        </div>
+                        
+                        @error('school_id')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                        
+                        @error('school_name')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -229,30 +308,195 @@
         </form>
     </div>
 </div>
-    <script>
-        function calculateAge() {
-            const dob = document.getElementById('date_of_birth').value;
+
+<!-- Include jQuery and Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    function calculateAge() {
+        const dob = document.getElementById('date_of_birth').value;
+        
+        if(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
             
-            if(dob) {
-                const birthDate = new Date(dob);
-                const today = new Date();
-                
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDifference = today.getMonth() - birthDate.getMonth();
-                
-                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-                
-                document.getElementById('age').value = age;
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            document.getElementById('age').value = age;
+        }
+    }
+
+    /**
+     * Toggle between existing school selection and new school input
+     */
+    function toggleSchoolSelection(type) {
+        if (type === 'existing') {
+            document.getElementById('existing_school_container').classList.remove('hidden');
+            document.getElementById('new_school_container').classList.add('hidden');
+            document.getElementById('school_id').setAttribute('required', 'required');
+            document.getElementById('school_name').removeAttribute('required');
+            document.getElementById('school_name').value = '';
+        } else {
+            document.getElementById('existing_school_container').classList.add('hidden');
+            document.getElementById('new_school_container').classList.remove('hidden');
+            document.getElementById('school_id').removeAttribute('required');
+            document.getElementById('school_name').setAttribute('required', 'required');
+            document.getElementById('school_id').value = '';
+            
+            // If Select2 is initialized
+            if (window.jQuery && $.fn.select2) {
+                $('#school_id').val(null).trigger('change');
             }
         }
+    }
+    
+    // Initialize Select2 for school dropdown to make it more user-friendly
+    function initSchoolSelect() {
+        if (!window.jQuery) return;
         
-        // Calculate age on page load if date of birth is already set
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('date_of_birth').value) {
-                calculateAge();
-            }
+        $('#school_id').select2({
+            placeholder: 'Select a school',
+            allowClear: true,
+            width: '100%',
+            // Modern styling with brand color
+            theme: 'classic',
+            templateResult: function(data) {
+                if (!data.id) return data.text;
+                return $('<span>' + data.text + '</span>');
+            },
+            templateSelection: function(data) {
+                if (!data.id) return data.text;
+                return $('<span style="color: #950713; font-weight: 500;">' + data.text + '</span>');
+            },
+            // Custom styling for the dropdown
+            dropdownCssClass: 'select2-dropdown-school'
         });
-    </script>
+        
+        // Add custom CSS for the Select2 dropdown
+        $('<style>\n\
+            .select2-container--classic .select2-selection--single {\n\
+                height: 38px;\n\
+                padding: 4px;\n\
+                font-size: 16px;\n\
+                border: 1px solid #d1d5db;\n\
+            }\n\
+            .select2-container--classic .select2-selection--single .select2-selection__rendered {\n\
+                line-height: 28px;\n\
+                padding-left: 8px;\n\
+            }\n\
+            .select2-container--classic .select2-selection--single .select2-selection__arrow {\n\
+                height: 36px;\n\
+            }\n\
+            .select2-container--classic .select2-results__option--highlighted[aria-selected] {\n\
+                background-color: #950713 !important;\n\
+                color: white;\n\
+            }\n\
+            .select2-container--classic .select2-selection--single:focus {\n\
+                border-color: #950713 !important;\n\
+                box-shadow: 0 0 0 3px rgba(149, 7, 19, 0.25);\n\
+            }\n\
+            .select2-container--classic.select2-container--open .select2-dropdown {\n\
+                border-color: #950713;\n\
+            }\n\
+            .select2-container--classic .select2-results__option {\n\
+                padding: 8px;\n\
+                font-size: 15px;\n\
+            }\n\
+        </style>').appendTo('head');
+        
+        // Set initial value based on whether student already has a school assigned
+        const currentSchoolId = $('#school_id_hidden').val();
+        if (currentSchoolId) {
+            $('#school_id').val(currentSchoolId).trigger('change');
+        }
+    }
+    
+    // Function to switch between tabs for school selection
+    function switchTab(tab) {
+        // Update tab styles
+        if (tab === 'select') {
+            document.getElementById('select-school-tab').classList.add('border-[#950713]', 'text-[#950713]');
+            document.getElementById('select-school-tab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('enter-school-tab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('enter-school-tab').classList.remove('border-[#950713]', 'text-[#950713]');
+            
+            // Show/hide content
+            document.getElementById('select-school-content').classList.remove('hidden');
+            document.getElementById('enter-school-content').classList.add('hidden');
+            
+            // Reset the manual input
+            document.getElementById('school_name').value = '';
+            
+            // Update the hidden input to track the active tab
+            document.getElementById('school_selection_method').value = 'select';
+        } else {
+            document.getElementById('enter-school-tab').classList.add('border-[#950713]', 'text-[#950713]');
+            document.getElementById('enter-school-tab').classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById('select-school-tab').classList.add('border-transparent', 'text-gray-500');
+            document.getElementById('select-school-tab').classList.remove('border-[#950713]', 'text-[#950713]');
+            
+            // Show/hide content
+            document.getElementById('enter-school-content').classList.remove('hidden');
+            document.getElementById('select-school-content').classList.add('hidden');
+            
+            // Reset the dropdown
+            document.getElementById('school_id').value = '';
+            
+            // Update the hidden input to track the active tab
+            document.getElementById('school_selection_method').value = 'enter';
+        }
+    }
+    
+    // Initialize the form when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set active tab based on whether student has manual school name
+        if (document.getElementById('school_selection_method').value === 'enter') {
+            switchTab('enter');
+        }
+        
+        // Add form validation for school selection
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const selectionMethod = document.getElementById('school_selection_method').value;
+            let isValid = true;
+            
+            if (selectionMethod === 'select') {
+                if (!document.getElementById('school_id').value) {
+                    e.preventDefault();
+                    const errorMsg = document.querySelector('#school_id_error') || document.createElement('p');
+                    errorMsg.id = 'school_id_error';
+                    errorMsg.className = 'text-red-500 text-xs mt-1';
+                    errorMsg.textContent = 'Please select a school from the list.';
+                    
+                    if (!document.querySelector('#school_id_error')) {
+                        document.getElementById('school_id').parentNode.appendChild(errorMsg);
+                    }
+                    isValid = false;
+                }
+            } else { // 'enter' tab is active
+                if (!document.getElementById('school_name').value) {
+                    e.preventDefault();
+                    const errorMsg = document.querySelector('#school_name_error') || document.createElement('p');
+                    errorMsg.id = 'school_name_error';
+                    errorMsg.className = 'text-red-500 text-xs mt-1';
+                    errorMsg.textContent = 'Please enter a school name.';
+                    
+                    if (!document.querySelector('#school_name_error')) {
+                        document.getElementById('school_name').parentNode.appendChild(errorMsg);
+                    }
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        });
+        if (document.getElementById('date_of_birth').value) {
+            calculateAge();
+        }
+    });
+</script>
 @endsection
