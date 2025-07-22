@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Activity extends Model
+class Level extends Model
 {
     use HasFactory;
-
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -18,14 +18,16 @@ class Activity extends Model
     protected $fillable = [
         'name',
         'slug',
+        'status',
+        'description'
     ];
     
     /**
-     * The levels that this activity belongs to.
+     * The activities that belong to this level.
      */
-    public function levels(): BelongsToMany
+    public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Level::class, 'activity_level')
+        return $this->belongsToMany(Activity::class, 'activity_level')
                     ->withTimestamps();
     }
 }
