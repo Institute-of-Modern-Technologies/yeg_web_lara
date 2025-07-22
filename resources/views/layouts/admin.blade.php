@@ -353,7 +353,13 @@
                         <i class="fas fa-school mr-3 {{ request()->routeIs('admin.schools.*') ? 'text-white' : 'text-gray-400' }}"></i>
                         Schools
                     </a>
+                    <a href="{{ route('admin.activities.index') }}" 
+                       class="group flex items-center px-4 py-2.5 text-sm font-medium rounded-lg mb-2 sidebar-link {{ request()->routeIs('admin.activities.*') ? 'active-nav-link' : 'text-gray-600' }}">
+                        <i class="fas fa-clipboard-list mr-3 {{ request()->routeIs('admin.activities.*') ? 'text-white' : 'text-gray-400' }}"></i>
+                        Activities Setup
+                    </a>
                 </div>
+
                 <div class="mb-6">
                     <p class="text-xs uppercase text-gray-400 tracking-wider ml-2 mb-3">Content</p>
                     <!-- School Logos -->

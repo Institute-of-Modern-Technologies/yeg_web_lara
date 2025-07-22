@@ -331,6 +331,16 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     ]);
     Route::patch('/trainers/{trainer}/status', ['\App\Http\Controllers\Admin\TrainerController', 'updateStatus'])->name('admin.trainers.update-status');
     Route::get('/trainers/create-accounts', ['\App\Http\Controllers\Admin\TrainerController', 'createAccountsForApprovedTrainers'])->name('admin.trainers.create-accounts');
+    
+    // Activities Setup Management Routes
+    Route::resource('activities', '\App\Http\Controllers\Admin\ActivitySetupController')->names([
+        'index' => 'admin.activities.index',
+        'create' => 'admin.activities.create',
+        'store' => 'admin.activities.store',
+        'edit' => 'admin.activities.edit',
+        'update' => 'admin.activities.update',
+        'destroy' => 'admin.activities.destroy'
+    ]);
 });
 
 // School Admin Routes
