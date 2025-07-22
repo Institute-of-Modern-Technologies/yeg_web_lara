@@ -438,48 +438,83 @@
                         </h2>
                     </div>
                     
-                    @php
-                        // Get active happenings ordered by display_order and recent date
-                        $happenings = \App\Models\Happening::active()->ordered()->recent()->take(3)->get();
-                    @endphp
-                    
-                    @forelse($happenings as $happening)
-                    <!-- Blog Post -->
-                    <div class="flex bg-black bg-opacity-20 rounded-md p-4 mb-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                        <div class="flex-shrink-0 mr-4">
-                            <div class="relative rounded-md overflow-hidden w-32 h-32">
-                                @if($happening->media_type == 'image')
-                                    <img src="{{ asset('storage/' . $happening->media_path) }}" alt="{{ $happening->title }}" class="w-full h-full object-cover">
-                                @else
-                                    <img src="{{ asset('storage/' . $happening->media_path) }}" alt="{{ $happening->title }}" class="w-full h-full object-cover">
-                                    <div class="absolute bottom-2 right-2 w-8 h-8 bg-neon-pink rounded-full flex items-center justify-center">
-                                        <i class="fas fa-play text-white"></i>
-                                    </div>
-                                @endif
+                    <!-- Main YouTube Video with Info Row -->
+                    <div class="flex flex-col space-y-4">
+                        <!-- Row 1: YEG Workshop Video -->
+                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="relative rounded-md overflow-hidden w-48 h-32 shadow-md">
+                                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/fE0mA2GG3Ug" 
+                                        title="YEG Workshop Highlights" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center text-xs mb-1">
+                                    <span class="mr-3"><i class="fas fa-user text-secondary mr-1" style="color: #ffcb05 !important;"></i> YOUNG EXPERTS GROUP</span>
+                                    <span><i class="far fa-calendar text-secondary mr-1" style="color: #ffcb05 !important;"></i> LATEST UPDATE</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">YEG Workshop Highlights</h3>
+                                <p class="text-sm text-gray-200 mb-2">
+                                    Experience our hands-on approach to teaching technology and innovation. Our workshops are designed to engage students in practical learning experiences that build real-world skills and confidence.
+                                </p>
+                                <div class="text-xs text-gray-300">
+                                    Posted in: Technology Workshops
+                                </div>
                             </div>
                         </div>
-                        <div class="flex-1">
-                            <div class="flex items-center text-xs mb-1">
-                                <span class="mr-3"><i class="fas fa-user text-secondary mr-1"></i> {{ strtoupper($happening->author_name ?? 'ANONYMOUS') }}</span>
-                                <span><i class="far fa-calendar text-secondary mr-1"></i> {{ $happening->getFormattedDate() }}</span>
+
+                        <!-- Row 2: Workshop Details -->
+                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="flex-shrink-0 mr-4 flex items-center justify-center">
+                                <div class="w-48 h-32 flex items-center justify-center">
+                                    <i class="fas fa-chalkboard-teacher text-5xl" style="color: #ffcb05 !important;"></i>
+                                </div>
                             </div>
-                            <h3 class="text-xl font-bold mb-2">{{ $happening->title }}</h3>
-                            <p class="text-sm text-gray-200 mb-2">
-                                {{ $happening->getShortContent(200) }}
-                            </p>
-                            @if($happening->category)
-                            <div class="text-xs text-gray-300">
-                                Posted in: {{ $happening->category }}
+                            <div class="flex-1">
+                                <div class="flex items-center text-xs mb-1">
+                                    <span class="mr-3"><i class="fas fa-graduation-cap text-secondary mr-1" style="color: #ffcb05 !important;"></i> EDUCATION PROGRAMS</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Join Our Next Workshop</h3>
+                                <p class="text-sm text-gray-200 mb-2">
+                                    Interested in participating in our next workshop? Our educational programs are designed to equip young minds with the skills needed for success in the modern technological landscape.
+                                </p>
+                                <div class="text-xs text-gray-300">
+                                    <a href="#" class="text-white hover:text-secondary transition-colors duration-200 inline-flex items-center">
+                                        <span>Register Now</span>
+                                        <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
                             </div>
-                            @endif
+                        </div>
+
+                        <!-- Row 3: Additional Resources -->
+                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="flex-shrink-0 mr-4 flex items-center justify-center">
+                                <div class="w-48 h-32 flex items-center justify-center">
+                                    <i class="fas fa-book-open text-5xl" style="color: #ffcb05 !important;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center text-xs mb-1">
+                                    <span class="mr-3"><i class="fas fa-lightbulb text-secondary mr-1" style="color: #ffcb05 !important;"></i> LEARNING RESOURCES</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Explore Our Materials</h3>
+                                <p class="text-sm text-gray-200 mb-2">
+                                    Access supplementary learning resources designed to complement our workshop curriculum. Perfect for students looking to enhance their understanding of key concepts.
+                                </p>
+                                <div class="text-xs text-gray-300">
+                                    <a href="#" class="text-white hover:text-secondary transition-colors duration-200 inline-flex items-center">
+                                        <span>Browse Resources</span>
+                                        <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    @empty
-                    <!-- No Happenings Message -->
-                    <div class="bg-black bg-opacity-20 rounded-md p-6 text-center">
-                        <p class="text-gray-200">No happenings available at the moment. Check back soon for updates!</p>
-                    </div>
-                    @endforelse
                 </div>
                 
                 <!-- Right Column - Stats/Register -->
