@@ -89,7 +89,7 @@
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full parallax-bg" id="hero-parallax-bg">
-                <img class="max-w-full" src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover parallax-img fade-in-bg">
+                <img class="max-w-full w-full h-full object-cover parallax-img fade-in-bg" src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image">
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -150,7 +150,7 @@
         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" id="slide-{{ $heroSection->id }}">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
-                <img class="max-w-full" src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}" class="w-full h-full object-cover">
+                <img class="max-w-full w-full h-full object-cover" src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}">
                 <!-- Custom overlay with configured color and opacity -->
                 <div class="absolute inset-0" style="{{ app(\App\Services\HeroSectionService::class)->generateOverlayStyles($heroSection) }}"></div>
             </div>
@@ -1306,19 +1306,21 @@
                         <div class="flex items-center animate-marquee whitespace-nowrap">
                             <!-- First set of logos -->
                             @foreach($schoolLogos as $logo)
-                                <div class="inline-block mx-8">
-                                    <img class="max-w-full" src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                <div class="inline-block mx-3 sm:mx-5 md:mx-7">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
-                                         class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+                                         style="height: 25px; max-width: 50px;" 
+                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
                             @endforeach
                             <!-- Second set for seamless looping -->
                             @foreach($schoolLogos as $logo)
-                                <div class="inline-block mx-8">
-                                    <img class="max-w-full" src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                <div class="inline-block mx-3 sm:mx-5 md:mx-7">
+                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
-                                         class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
+                                         style="height: 25px; max-width: 50px;" 
+                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
                             @endforeach
@@ -1535,7 +1537,7 @@
                             modalContent.innerHTML = `
                                 <div class="flex items-center mb-6">
                                     <div class="w-16 h-16 rounded-full overflow-hidden mr-4">
-                                        <img class="max-w-full" src="${data.image}" alt="${data.name}" class="w-full h-full object-cover">
+                                        <img class="max-w-[40px] sm:max-w-[60px] md:max-w-[100px]" src="${data.image}" alt="${data.name}" class="w-full h-full object-cover">
                                     </div>
                                     <div>
                                         <h3 class="text-xl font-bold text-primary">${data.name}</h3>
