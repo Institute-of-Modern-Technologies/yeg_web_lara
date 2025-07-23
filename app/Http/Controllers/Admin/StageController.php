@@ -34,6 +34,7 @@ class StageController extends Controller
             $validator = validator($request->all(), [
                 'name' => 'required|string|max:255|unique:stages',
                 'status' => 'required|in:active,inactive',
+                'level' => 'nullable|string|max:255',
                 'activities' => 'nullable|array',
                 'activities.*' => 'exists:activities,id',
                 'description' => 'nullable|string',
@@ -55,6 +56,7 @@ class StageController extends Controller
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'status' => $request->status,
+                'level' => $request->level,
                 'description' => $request->description,
                 'order' => $request->order ?? 0,
             ]);
@@ -122,6 +124,7 @@ class StageController extends Controller
             $validator = validator($request->all(), [
                 'name' => 'required|string|max:255|unique:stages,name,'.$id,
                 'status' => 'required|in:active,inactive',
+                'level' => 'nullable|string|max:255',
                 'activities' => 'nullable|array',
                 'activities.*' => 'exists:activities,id',
                 'description' => 'nullable|string',
@@ -143,6 +146,7 @@ class StageController extends Controller
             $stage->name = $request->name;
             $stage->slug = Str::slug($request->name);
             $stage->status = $request->status;
+            $stage->level = $request->level;
             $stage->description = $request->description;
             if ($request->has('order')) {
                 $stage->order = $request->order;

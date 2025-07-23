@@ -59,6 +59,7 @@
                             </th>
                             <th class="px-4 py-3">Name & Description</th>
                             <th class="px-4 py-3 w-24">Status</th>
+                            <th class="px-4 py-3 w-24">Level</th>
                             <th class="px-4 py-3">Activities</th>
                             <th class="px-4 py-3 w-24 text-center">Actions</th>
                         </tr>
@@ -102,6 +103,13 @@
                                             {{ $stage->status === 'active' ? 'Deactivate' : 'Activate' }}
                                         </button>
                                     </div>
+                                </td>
+                                
+                                <!-- Level Column -->
+                                <td class="px-4 py-3 text-sm">
+                                    <span class="px-2 py-1 text-xs font-medium rounded-md bg-gray-100 border border-gray-200 text-gray-700">
+                                        {{ $stage->level ?? 'Not Set' }}
+                                    </span>
                                 </td>
                                 
                                 <!-- Activities Column -->
@@ -155,87 +163,80 @@
     </div>
     
     <!-- Stage Modal -->
-    <div id="stageModal" class="fixed inset-0 z-[9999] hidden" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <!-- Centering container -->    
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-            <!-- Background overlay -->    
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" style="position: fixed;"></div>
-            
-            <!-- Modal container -->    
-            <div class="relative bg-white rounded-lg shadow-xl max-w-xl w-full overflow-hidden">
-                <!-- Modal header -->    
-                <div class="bg-gradient-to-r from-[#950713] to-red-800 px-6 py-4 flex justify-between items-center">
-                    <h3 class="text-xl font-bold text-white" id="modal-title">
+    <div id="stageModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-[9999] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center">
+        <div class="relative w-full max-w-2xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t bg-gradient-to-r from-[#950713] to-red-800">
+                    <h3 class="text-xl font-semibold text-white">
                         <i class="fas fa-plus-circle mr-2"></i> <span id="modalTitleText">Add New Stage</span>
                     </h3>
-                    <button id="closeModalBtnX" type="button" class="text-white hover:text-gray-200 focus:outline-none">
+                    <button type="button" class="text-white bg-transparent hover:text-gray-200 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="stageModal" id="closeModalBtnX">
                         <i class="fas fa-times text-xl"></i>
+                        <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                
-                <!-- Modal body -->    
-                <div class="p-6">
+                <!-- Modal body -->
+                <div class="p-4 md:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
                     <form id="stageForm" class="space-y-5">
                         @csrf
                         <input type="hidden" id="stageId" name="id" value="">
                         
-                        <!-- Name Input with floating label -->
-                        <div class="relative">
-                            <input type="text" id="stageName" name="name" 
-                                class="block w-full px-4 py-2.5 text-gray-800 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:border-[#950713] peer" 
-                                placeholder=" " />
-                            <label for="stageName" 
-                                class="absolute text-sm text-gray-600 duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-[#950713]">
-                                Stage Name <span class="text-red-500">*</span>
-                            </label>
+                        <!-- Name Input -->
+                        <div class="mb-4">
+                            <label for="stageName" class="block mb-2 text-sm font-medium text-gray-900">Stage Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="stageName" name="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5" placeholder="Enter stage name">
                             <span class="text-red-500 text-xs error-message mt-1" id="nameError"></span>
                         </div>
                         
                         <!-- Description Input -->
-                        <div class="mt-5">
-                            <label for="stageDescription" class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea name="description" id="stageDescription" rows="3" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-20"
-                                placeholder="Provide a brief description of this stage"></textarea>
+                        <div class="mb-4">
+                            <label for="stageDescription" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
+                            <textarea id="stageDescription" name="description" rows="3" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#950713] focus:border-[#950713]" placeholder="Provide a brief description of this stage"></textarea>
                             <span class="text-red-500 text-xs error-message" id="descriptionError"></span>
                         </div>
                         
-                        <!-- Row with Status and Order -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                        <!-- Row with Status, Level and Order -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Status Select -->
                             <div>
-                                <label for="stageStatus" class="block text-sm font-medium text-gray-700">Status <span class="text-red-500">*</span></label>
-                                <select name="status" id="stageStatus" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-20">
+                                <label for="stageStatus" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
+                                <select id="stageStatus" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5">
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
                                 <span class="text-red-500 text-xs error-message" id="statusError"></span>
                             </div>
                             
+                            <!-- Level Input -->
+                            <div>
+                                <label for="stageLevel" class="block mb-2 text-sm font-medium text-gray-900">Level</label>
+                                <div class="form-group">
+                                    <label for="stageLevel">Level</label>
+                                    <input type="text" id="stageLevel" name="level" class="form-control" placeholder="Enter level">
+                                    <span class="error-message text-danger hidden" data-error="level"></span>
+                                </div>
+                            
                             <!-- Order Input -->
                             <div>
-                                <label for="stageOrder" class="block text-sm font-medium text-gray-700">Display Order</label>
-                                <input type="number" name="order" id="stageOrder" min="0" value="0" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#950713] focus:ring focus:ring-[#950713] focus:ring-opacity-20">
+                                <label for="stageOrder" class="block mb-2 text-sm font-medium text-gray-900">Display Order</label>
+                                <input type="number" id="stageOrder" name="order" min="0" value="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5">
                                 <span class="text-red-500 text-xs error-message" id="orderError"></span>
                             </div>
                         </div>
                         
                         <!-- Activities Multi-select -->
-                        <div class="mt-5">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <div class="mb-4">
+                            <label class="block mb-2 text-sm font-medium text-gray-900">
                                 <i class="fas fa-tasks text-[#950713] mr-2"></i> Assign Activities
                             </label>
-                            <div class="max-h-48 overflow-y-auto p-3 border rounded-md bg-gray-50">
+                            <div class="max-h-48 overflow-y-auto p-3 border rounded-lg bg-gray-50">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     @foreach($activities as $activity)
                                         <div class="flex items-center p-2 hover:bg-white rounded transition-colors">
-                                            <input type="checkbox" name="activities[]" id="activity{{ $activity->id }}" value="{{ $activity->id }}" 
-                                                   class="activity-checkbox h-4 w-4 text-[#950713] focus:ring-[#950713] border-gray-300 rounded">
-                                            <label for="activity{{ $activity->id }}" class="ml-2 block text-sm text-gray-700 select-none cursor-pointer">
-                                                {{ $activity->name }}
-                                            </label>
+                                            <input type="checkbox" name="activities[]" id="activity{{ $activity->id }}" value="{{ $activity->id }}" class="activity-checkbox h-4 w-4 text-[#950713] focus:ring-[#950713] border-gray-300 rounded">
+                                            <label for="activity{{ $activity->id }}" class="ms-2 text-sm font-medium text-gray-900 select-none cursor-pointer">{{ $activity->name }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -249,16 +250,13 @@
                         </div>
                     </form>
                 </div>
-                
                 <!-- Modal footer -->
-                <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
-                    <button id="closeModalBtn" type="button"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors">
-                        Cancel
-                    </button>
-                    <button id="saveStageBtn" type="button"
-                            class="px-4 py-2 bg-[#950713] text-white rounded-lg hover:bg-[#850612] focus:outline-none focus:ring-2 focus:ring-[#950713] focus:ring-opacity-50 transition-colors">
+                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b bg-gray-50">
+                    <button id="saveStageBtn" type="button" class="text-white bg-[#950713] hover:bg-[#850612] focus:ring-4 focus:outline-none focus:ring-[#950713]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2">
                         <i class="fas fa-save mr-2"></i> Save Stage
+                    </button>
+                    <button id="closeModalBtn" type="button" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+                        Cancel
                     </button>
                 </div>
             </div>
@@ -309,605 +307,446 @@
 
     <!-- Only keeping one instance of the Stage Modal -->
 
-    <!-- Delete Confirmation Modal -->    
-    <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden" aria-labelledby="delete-modal-title" role="dialog" aria-modal="true">
-        <!-- Centering container -->    
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-            <!-- Background overlay -->    
-            <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-            
-            <!-- Modal container -->    
-            <div class="relative bg-white rounded-md shadow-lg max-w-md w-full">
-                <!-- Modal header -->    
-                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                    <h3 class="text-base font-medium text-gray-900" id="delete-modal-title">Delete Stage</h3>
-                    <button id="closeDeleteModalBtn" type="button" class="text-gray-400 hover:text-[#950713]">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <!-- Modal content -->    
-                <div class="p-4">
-                    <input type="hidden" id="deleteStageId">
-                    <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-red-100">
-                            <i class="fas fa-exclamation-triangle text-[#950713]"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">
-                                Are you sure you want to delete this stage? This action cannot be undone.
-                            </p>
-                            <p class="mt-1 font-medium text-gray-800" id="deleteStageNameText"></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Modal footer -->    
-                <div class="px-4 py-3 bg-gray-50 flex justify-end space-x-3 border-t border-gray-200">
-                    <button id="cancelDeleteBtn" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#950713]">
-                        Cancel
-                    </button>
-                    <button id="confirmDeleteBtn" type="button" class="px-4 py-2 text-sm font-medium text-white bg-[#950713] border border-transparent rounded-md shadow-sm hover:bg-[#8a0612] focus:outline-none focus:ring-2 focus:ring-[#950713]">
-                        <i class="fas fa-trash-alt mr-1"></i> Delete
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
 @endsection
 
-<!-- Required Scripts for Stages Management -->
+    <!-- Required Scripts for Stages Management -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - Initializing Stage Management');
-            
-            // Debug Helper: Add a test button to the page to manually open modal
-            const debugButton = document.createElement('button');
-            debugButton.textContent = 'Debug: Open Stage Modal';
-            debugButton.style.position = 'fixed';
-            debugButton.style.bottom = '10px';
-            debugButton.style.right = '10px';
-            debugButton.style.zIndex = '9999';
-            debugButton.style.padding = '10px';
-            debugButton.style.background = '#950713';
-            debugButton.style.color = 'white';
-            debugButton.style.borderRadius = '5px';
-            debugButton.style.cursor = 'pointer';
-            debugButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-            document.body.appendChild(debugButton);
-            
-            // Delayed auto-trigger for debugging
-            console.log('Setting up delayed modal trigger for debugging');
-            setTimeout(function() {
-                console.log('Delayed modal trigger executing...');
-                // Force initialize modal if it wasn't found initially
-                const modalCheck = document.getElementById('stageModal');
-                if (modalCheck) {
-                    console.log('Modal found on delayed check');
-                } else {
-                    console.error('Modal still not found in DOM after delay');
-                }
-            }, 1000);
-            
-            // Add click event for debug button
-            debugButton.addEventListener('click', function() {
-                console.log('Debug button clicked');
-                resetForm();
-                modalTitle.textContent = 'Add New Stage';
-                openModal();
+    $(document).ready(function() {
+        console.log('DOM Content Loaded - Complete Rewrite');
+        
+        // =========================
+        // MODAL CONTROL FUNCTIONS
+        // =========================
+        
+        function openModal() {
+            $('#stageModal').css({
+                'display': 'flex',
+                'opacity': '1'
             });
+            $('body').addClass('overflow-hidden');
+        }
+        
+        function closeModal() {
+            $('#stageModal').hide();
+            $('body').removeClass('overflow-hidden');
+            resetForm();
+        }
+        
+        function resetForm() {
+            $('#stageForm')[0].reset();
+            $('#stageId').val('');
+            $('#stageForm').find('.error-message').text('').addClass('hidden');
+            $('input[name="activities[]"]').prop('checked', false);
+        }
+        
+        // =========================
+        // ADD NEW STAGE
+        // =========================
+        
+        $('#addStageBtn, #emptyAddStageBtn').on('click', function(e) {
+            e.preventDefault();
+            resetForm();
+            $('#modalTitleText').text('Add New Stage');
+            openModal();
+            console.log('Add stage modal opened');
+        });
+        
+        // =========================
+        // EDIT STAGE
+        // =========================
+        
+        $(document).on('click', '.edit-stage-btn', function(e) {
+            e.preventDefault();
             
-            // Modal elements - Make sure all selectors are valid
-            const modal = document.getElementById('stageModal');
-            const deleteModal = document.getElementById('deleteConfirmModal');
-            const addStageBtn = document.getElementById('addStageBtn');
-            const emptyAddStageBtn = document.getElementById('emptyAddStageBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const closeModalBtnX = document.getElementById('closeModalBtnX');
-            const closeDeleteBtn = document.getElementById('closeDeleteModalBtn');
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            const saveBtn = document.getElementById('saveStageBtn');
-            const stageForm = document.getElementById('stageForm');
-            const modalTitle = document.getElementById('modalTitleText');
-            const deleteStageNameText = document.getElementById('deleteStageNameDisplay'); // Fixed ID
+            var stageId = $(this).data('stage-id');
+            console.log('Edit clicked for stage ID:', stageId);
             
-            // Debug logs for all elements
-            console.log('*** MODAL DEBUGGING ***');
-            console.log('Stage modal element:', modal);
-            console.log('Delete modal element:', deleteModal);
-            console.log('Add stage button element:', addStageBtn);
-            console.log('Empty state add button element:', emptyAddStageBtn);
-            console.log('Close modal button element:', closeModalBtn);
-            console.log('Close modal X button element:', closeModalBtnX);
-            console.log('Save button element:', saveBtn);
-            console.log('Stage form element:', stageForm);
+            // Force hard reset the form element to clear browser validation state
+            $('#stageForm').replaceWith($('#stageForm').clone());
             
-            // Form elements
-            const stageIdInput = document.getElementById('stageId');
-            const nameInput = document.getElementById('stageName');
-            const statusSelect = document.getElementById('stageStatus');
-            const orderInput = document.getElementById('stageOrder');
-            const descriptionTextarea = document.getElementById('stageDescription');
+            // Reset form before populating
+            resetForm();
             
-            // Error elements
-            const errorElements = document.querySelectorAll('.error-message');
-            
-            // Stage table
-            const stagesTableBody = document.getElementById('stages-table-body');
-            
-            // Direct modal management functions
-            function openModal() {
-                console.log('Opening modal');
-                // Force modal to be visible using multiple techniques
-                modal.style.display = 'block';
-                modal.classList.remove('hidden');
-                modal.style.opacity = '1';
-                modal.style.visibility = 'visible';
-                modal.style.zIndex = '9999';
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                console.log('Modal display style:', modal.style.display);
-                console.log('Modal classes after opening:', modal.className);
-            }
-            
-            function closeModal() {
-                console.log('Closing modal');
-                modal.style.display = 'none';
-                modal.classList.add('hidden');
-                document.body.style.overflow = ''; // Restore scrolling
-            }
-            
-            // Open modal for creating a new stage
-            if (addStageBtn) {
-                console.log('Adding click event listener to Add Stage button');
-                addStageBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Add Stage button clicked');
-                    resetForm();
-                    modalTitle.textContent = 'Add New Stage';
-                    openModal();
-                });
-            } else {
-                console.error('Add Stage button not found in the DOM');
-            }
-            
-            // Empty state add button
-            if (emptyAddStageBtn) {
-                emptyAddStageBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Empty state add button clicked');
-                    resetForm();
-                    modalTitle.textContent = 'Add New Stage';
-                    openModal();
-                });
-            }
-            
-            // Close modal buttons
-            if (closeModalBtn) {
-                closeModalBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Close modal button clicked');
-                    closeModal();
-                });
-            }
-            
-            if (closeModalBtnX) {
-                closeModalBtnX.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Close X button clicked');
-                    closeModal();
-                });
-            }
-            
-            // Close delete modal buttons
-            if (closeDeleteBtn) {
-                closeDeleteBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    deleteModal.classList.add('hidden');
-                });
-            }
-            
-            if (cancelDeleteBtn) {
-                cancelDeleteBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    deleteModal.classList.add('hidden');
-                });
-            }
-            
-            // Close modals with ESC key
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    console.log('ESC key pressed, checking modals');
-                    if (!modal.classList.contains('hidden') || modal.style.display === 'block') {
-                        console.log('Closing stage modal via ESC key');
-                        closeModal();
-                    }
-                    if (!deleteModal.classList.contains('hidden')) {
-                        console.log('Closing delete confirmation modal via ESC key');
-                        deleteModal.classList.add('hidden');
-                    }
-                }
-            });
-            
-            // Reset form and errors
-            function resetForm() {
-                stageForm.reset();
-                stageIdInput.value = '';
-                errorElements.forEach(el => {
-                    el.textContent = '';
-                    el.classList.add('hidden');
-                });
-                
-                // Uncheck all activity checkboxes - using the correct selector for our checkboxes
-                document.querySelectorAll('input[name="activities[]"]').forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-            }
-            
-            // Setup edit buttons
-            document.querySelectorAll('.edit-stage-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const stageId = this.getAttribute('data-stage-id');
-                    console.log('Edit button clicked for stage ID:', stageId);
+            $.ajax({
+                url: '/admin/stages/' + stageId + '/edit',
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                beforeSend: function() {
+                    console.log('Fetching stage data...');
+                },
+                success: function(response) {
+                    console.log('Stage data received:', response);
                     
-                    // Fetch stage data
-                    fetch(`/admin/stages/${stageId}/edit`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.stage) {
-                            const stage = data.stage;
-                            
-                            // Reset form and clear errors
-                            resetForm();
-                            
-                            // Populate form with stage data
-                            stageIdInput.value = stage.id;
-                            nameInput.value = stage.name;
-                            statusSelect.value = stage.status;
-                            orderInput.value = stage.order || 0;
-                            descriptionTextarea.value = stage.description || '';
-                            
-                            // Set activities
-                            if (stage.activities) {
-                                const activityIds = stage.activities.map(activity => activity.id);
-                                document.querySelectorAll('.activity-checkbox').forEach(checkbox => {
-                                    checkbox.checked = activityIds.includes(parseInt(checkbox.value));
-                                });
-                            }
-                            
-                            // Update modal title and show
-                            modalTitle.textContent = 'Edit Stage';
-                            modal.classList.remove('hidden');
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message || 'Failed to load stage data.',
-                                icon: 'error',
-                                confirmButtonColor: '#950713'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to load stage data.',
-                            icon: 'error',
-                            confirmButtonColor: '#950713'
-                        });
-                    });
-                });
-            });
-            
-            // Setup delete buttons
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            const deleteStageId = document.getElementById('deleteStageId');
-            const deleteStageNameDisplay = document.getElementById('deleteStageNameDisplay');
-            
-            document.querySelectorAll('.delete-stage-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const stageId = this.getAttribute('data-stage-id');
-                    const stageName = this.closest('tr').querySelector('h4').textContent;
-                    
-                    console.log('Delete button clicked for stage:', stageName);
-                    
-                    // Set the stage info in the delete confirmation modal
-                    deleteStageId.value = stageId;
-                    deleteStageNameDisplay.textContent = stageName;
-                    
-                    // Show delete confirmation modal
-                    deleteModal.classList.remove('hidden');
-                });
-            });
-            
-            // Handle delete confirmation
-            if (confirmDeleteBtn) {
-                confirmDeleteBtn.addEventListener('click', function() {
-                    const stageId = deleteStageId.value;
-                    if (!stageId) return;
-                    
-                    fetch(`/admin/stages/${stageId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ _method: 'DELETE' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        deleteModal.classList.add('hidden');
+                    if (response.success && response.stage) {
+                        var stage = response.stage;
                         
-                        if (data.success) {
-                            // Show success message
-                            Swal.fire({
-                                title: 'Deleted!',
-                                text: data.message || 'Stage has been deleted.',
-                                icon: 'success',
-                                confirmButtonColor: '#950713'
-                            }).then(() => {
-                                // Remove the row or reload
-                                const row = document.querySelector(`tr[data-stage-id="${stageId}"]`);
-                                if (row) {
-                                    row.remove();
-                                    
-                                    // If no stages left, reload to show empty state
-                                    if (stagesTableBody.querySelectorAll('tr:not([style*="display: none"])').length === 0) {
-                                        window.location.reload();
-                                    }
-                                } else {
-                                    window.location.reload();
+                        // Populate form fields
+                        $('#stageId').val(stage.id);
+                        $('#stageName').val(stage.name);
+                        $('#stageStatus').val(stage.status);
+                        $('#stageLevel').val(stage.level || 'Level 1');
+                        $('#stageOrder').val(stage.order || 0);
+                        $('#stageDescription').val(stage.description || '');
+                        
+                        // Check activities if any
+                        if (stage.activities && stage.activities.length > 0) {
+                            var activityIds = stage.activities.map(function(activity) {
+                                return activity.id;
+                            });
+                            
+                            $('input[name="activities[]"]').each(function() {
+                                if (activityIds.includes(parseInt($(this).val()))) {
+                                    $(this).prop('checked', true);
                                 }
                             });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message || 'Failed to delete stage.',
-                                icon: 'error',
-                                confirmButtonColor: '#950713'
-                            });
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        deleteModal.classList.add('hidden');
                         
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An unexpected error occurred while deleting the stage.',
-                            icon: 'error',
-                            confirmButtonColor: '#950713'
-                        });
-                    });
-                });
-            }
-            
-            // Save stage (create or update)
-            saveBtn.addEventListener('click', function() {
-                const formData = new FormData(stageForm);
-                const isEditing = stageIdInput.value !== '';
-                const url = isEditing 
-                    ? `/admin/stages/${stageIdInput.value}` 
-                    : '/admin/stages';
-                
-                if (isEditing) {
-                    formData.append('_method', 'PUT');
-                }
-                
-                // Clear previous errors
-                errorElements.forEach(el => {
-                    el.textContent = '';
-                    el.classList.add('hidden');
-                });
-                
-                // Get CSRF token
-                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                
-                // Show loading indicator
-                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-                saveBtn.disabled = true;
-                
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token,
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Reset button state
-                    saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Save';
-                    saveBtn.disabled = false;
-                    
-                    if (data.success) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonColor: '#950713'
-                        }).then(() => {
-                            closeModal();
-                            window.location.reload();
-                        });
-                    } else if (data.errors) {
-                        // Display validation errors
-                        Object.keys(data.errors).forEach(field => {
-                            const errorEl = document.getElementById(`${field}Error`);
-                            if (errorEl) {
-                                errorEl.textContent = data.errors[field][0];
-                                errorEl.classList.remove('hidden');
-                            }
-                        });
+                        // Update modal title and open
+                        $('#modalTitleText').text('Edit Stage: ' + stage.name);
+                        openModal();
                     } else {
                         Swal.fire({
-                            title: 'Error!',
-                            text: data.message || 'Something went wrong.',
                             icon: 'error',
+                            title: 'Error',
+                            text: 'Could not load stage data',
                             confirmButtonColor: '#950713'
                         });
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    
-                    // Reset button state
-                    saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Save';
-                    saveBtn.disabled = false;
-                    
+                },
+                error: function(xhr) {
+                    console.error('Error loading stage data:', xhr);
                     Swal.fire({
-                        title: 'Error!',
-                        text: 'An unexpected error occurred.',
                         icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load stage data. Please try again.',
                         confirmButtonColor: '#950713'
                     });
-                });
-            });
-            }
-            
-            // Toggle status functionality
-            document.querySelectorAll('.toggle-status-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const stageId = this.getAttribute('data-stage-id');
-                    const currentStatus = this.classList.contains('text-red-600') ? 'active' : 'inactive';
-                    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-                    
-                    console.log(`Toggle status for stage ${stageId}: ${currentStatus} -> ${newStatus}`);
-                    
-                    fetch(`/admin/stages/${stageId}/toggle-active`, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ status: newStatus })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update UI without reloading
-                            const row = this.closest('tr');
-                            const statusBadge = row.querySelector('td:nth-child(3) span');
-                            
-                            if (newStatus === 'active') {
-                                statusBadge.classList.remove('bg-red-100', 'text-red-800');
-                                statusBadge.classList.add('bg-green-100', 'text-green-800');
-                                statusBadge.textContent = 'Active';
-                                
-                                this.innerHTML = '<i class="fas fa-toggle-off mr-1"></i> Deactivate';
-                                this.classList.remove('text-green-600', 'hover:bg-green-50');
-                                this.classList.add('text-red-600', 'hover:bg-red-50');
-                            } else {
-                                statusBadge.classList.remove('bg-green-100', 'text-green-800');
-                                statusBadge.classList.add('bg-red-100', 'text-red-800');
-                                statusBadge.textContent = 'Inactive';
-                                
-                                this.innerHTML = '<i class="fas fa-toggle-on mr-1"></i> Activate';
-                                this.classList.remove('text-red-600', 'hover:bg-red-50');
-                                this.classList.add('text-green-600', 'hover:bg-green-50');
-                            }
-                            
-                            // Show success toast
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-                            
-                            Toast.fire({
-                                icon: 'success',
-                                title: data.message || `Stage status changed to ${newStatus}`
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message || 'Failed to update stage status.',
-                                icon: 'error',
-                                confirmButtonColor: '#950713'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An unexpected error occurred while updating stage status.',
-                            icon: 'error',
-                            confirmButtonColor: '#950713'
-                        });
-                    });
-                });
-            });
-            
-            // Initialize drag & drop sorting with SortableJS
-            if (stagesTableBody) {
-                // Check if there are any stages to sort
-                const hasStages = stagesTableBody.querySelectorAll('tr[data-stage-id]').length > 0;
-                
-                if (hasStages) {
-                    new Sortable(stagesTableBody, {
-                        handle: '.handle',
-                        animation: 150,
-                        ghostClass: 'bg-gray-100',
-                        onEnd: function(evt) {
-                            // Update the order numbers visually
-                            updateOrderNumbers();
-                            
-                            // Get the new order of stages
-                            const stageIds = Array.from(stagesTableBody.querySelectorAll('tr[data-stage-id]'))
-                                .map(row => row.getAttribute('data-stage-id'));
-                            
-                            // Update the order in the database
-                            updateStageOrder(stageIds);
-                        }
-                    });
-                    
-                    console.log('SortableJS initialized for stages table');
-                }
-            }
-            
-            // Helper function to update the visual order numbers in the table
-            function updateOrderNumbers() {
-                const visibleRows = Array.from(stagesTableBody.querySelectorAll('tr[data-stage-id]'))
-                    .filter(row => !row.classList.contains('hidden') && window.getComputedStyle(row).display !== 'none');
-                    
-                visibleRows.forEach((row, index) => {
-                    const orderCell = row.querySelector('.stage-order');
-                    if (orderCell) {
-                        orderCell.textContent = index + 1;
-                    }
-                });
-                
-                console.log('Order numbers updated visually');
-            }
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    console.log('Clicked outside modal, closing');
-                    modal.classList.add('hidden');
-                }
-            });
-            
-            // Add keyboard event for ESC key to close modal
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
-                    console.log('ESC key pressed, closing modal');
-                    modal.classList.add('hidden');
                 }
             });
         });
-    </script>
+        
+        // =========================
+        // SAVE STAGE (CREATE/UPDATE)
+        // =========================
+        
+        $('#saveStageBtn').on('click', function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            $('.error-message').text('').addClass('hidden');
+            
+            var stageId = $('#stageId').val();
+            var isEditing = stageId !== '';
+            var formData = new FormData($('#stageForm')[0]);
+            
+            // Debug output for form data
+            console.log('Form Data Contents:');
+            console.log('Stage ID:', stageId);
+            console.log('Name:', $('#stageName').val());
+            console.log('Status:', $('#stageStatus').val());
+            console.log('Level:', $('#stageLevel').val());
+            
+            // Manual field check - if form values aren't in FormData, add them manually
+            if (!formData.has('name') || formData.get('name') === '') {
+                formData.append('name', $('#stageName').val());
+            }
+            
+            if (!formData.has('status') || formData.get('status') === '') {
+                formData.append('status', $('#stageStatus').val());
+            }
+            
+            if (!formData.has('level') || formData.get('level') === '') {
+                formData.append('level', $('#stageLevel').val());
+            }
+            
+            // Set the correct URL and method based on create/update
+            var url = isEditing ? '/admin/stages/' + stageId : '/admin/stages';
+            var method = 'POST'; // Always use POST, we'll add _method for PUT
+            
+            // For PUT requests, Laravel expects a _method field
+            if (isEditing) {
+                formData.append('_method', 'PUT');
+            }
+            
+            // Double-check critical fields are in the form data
+            console.log('Form data keys before submission:');
+            for(var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]); 
+            }
+            
+            // Show loading state
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Saving...');
+            
+            $.ajax({
+                url: url,
+                method: 'POST', // Always POST with _method for PUT
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    // Always reset the button state first
+                    $('#saveStageBtn').prop('disabled', false).html('<i class="fas fa-save mr-2"></i> Save Stage');
+                    
+                    if (response.success) {
+                        // Close the modal immediately on success
+                        closeModal();
+                        
+                        // Show success message and reload
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message || 'Stage saved successfully!',
+                            confirmButtonColor: '#950713'
+                        }).then(function() {
+                            window.location.reload();
+                        });
+                    } else {
+                        // Show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message || 'Failed to save stage.',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error saving stage:', xhr);
+                    $('#saveStageBtn').prop('disabled', false).html('<i class="fas fa-save mr-2"></i> Save Stage');
+                    
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        // Display validation errors
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(field, messages) {
+                            $('#' + field + 'Error').text(messages[0]).removeClass('hidden');
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An unexpected error occurred. Please try again.',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // =========================
+        // CLOSE MODALS
+        // =========================
+        
+        // Close stage modal
+        $('#closeModalBtn, #closeModalBtnX').on('click', function() {
+            closeModal();
+        });
+        
+        // Close with ESC key
+        $(document).keydown(function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                $('#deleteConfirmModal').addClass('hidden');
+            }
+        });
+        
+        // =========================
+        // DELETE STAGE
+        // =========================
+        
+        // Open delete confirmation
+        $('.delete-stage-btn').on('click', function() {
+            var stageId = $(this).data('stage-id');
+            var stageName = $(this).closest('tr').find('h4').text().trim();
+            
+            $('#deleteStageId').val(stageId);
+            $('#deleteStageNameDisplay').text(stageName);
+            $('#deleteConfirmModal').removeClass('hidden');
+        });
+        
+        // Close delete modal
+        $('#closeDeleteModalBtn, #cancelDeleteBtn').on('click', function() {
+            $('#deleteConfirmModal').addClass('hidden');
+        });
+        
+        // Confirm delete
+        $('#confirmDeleteBtn').on('click', function() {
+            var stageId = $('#deleteStageId').val();
+            
+            // Show loading state
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Deleting...');
+            
+            $.ajax({
+                url: '/admin/stages/' + stageId,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    $('#deleteConfirmModal').addClass('hidden');
+                    $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fas fa-trash-alt mr-2"></i> Delete Stage');
+                    
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.message || 'Stage has been deleted.',
+                            confirmButtonColor: '#950713'
+                        }).then(function() {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message || 'Failed to delete stage.',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    $('#deleteConfirmModal').addClass('hidden');
+                    $('#confirmDeleteBtn').prop('disabled', false).html('<i class="fas fa-trash-alt mr-2"></i> Delete Stage');
+                    
+                    console.error('Error deleting stage:', xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the stage. Please try again.',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            });
+        });
+        
+        // =========================
+        // TOGGLE STATUS
+        // =========================
+        
+        $('.toggle-status-btn').on('click', function() {
+            var btn = $(this);
+            var stageId = btn.data('stage-id');
+            var isActive = btn.hasClass('text-red-600');
+            var newStatus = isActive ? 'inactive' : 'active';
+            
+            $.ajax({
+                url: '/admin/stages/' + stageId + '/toggle-status',
+                type: 'POST',
+                data: { 
+                    status: newStatus,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    btn.html('<i class="fas fa-spinner fa-spin mr-1"></i> ' + (isActive ? 'Deactivating...' : 'Activating...'));
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var row = btn.closest('tr');
+                        var statusBadge = row.find('td:nth-child(3) span').first();
+                        
+                        if (newStatus === 'active') {
+                            statusBadge.removeClass('bg-red-100 text-red-800').addClass('bg-green-100 text-green-800').text('Active');
+                            btn.removeClass('text-green-600 hover:bg-green-50').addClass('text-red-600 hover:bg-red-50')
+                                .html('<i class="fas fa-toggle-off mr-1"></i> Deactivate');
+                        } else {
+                            statusBadge.removeClass('bg-green-100 text-green-800').addClass('bg-red-100 text-red-800').text('Inactive');
+                            btn.removeClass('text-red-600 hover:bg-red-50').addClass('text-green-600 hover:bg-green-50')
+                                .html('<i class="fas fa-toggle-on mr-1"></i> Activate');
+                        }
+                        
+                        // Show success toast
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                        
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Status updated successfully'
+                        });
+                    }
+                },
+                error: function() {
+                    btn.html('<i class="fas fa-' + (isActive ? 'toggle-off' : 'toggle-on') + ' mr-1"></i> ' + 
+                           (isActive ? 'Deactivate' : 'Activate'));
+                           
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to update status. Please try again.',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            });
+        });
+        
+        // =========================
+        // SORTABLE (DRAG & DROP)
+        // =========================
+        
+        var stagesTableBody = document.getElementById('stages-table-body');
+        if (stagesTableBody && stagesTableBody.querySelectorAll('tr[data-stage-id]').length > 0) {
+            new Sortable(stagesTableBody, {
+                handle: '.handle',
+                animation: 150,
+                ghostClass: 'bg-gray-100',
+                onEnd: function() {
+                    // Update order numbers visually
+                    $('.stage-order').each(function(index) {
+                        $(this).text(index + 1);
+                    });
+                    
+                    // Get new order
+                    var stageOrder = {};
+                    $('tr[data-stage-id]').each(function(index) {
+                        stageOrder[$(this).data('stage-id')] = index + 1;
+                    });
+                    
+                    // Update order in database
+                    $.ajax({
+                        url: '/admin/stages/update-order',
+                        type: 'POST',
+                        data: JSON.stringify({ order: stageOrder }),
+                        contentType: 'application/json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                            'Accept': 'application/json'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                console.log('Stage order updated successfully');
+                            }
+                        },
+                        error: function() {
+                            console.error('Failed to update stage order');
+                        }
+                    });
+                }
+            });
+        }
+        
+        // =========================
+        // SEARCH FUNCTIONALITY
+        // =========================
+        
+        $('#stageSearchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase().trim();
+            $('#stages-table-body tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
