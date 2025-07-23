@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Activity extends Model
+class Stage extends Model
 {
     use HasFactory;
-
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -18,23 +19,25 @@ class Activity extends Model
     protected $fillable = [
         'name',
         'slug',
+        'status',
+        'description',
+        'order'
     ];
     
     /**
-     * The levels that this activity belongs to.
+     * The activities that belong to this stage.
      */
-    public function levels(): BelongsToMany
+    public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Level::class, 'activity_level')
+        return $this->belongsToMany(Activity::class, 'activity_stage')
                     ->withTimestamps();
     }
     
     /**
-     * The stages that this activity belongs to.
+     * The levels that belong to this stage.
      */
-    public function stages(): BelongsToMany
+    public function levels(): HasMany
     {
-        return $this->belongsToMany(Stage::class, 'activity_stage')
-                    ->withTimestamps();
+        return $this->hasMany(Level::class)->orderBy('level_number');
     }
 }

@@ -43,7 +43,9 @@
             <table class="min-w-full bg-white">
                 <thead>
                     <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left">Name</th>
+                        <th class="py-3 px-6 text-left">Stage</th>
+                        <th class="py-3 px-6 text-left">Level Number</th>
+                        <th class="py-3 px-6 text-left">Level Name</th>
                         <th class="py-3 px-6 text-left">Status</th>
                         <th class="py-3 px-6 text-left">Activities</th>
                         <th class="py-3 px-6 text-right">Actions</th>
@@ -52,6 +54,16 @@
                 <tbody class="text-gray-600 text-sm">
                     @forelse($levels as $level)
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-6 text-left">
+                                @if($level->stage)
+                                    <span class="px-2 py-1 bg-primary text-white rounded-full text-xs">
+                                        {{ $level->stage->name }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400 italic">No stage assigned</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-6 text-left">{{ $level->level_number }}</td>
                             <td class="py-3 px-6 text-left">{{ $level->name }}</td>
                             <td class="py-3 px-6 text-left">
                                 <span class="px-2 py-1 rounded-full text-xs {{ $level->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -114,40 +126,53 @@
             </div>
             
             <!-- Modal body -->
-            <div class="p-6">
+            <div class="p-4">
                 <form id="levelForm" method="POST" action="{{ route('admin.levels.store') }}">
                     @csrf
                     <input type="hidden" id="levelId">
                     
-                    <div class="mb-4">
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Level Name</label>
-                        <input type="text" 
-                               class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-gray-300" 
-                               id="name" name="name" required>
-                        <p class="mt-1 text-sm text-red-600 hidden" id="nameError"></p>
+                    <div class="mb-3">
+                        <label for="stage_id" class="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                        <select id="stage_id" name="stage_id"
+                                class="w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-gray-300" required>
+                            <option value="">Select Stage</option>
+                            @foreach($stages as $stage)
+                                <option value="{{ $stage->id }}">{{ $stage->name }}</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-1 text-xs text-red-600 hidden" id="stage_idError"></p>
                     </div>
                     
-                    <div class="mb-4">
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <div class="mb-3">
+                        <label for="level_number" class="block text-sm font-medium text-gray-700 mb-1">Level Number</label>
+                        <input type="number" 
+                               class="w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-gray-300" 
+                               id="level_number" name="level_number" required min="1" value="1">
+                        <p class="mt-1 text-xs text-red-600 hidden" id="level_numberError"></p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select id="status" name="status"
-                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-gray-300">
+                                class="w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-gray-300">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
-                        <p class="mt-1 text-sm text-red-600 hidden" id="statusError"></p>
+                        <p class="mt-1 text-xs text-red-600 hidden" id="statusError"></p>
                     </div>
                     
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
-                        <textarea id="description" name="description" rows="3"
-                                 class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-gray-300"></textarea>
-                        <p class="mt-1 text-sm text-red-600 hidden" id="descriptionError"></p>
+                    <div class="mb-3">
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="description" name="description"
+                                  class="w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary border-gray-300"
+                                  rows="2"></textarea>
+                        <p class="mt-1 text-xs text-red-600 hidden" id="descriptionError"></p>
                     </div>
                     
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Activities</label>
-                        <div class="max-h-44 overflow-y-auto border rounded-md p-3">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Activities</label>
+                        <div class="max-h-36 overflow-y-auto border rounded-md p-2 bg-gray-50">
+                            <div class="grid grid-cols-2 gap-1">
                                 @foreach($activities as $activity)
                                     <div class="flex items-center">
                                         <input id="activity-{{ $activity->id }}" 
@@ -168,11 +193,11 @@
             </div>
             
             <!-- Modal footer -->
-            <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-3">
-                <button type="button" id="cancelLevelBtn" class="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <div class="bg-gray-50 px-4 py-2 flex justify-end space-x-2">
+                <button type="button" id="cancelLevelBtn" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-gray-500">
                     Cancel
                 </button>
-                <button type="button" id="saveLevelBtn" class="px-4 py-2 bg-primary border border-transparent rounded-md text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                <button type="button" id="saveLevelBtn" class="px-3 py-1 bg-primary border border-transparent rounded-md text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-primary">
                     Save Level
                 </button>
             </div>
@@ -254,9 +279,16 @@
                         
                         // Set form values
                         document.getElementById('levelId').value = level.id;
-                        document.getElementById('name').value = level.name;
                         document.getElementById('status').value = level.status;
                         document.getElementById('description').value = level.description || '';
+                        
+                        // Set stage_id and level_number fields
+                        if (level.stage) {
+                            document.getElementById('stage_id').value = level.stage.id;
+                        } else {
+                            document.getElementById('stage_id').value = '';
+                        }
+                        document.getElementById('level_number').value = level.level_number || 1;
                         
                         // Update form action
                         levelForm.action = `{{ url('admin/levels') }}/${levelId}`;
@@ -314,15 +346,27 @@
         saveBtn.addEventListener('click', function() {
             // Simple client-side validation
             let isValid = true;
-            const nameInput = document.getElementById('name');
-            const nameError = document.getElementById('nameError');
             
-            if (!nameInput.value.trim()) {
-                nameError.textContent = 'Level name is required';
-                nameError.classList.remove('hidden');
+            // Validate stage_id
+            const stageIdInput = document.getElementById('stage_id');
+            const stageIdError = document.getElementById('stage_idError');
+            if (!stageIdInput.value) {
+                stageIdError.textContent = 'Please select a stage';
+                stageIdError.classList.remove('hidden');
                 isValid = false;
             } else {
-                nameError.classList.add('hidden');
+                stageIdError.classList.add('hidden');
+            }
+            
+            // Validate level_number
+            const levelNumberInput = document.getElementById('level_number');
+            const levelNumberError = document.getElementById('level_numberError');
+            if (!levelNumberInput.value || levelNumberInput.value < 1) {
+                levelNumberError.textContent = 'Level number must be at least 1';
+                levelNumberError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                levelNumberError.classList.add('hidden');
             }
             
             if (!isValid) return;

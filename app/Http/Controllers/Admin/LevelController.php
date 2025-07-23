@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Level;
+use App\Models\Stage;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -17,9 +18,10 @@ class LevelController extends Controller
      */
     public function index()
     {
-        $levels = Level::with('activities')->orderBy('name')->get();
+        $levels = Level::with(['activities', 'stage'])->orderBy('stage_id')->orderBy('level_number')->get();
         $activities = Activity::orderBy('name')->get();
-        return view('admin.levels.index', compact('levels', 'activities'));
+        $stages = Stage::orderBy('order')->get();
+        return view('admin.levels.index', compact('levels', 'activities', 'stages'));
     }
 
     /**
@@ -32,8 +34,9 @@ class LevelController extends Controller
     {
         try {
             $validator = validator($request->all(), [
-                'name' => 'required|string|max:255|unique:levels',
                 'status' => 'required|in:active,inactive',
+                'stage_id' => 'required|exists:stages,id',
+                'level_number' => 'required|integer|min:1',
                 'activities' => 'nullable|array',
                 'activities.*' => 'exists:activities,id',
                 'description' => 'nullable|string',
@@ -50,11 +53,18 @@ class LevelController extends Controller
                 return back()->withErrors($validator)->withInput();
             }
             
+            $stage = Stage::findOrFail($request->stage_id);
+            
+            // Generate level name from stage and level number
+            $generatedName = $stage->name . ' - Level ' . $request->level_number;
+            
             $level = Level::create([
-                'name' => $request->name,
-                'slug' => Str::slug($request->name),
+                'name' => $generatedName,
+                'slug' => Str::slug($generatedName),
                 'status' => $request->status,
                 'description' => $request->description,
+                'stage_id' => $request->stage_id,
+                'level_number' => $request->level_number,
             ]);
             
             // Sync activities if provided
@@ -66,7 +76,7 @@ class LevelController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Level created successfully.',
-                    'level' => $level->load('activities')
+                    'level' => $level->load(['activities', 'stage'])
                 ]);
             }
 
@@ -93,18 +103,20 @@ class LevelController extends Controller
      */
     public function edit($id)
     {
-        $level = Level::with('activities')->findOrFail($id);
+        $level = Level::with(['activities', 'stage'])->findOrFail($id);
         $activities = Activity::orderBy('name')->get();
+        $stages = Stage::orderBy('order')->get();
         
         if (request()->ajax()) {
             return response()->json([
                 'success' => true,
                 'level' => $level,
-                'activities' => $activities
+                'activities' => $activities,
+                'stages' => $stages
             ]);
         }
         
-        return view('admin.levels.edit', compact('level', 'activities'));
+        return view('admin.levels.edit', compact('level', 'activities', 'stages'));
     }
 
     /**
@@ -118,8 +130,9 @@ class LevelController extends Controller
     {
         try {
             $validator = validator($request->all(), [
-                'name' => 'required|string|max:255|unique:levels,name,'.$id,
                 'status' => 'required|in:active,inactive',
+                'stage_id' => 'required|exists:stages,id',
+                'level_number' => 'required|integer|min:1',
                 'activities' => 'nullable|array',
                 'activities.*' => 'exists:activities,id',
                 'description' => 'nullable|string',
@@ -137,10 +150,10 @@ class LevelController extends Controller
             }
             
             $level = Level::findOrFail($id);
-            $level->name = $request->name;
-            $level->slug = Str::slug($request->name);
             $level->status = $request->status;
             $level->description = $request->description;
+            $level->stage_id = $request->stage_id;
+            $level->level_number = $request->level_number;
             $level->save();
             
             // Sync activities if provided
@@ -154,7 +167,7 @@ class LevelController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Level updated successfully.',
-                    'level' => $level->load('activities')
+                    'level' => $level->load(['activities', 'stage'])
                 ]);
             }
 

@@ -19,5 +19,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        
+        // IMT System Setup Seeders
+        $this->call([
+            ActivitySeeder::class,
+            LevelSeeder::class,
+            StageSeeder::class,
+        ]);
     }
 }

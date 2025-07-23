@@ -350,6 +350,17 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'update' => 'admin.levels.update',
         'destroy' => 'admin.levels.destroy'
     ]);
+    
+    // Stages Setup Management Routes
+    Route::resource('stages', '\App\Http\Controllers\Admin\StageController')->names([
+        'index' => 'admin.stages.index',
+        'store' => 'admin.stages.store',
+        'edit' => 'admin.stages.edit',
+        'update' => 'admin.stages.update',
+        'destroy' => 'admin.stages.destroy'
+    ]);
+    Route::post('/stages/update-order', '\App\Http\Controllers\Admin\StageController@updateOrder')->name('admin.stages.update-order');
+    Route::patch('/stages/{stage}/toggle-active', '\App\Http\Controllers\Admin\StageController@toggleActive')->name('admin.stages.toggle-active');
 });
 
 // School Admin Routes

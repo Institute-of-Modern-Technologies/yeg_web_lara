@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Level extends Model
@@ -16,11 +17,19 @@ class Level extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'slug',
         'status',
-        'description'
+        'description',
+        'stage_id',
+        'level_number'
     ];
+    
+    /**
+     * The stage this level belongs to.
+     */
+    public function stage(): BelongsTo
+    {
+        return $this->belongsTo(Stage::class);
+    }
     
     /**
      * The activities that belong to this level.
