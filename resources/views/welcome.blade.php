@@ -10,8 +10,25 @@
     #welcome-page *:not(.fas):not(.far):not(.fa):not(.fab) {
         font-family: 'Montserrat', sans-serif !important;
     }
+    
+    /* Force full width on mobile */
+    html, body {
+        width: 100vw;
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+    
+    #welcome-page {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        overflow-x: hidden;
+    }
 </style>
-<div id="welcome-page" class="font-montserrat">
+<div id="welcome-page" class="font-montserrat w-full max-w-full overflow-x-hidden" style="margin-right: auto; margin-left: auto; position: relative; left: 0; right: 0;">
 
     <!-- Hero Section with Carousel -->
     <section id="hero-section" class="hero-section relative overflow-hidden min-h-[600px] md:min-h-[700px] bg-primary">
@@ -72,7 +89,7 @@
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full parallax-bg" id="hero-parallax-bg">
-                <img src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover parallax-img fade-in-bg">
+                <img class="max-w-full" src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image" class="w-full h-full object-cover parallax-img fade-in-bg">
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -133,7 +150,7 @@
         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" id="slide-{{ $heroSection->id }}">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
-                <img src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}" class="w-full h-full object-cover">
+                <img class="max-w-full" src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}" class="w-full h-full object-cover">
                 <!-- Custom overlay with configured color and opacity -->
                 <div class="absolute inset-0" style="{{ app(\App\Services\HeroSectionService::class)->generateOverlayStyles($heroSection) }}"></div>
             </div>
@@ -167,10 +184,10 @@
     <!-- Our Stages Section -->
     <section id="our-stages" class="py-16 bg-white relative overflow-hidden">
         <div id="our-stages-bg"></div>
-        <div class="container mx-auto px-6 relative z-10">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto relative z-10">
             <h2 class="text-4xl font-bold text-center mb-12 text-primary" data-aos="fade-up" data-aos-delay="100">Our Stages</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mx-auto w-full max-w-4xl">
                 <!-- Discover Card -->
                 <div class="bg-white rounded-md p-6 shadow-md border flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="border-color: #950713; border-width: 2px;" data-aos="flip-up" data-aos-delay="300">
                     <div class="text-3xl mb-3" style="color: #950713;">
@@ -203,7 +220,7 @@
 
     <!-- Welcome Section -->
     <section id="about" class="py-16 bg-gray-50">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-bold mb-4" data-aos="fade-up" data-aos-delay="100">Welcome</h2>
                 <p class="text-lg" data-aos="fade-up" data-aos-delay="200">
@@ -215,7 +232,7 @@
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full mx-auto max-w-6xl">
                 <!-- Left Column - Our Program -->
                 <div class="border border-gray-200 rounded-md p-6 relative" data-aos="zoom-in" data-aos-delay="300">
                     <div class="flex items-center mb-4">
@@ -232,7 +249,7 @@
                     <!-- Video Element -->
                     <div class="mb-6 mt-6 rounded-md overflow-hidden shadow-md">
                         <div class="relative">
-                            <div id="youtube-player" class="w-full aspect-video"></div>
+                            <div id="youtube-player" class="w-full aspect-video max-w-full"></div>
                             <!-- Custom Controls -->
                             <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 flex justify-center gap-4 transition-opacity duration-300">
                                 <button id="play-pause-btn" class="text-white hover:text-gray-200 focus:outline-none">
@@ -426,8 +443,8 @@
 
     <!-- Happenings Section -->
     <section id="happenings" class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 w-full">
                 <!-- Left Column - Blog Posts -->
                 <div class="lg:col-span-2">
                     <div data-aos="fade-right">
@@ -553,11 +570,11 @@
                         </div>
                         
                         <!-- Register Button with Dropdown -->
-                        <div class="relative">
-                            <button id="happeningsRegisterBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white py-3 rounded-md mt-4 flex items-center justify-center space-x-2 transition-all duration-300">
+                        <div class="relative" id="happeningsDropdownContainer">
+                            <button id="happeningsRegisterBtn" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white py-3 rounded-md mt-4 flex items-center justify-center space-x-2 transition-all duration-300 text-sm sm:text-base">
                                 <i class="fas fa-user-plus"></i>
                                 <span>Register Now</span>
-                                <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="happeningsChevron"></i>
                             </button>
                             <div id="happeningsDropdownMenu" class="absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-xl overflow-hidden z-50 hidden transform transition-all duration-300 ease-in-out border border-gray-100">
                                 <div class="py-2">
@@ -596,7 +613,7 @@
 
     <!-- FAQ Section -->
     <section id="faq" class="py-16 bg-blue-50">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Top Content -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
                 <!-- Left Column - Text -->
@@ -612,7 +629,7 @@
                 <!-- Right Column - Illustration -->
                 <div class="flex justify-center items-center relative">
                     <div class="relative">
-                        <img src="{{ asset('images/clipart.png') }}" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
+                        <img class="max-w-full" src="{{ asset('images/clipart.png') }}" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
                         <!-- Question Marks -->
                         <div class="absolute -top-4 right-12 text-3xl text-orange-400">?</div>
                         <div class="absolute top-12 -left-4 text-3xl text-orange-400">?</div>
@@ -832,7 +849,7 @@
 
     <!-- Partnered Schools Showcase -->
     <section class="py-16 bg-primary text-white" style="background-color: #950713 !important;">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Section Header -->
             <div class="text-center mb-12">
                 <span class="inline-block text-yellow-400 text-sm font-semibold tracking-wider mb-3">OUR PARTNERS</span>
@@ -869,14 +886,14 @@
                                     <!-- School logo with robust fallback -->
                                     <div class="school-logo-container flex items-center justify-center h-full w-full">
                                         @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
-                                            <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                            <img class="max-w-full" src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                             <div class="hidden text-center">
-                                                <img src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
+                                                <img class="max-w-full" src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
                                                 <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
                                             </div>
                                         @else
                                             <div class="text-center">
-                                                <img src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
+                                                <img class="max-w-full" src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
                                                 <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
                                             </div>
                                         @endif
@@ -1075,7 +1092,7 @@
 
     <!-- Explore Our Events Section -->
     <section id="events" class="py-16" style="background-color: rgba(255, 203, 5, 0.25);">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Header -->
             <div class="text-center mb-10">
                 <h2 class="text-4xl font-bold text-primary mb-3">Explore Our Events</h2>
@@ -1096,7 +1113,7 @@
                     <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                         <div class="relative">
                             @if($event->media_type == 'image')
-                                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
+                                <img class="max-w-full" src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
                             @else
                                 <div class="relative w-full h-48 bg-gray-900">
                                     <video class="absolute inset-0 w-full h-full object-cover" poster="{{ asset('images/video-poster.jpg') }}" controls>
@@ -1181,7 +1198,7 @@
 
     <!-- Why Young Experts Group Section -->
     <section id="about-us" class="py-16 bg-gray-50">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Header -->
             <div class="text-center mb-14" data-aos="fade-up">
                 <h2 class="text-3xl font-bold mb-4">
@@ -1197,7 +1214,7 @@
                 <!-- Coding -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/coding.png') }}" alt="Coding" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/coding.png') }}" alt="Coding" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Coding</h3>
                     <p class="text-gray-600 text-sm">
@@ -1208,7 +1225,7 @@
                 <!-- Digital Marketing -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
                     <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/digital-marketing.png') }}" alt="Digital Marketing" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/digital-marketing.png') }}" alt="Digital Marketing" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Digital Marketing</h3>
                     <p class="text-gray-600 text-sm">
@@ -1219,7 +1236,7 @@
                 <!-- Graphics Design -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/graphic-designing.png') }}" alt="Graphics Design" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/graphic-designing.png') }}" alt="Graphics Design" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Graphics Design</h3>
                     <p class="text-gray-600 text-sm">
@@ -1230,7 +1247,7 @@
                 <!-- Entrepreneurship -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/Enterpreneurship.png') }}" alt="Entrepreneurship" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/Enterpreneurship.png') }}" alt="Entrepreneurship" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Entrepreneurship</h3>
                     <p class="text-gray-600 text-sm">
@@ -1241,7 +1258,7 @@
                 <!-- Artificial Intelligence Basics -->
                 <div class="text-center">
                     <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Artificial Intelligence Basics</h3>
                     <p class="text-gray-600 text-sm">
@@ -1252,7 +1269,7 @@
                 <!-- Creativity Workshops -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img src="{{ asset('images/creativity-workshop.png') }}" alt="Creativity Workshops" class="w-16 h-16 object-contain">
+                        <img class="max-w-full" src="{{ asset('images/creativity-workshop.png') }}" alt="Creativity Workshops" class="w-16 h-16 object-contain">
                     </div>
                     <h3 class="text-primary font-bold mb-2">Creativity Workshops</h3>
                     <p class="text-gray-600 text-sm">
@@ -1265,7 +1282,7 @@
 
     <!-- Partnered Schools Marquee Section -->
     <section id="partners" class="py-16 bg-gray-100 relative">
-        <div class="container mx-auto px-6 relative z-10">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto relative z-10">
             <!-- Header -->
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-3 text-primary">
@@ -1290,7 +1307,7 @@
                             <!-- First set of logos -->
                             @foreach($schoolLogos as $logo)
                                 <div class="inline-block mx-8">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                    <img class="max-w-full" src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
@@ -1299,7 +1316,7 @@
                             <!-- Second set for seamless looping -->
                             @foreach($schoolLogos as $logo)
                                 <div class="inline-block mx-8">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                    <img class="max-w-full" src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
                                          class="h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
@@ -1339,7 +1356,7 @@
 
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-16 bg-white">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Header -->
             <div class="text-center mb-12" data-aos="fade-up">
                 <h2 class="text-3xl font-bold text-[#950713] mb-3">What Our Community Says</h2>
@@ -1364,7 +1381,7 @@
                                     <!-- Person Info -->
                                     <div class="flex items-center mb-4">
                                         <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
-                                            <img src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
+                                            <img class="max-w-full" src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
                                         </div>
                                         <div>
                                             <h3 class="text-lg font-bold text-primary">{{ $testimonial->name }}</h3>
@@ -1518,7 +1535,7 @@
                             modalContent.innerHTML = `
                                 <div class="flex items-center mb-6">
                                     <div class="w-16 h-16 rounded-full overflow-hidden mr-4">
-                                        <img src="${data.image}" alt="${data.name}" class="w-full h-full object-cover">
+                                        <img class="max-w-full" src="${data.image}" alt="${data.name}" class="w-full h-full object-cover">
                                     </div>
                                     <div>
                                         <h3 class="text-xl font-bold text-primary">${data.name}</h3>
@@ -1560,7 +1577,7 @@
 
     <!-- Pricing Section -->
     <section id="pricing" class="py-16" style="background-color: rgba(0, 255, 255, 0.1);">
-        <div class="container mx-auto px-6">
+        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
             <!-- Header -->
             <div class="text-center mb-12" data-aos="fade-up">
                 <h2 class="text-3xl font-bold mb-4" style="color: #950713;">Pricing</h2>
@@ -2185,6 +2202,45 @@
                 mirror: false,
                 offset: 100,
                 delay: 100
+            });
+        });
+        
+        // Direct jQuery implementation for happenings dropdown
+        $(document).ready(function() {
+            // Remove any existing event handlers to prevent conflicts
+            $(document).off('click', '#happeningsRegisterBtn');
+            
+            // Direct implementation with jQuery
+            $('#happeningsRegisterBtn').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Force display:block instead of toggling classes for more reliable behavior
+                var menu = $('#happeningsDropdownMenu');
+                var chevron = $('#happeningsChevron');
+                
+                if (menu.is(':visible')) {
+                    menu.hide().addClass('hidden');
+                    chevron.removeClass('rotate-180');
+                } else {
+                    menu.show().removeClass('hidden');
+                    chevron.addClass('rotate-180');
+                    console.log('Dropdown shown via jQuery');
+                }
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#happeningsDropdownContainer').length) {
+                    $('#happeningsDropdownMenu').hide().addClass('hidden');
+                    $('#happeningsChevron').removeClass('rotate-180');
+                }
+            });
+            
+            // Debug information
+            console.log('jQuery dropdown handlers initialized:', {
+                buttonExists: $('#happeningsRegisterBtn').length > 0,
+                menuExists: $('#happeningsDropdownMenu').length > 0
             });
         });
     </script>

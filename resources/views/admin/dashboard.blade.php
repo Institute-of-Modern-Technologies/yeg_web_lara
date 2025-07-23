@@ -174,12 +174,12 @@
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="app-header bg-primary text-white shadow-md">
-            <div class="px-4 py-3">
+        <header class="app-header bg-primary text-white shadow-md w-full overflow-visible">
+            <div class="px-4 py-3 w-full">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <!-- Sidebar toggle button (mobile only) -->
-                        <button id="sidebar-toggle" class="md:hidden text-white hover:text-gray-300 focus:outline-none mr-3">
+                        <button id="sidebar-toggle" class="md:hidden text-white hover:text-gray-300 focus:outline-none mr-3 flex-shrink-0">
                             <i class="fas fa-bars text-xl"></i>
                         </button>
                         

@@ -153,20 +153,19 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Stage Modal -->
-    <div id="stageModal" class="hidden fixed inset-0 overflow-y-auto z-50" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <!-- Modal backdrop with animation -->
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-800 opacity-75"></div>
-            </div>
+    <div id="stageModal" class="fixed inset-0 z-[9999] hidden" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Centering container -->    
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <!-- Background overlay -->    
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" style="position: fixed;"></div>
             
-            <!-- Modal panel -->
-            <div class="bg-white rounded-lg shadow-xl max-w-xl w-full mx-auto z-10 overflow-hidden transform transition-all">
-                <!-- Modal header -->
+            <!-- Modal container -->    
+            <div class="relative bg-white rounded-lg shadow-xl max-w-xl w-full overflow-hidden">
+                <!-- Modal header -->    
                 <div class="bg-gradient-to-r from-[#950713] to-red-800 px-6 py-4 flex justify-between items-center">
-                    <h3 class="text-xl font-bold text-white" id="modalTitle">
+                    <h3 class="text-xl font-bold text-white" id="modal-title">
                         <i class="fas fa-plus-circle mr-2"></i> <span id="modalTitleText">Add New Stage</span>
                     </h3>
                     <button id="closeModalBtnX" type="button" class="text-white hover:text-gray-200 focus:outline-none">
@@ -174,7 +173,7 @@
                     </button>
                 </div>
                 
-                <!-- Modal body -->
+                <!-- Modal body -->    
                 <div class="p-6">
                     <form id="stageForm" class="space-y-5">
                         @csrf
@@ -252,26 +251,22 @@
                 </div>
                 
                 <!-- Modal footer -->
-                <div class="bg-gray-50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-2 sm:justify-between">
-                    <div>
-                        <button id="saveStageBtn" type="button" 
-                                class="w-full sm:w-auto px-4 py-2 bg-[#950713] text-white rounded-lg hover:bg-[#7d0510] focus:outline-none focus:ring-2 focus:ring-[#950713] focus:ring-opacity-50 flex items-center justify-center transition-colors">
-                            <i class="fas fa-save mr-2"></i> Save Stage
-                        </button>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <button id="closeModalBtn" type="button" 
-                                class="w-full sm:w-auto px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 flex items-center justify-center transition-colors">
-                            <i class="fas fa-times mr-2"></i> Cancel
-                        </button>
-                    </div>
+                <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                    <button id="closeModalBtn" type="button"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="saveStageBtn" type="button"
+                            class="px-4 py-2 bg-[#950713] text-white rounded-lg hover:bg-[#850612] focus:outline-none focus:ring-2 focus:ring-[#950713] focus:ring-opacity-50 transition-colors">
+                        <i class="fas fa-save mr-2"></i> Save Stage
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     
     <!-- Delete Confirmation Modal -->
-    <div id="deleteConfirmModal" class="hidden fixed inset-0 overflow-y-auto z-50" role="dialog" aria-modal="true">
+    <div id="deleteConfirmModal" class="hidden fixed inset-0 overflow-y-auto z-[100]" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen p-4">
             <!-- Modal backdrop with animation -->
             <div class="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -312,15 +307,100 @@
         </div>
     </div>
 
+    <!-- Only keeping one instance of the Stage Modal -->
+
+    <!-- Delete Confirmation Modal -->    
+    <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden" aria-labelledby="delete-modal-title" role="dialog" aria-modal="true">
+        <!-- Centering container -->    
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <!-- Background overlay -->    
+            <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            
+            <!-- Modal container -->    
+            <div class="relative bg-white rounded-md shadow-lg max-w-md w-full">
+                <!-- Modal header -->    
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                    <h3 class="text-base font-medium text-gray-900" id="delete-modal-title">Delete Stage</h3>
+                    <button id="closeDeleteModalBtn" type="button" class="text-gray-400 hover:text-[#950713]">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Modal content -->    
+                <div class="p-4">
+                    <input type="hidden" id="deleteStageId">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-red-100">
+                            <i class="fas fa-exclamation-triangle text-[#950713]"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">
+                                Are you sure you want to delete this stage? This action cannot be undone.
+                            </p>
+                            <p class="mt-1 font-medium text-gray-800" id="deleteStageNameText"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal footer -->    
+                <div class="px-4 py-3 bg-gray-50 flex justify-end space-x-3 border-t border-gray-200">
+                    <button id="cancelDeleteBtn" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#950713]">
+                        Cancel
+                    </button>
+                    <button id="confirmDeleteBtn" type="button" class="px-4 py-2 text-sm font-medium text-white bg-[#950713] border border-transparent rounded-md shadow-sm hover:bg-[#8a0612] focus:outline-none focus:ring-2 focus:ring-[#950713]">
+                        <i class="fas fa-trash-alt mr-1"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script>
+<!-- Required Scripts for Stages Management -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM Content Loaded - Initializing Stage Management');
             
-            // Modal elements
+            // Debug Helper: Add a test button to the page to manually open modal
+            const debugButton = document.createElement('button');
+            debugButton.textContent = 'Debug: Open Stage Modal';
+            debugButton.style.position = 'fixed';
+            debugButton.style.bottom = '10px';
+            debugButton.style.right = '10px';
+            debugButton.style.zIndex = '9999';
+            debugButton.style.padding = '10px';
+            debugButton.style.background = '#950713';
+            debugButton.style.color = 'white';
+            debugButton.style.borderRadius = '5px';
+            debugButton.style.cursor = 'pointer';
+            debugButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+            document.body.appendChild(debugButton);
+            
+            // Delayed auto-trigger for debugging
+            console.log('Setting up delayed modal trigger for debugging');
+            setTimeout(function() {
+                console.log('Delayed modal trigger executing...');
+                // Force initialize modal if it wasn't found initially
+                const modalCheck = document.getElementById('stageModal');
+                if (modalCheck) {
+                    console.log('Modal found on delayed check');
+                } else {
+                    console.error('Modal still not found in DOM after delay');
+                }
+            }, 1000);
+            
+            // Add click event for debug button
+            debugButton.addEventListener('click', function() {
+                console.log('Debug button clicked');
+                resetForm();
+                modalTitle.textContent = 'Add New Stage';
+                openModal();
+            });
+            
+            // Modal elements - Make sure all selectors are valid
             const modal = document.getElementById('stageModal');
             const deleteModal = document.getElementById('deleteConfirmModal');
             const addStageBtn = document.getElementById('addStageBtn');
@@ -332,12 +412,18 @@
             const saveBtn = document.getElementById('saveStageBtn');
             const stageForm = document.getElementById('stageForm');
             const modalTitle = document.getElementById('modalTitleText');
+            const deleteStageNameText = document.getElementById('deleteStageNameDisplay'); // Fixed ID
             
-            // Log to check if elements are found
-            console.log('Stage modal found:', !!modal);
-            console.log('Delete modal found:', !!deleteModal);
-            console.log('Add stage button found:', !!addStageBtn);
-            console.log('Empty state add button found:', !!emptyAddStageBtn);
+            // Debug logs for all elements
+            console.log('*** MODAL DEBUGGING ***');
+            console.log('Stage modal element:', modal);
+            console.log('Delete modal element:', deleteModal);
+            console.log('Add stage button element:', addStageBtn);
+            console.log('Empty state add button element:', emptyAddStageBtn);
+            console.log('Close modal button element:', closeModalBtn);
+            console.log('Close modal X button element:', closeModalBtnX);
+            console.log('Save button element:', saveBtn);
+            console.log('Stage form element:', stageForm);
             
             // Form elements
             const stageIdInput = document.getElementById('stageId');
@@ -352,15 +438,39 @@
             // Stage table
             const stagesTableBody = document.getElementById('stages-table-body');
             
+            // Direct modal management functions
+            function openModal() {
+                console.log('Opening modal');
+                // Force modal to be visible using multiple techniques
+                modal.style.display = 'block';
+                modal.classList.remove('hidden');
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.zIndex = '9999';
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                console.log('Modal display style:', modal.style.display);
+                console.log('Modal classes after opening:', modal.className);
+            }
+            
+            function closeModal() {
+                console.log('Closing modal');
+                modal.style.display = 'none';
+                modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
             // Open modal for creating a new stage
             if (addStageBtn) {
+                console.log('Adding click event listener to Add Stage button');
                 addStageBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     console.log('Add Stage button clicked');
                     resetForm();
                     modalTitle.textContent = 'Add New Stage';
-                    modal.classList.remove('hidden');
+                    openModal();
                 });
+            } else {
+                console.error('Add Stage button not found in the DOM');
             }
             
             // Empty state add button
@@ -370,7 +480,7 @@
                     console.log('Empty state add button clicked');
                     resetForm();
                     modalTitle.textContent = 'Add New Stage';
-                    modal.classList.remove('hidden');
+                    openModal();
                 });
             }
             
@@ -379,7 +489,7 @@
                 closeModalBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     console.log('Close modal button clicked');
-                    modal.classList.add('hidden');
+                    closeModal();
                 });
             }
             
@@ -387,7 +497,7 @@
                 closeModalBtnX.addEventListener('click', function(e) {
                     e.preventDefault();
                     console.log('Close X button clicked');
-                    modal.classList.add('hidden');
+                    closeModal();
                 });
             }
             
@@ -409,10 +519,13 @@
             // Close modals with ESC key
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
-                    if (!modal.classList.contains('hidden')) {
-                        modal.classList.add('hidden');
+                    console.log('ESC key pressed, checking modals');
+                    if (!modal.classList.contains('hidden') || modal.style.display === 'block') {
+                        console.log('Closing stage modal via ESC key');
+                        closeModal();
                     }
                     if (!deleteModal.classList.contains('hidden')) {
+                        console.log('Closing delete confirmation modal via ESC key');
                         deleteModal.classList.add('hidden');
                     }
                 }
@@ -422,10 +535,13 @@
             function resetForm() {
                 stageForm.reset();
                 stageIdInput.value = '';
-                errorElements.forEach(el => el.textContent = '');
+                errorElements.forEach(el => {
+                    el.textContent = '';
+                    el.classList.add('hidden');
+                });
                 
-                // Uncheck all activity checkboxes
-                document.querySelectorAll('.activity-checkbox').forEach(checkbox => {
+                // Uncheck all activity checkboxes - using the correct selector for our checkboxes
+                document.querySelectorAll('input[name="activities[]"]').forEach(checkbox => {
                     checkbox.checked = false;
                 });
             }
@@ -587,7 +703,13 @@
                 }
                 
                 // Clear previous errors
-                errorElements.forEach(el => el.textContent = '');
+                errorElements.forEach(el => {
+                    el.textContent = '';
+                    el.classList.add('hidden');
+                });
+                
+                // Get CSRF token
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 
                 // Show loading indicator
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
@@ -595,16 +717,17 @@
                 
                 fetch(url, {
                     method: 'POST',
-                    body: formData,
                     headers: {
+                        'X-CSRF-TOKEN': token,
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
+                        'Accept': 'application/json'
+                    },
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
                     // Reset button state
-                    saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Stage';
+                    saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Save';
                     saveBtn.disabled = false;
                     
                     if (data.success) {
@@ -614,33 +737,32 @@
                             icon: 'success',
                             confirmButtonColor: '#950713'
                         }).then(() => {
-                            modal.classList.add('hidden');
+                            closeModal();
                             window.location.reload();
                         });
+                    } else if (data.errors) {
+                        // Display validation errors
+                        Object.keys(data.errors).forEach(field => {
+                            const errorEl = document.getElementById(`${field}Error`);
+                            if (errorEl) {
+                                errorEl.textContent = data.errors[field][0];
+                                errorEl.classList.remove('hidden');
+                            }
+                        });
                     } else {
-                        if (data.errors) {
-                            // Display validation errors
-                            Object.keys(data.errors).forEach(field => {
-                                const errorEl = document.getElementById(`${field}Error`);
-                                if (errorEl) {
-                                    errorEl.textContent = data.errors[field][0];
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message || 'Something went wrong.',
-                                icon: 'error',
-                                confirmButtonColor: '#950713'
-                            });
-                        }
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || 'Something went wrong.',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     
                     // Reset button state
-                    saveBtn.innerHTML = '<i class="fas fa-save mr-2"></i> Save Stage';
+                    saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Save';
                     saveBtn.disabled = false;
                     
                     Swal.fire({
@@ -651,6 +773,7 @@
                     });
                 });
             });
+            }
             
             // Toggle status functionality
             document.querySelectorAll('.toggle-status-btn').forEach(btn => {
@@ -788,4 +911,3 @@
             });
         });
     </script>
-@endsection
