@@ -199,6 +199,43 @@ class StageController extends Controller
     }
 
     /**
+     * Toggle the status of the specified stage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $stage
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleStatus(Request $request, $stage)
+    {
+        try {
+            $stage = Stage::findOrFail($stage);
+            
+            // Toggle the status
+            $newStatus = $request->input('status');
+            if (!in_array($newStatus, ['active', 'inactive'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid status value.'
+                ], 400);
+            }
+            
+            $stage->status = $newStatus;
+            $stage->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Stage status updated successfully.',
+                'stage' => $stage
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the stage status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Update the order of stages.
      *
      * @param  \Illuminate\Http\Request  $request

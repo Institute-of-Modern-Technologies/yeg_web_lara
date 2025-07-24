@@ -354,6 +354,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     ]);
     Route::post('/stages/update-order', '\App\Http\Controllers\Admin\StageController@updateOrder')->name('admin.stages.update-order');
     Route::patch('/stages/{stage}/toggle-active', '\App\Http\Controllers\Admin\StageController@toggleActive')->name('admin.stages.toggle-active');
+    Route::post('/stages/{stage}/toggle-status', '\App\Http\Controllers\Admin\StageController@toggleStatus')->name('admin.stages.toggle-status');
 });
 
 // School Admin Routes
