@@ -377,6 +377,9 @@
                                                                     <a href="{{ route('admin.students.edit', $student->id) }}" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100">
                                                                         <i class="fas fa-edit mr-2"></i> Edit
                                                                     </a>
+                                                                    <button type="button" class="text-blue-600 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 open-payment-modal" data-student-id="{{ $student->id }}" data-student-name="{{ $student->first_name }} {{ $student->last_name }}">
+                                                                        <i class="fas fa-money-bill-wave mr-2"></i> Record Payment
+                                                                    </button>
                                                                 </div>
                                                                 @if($student->status == 'pending')
                                                                 <div class="border-t border-gray-100 mt-1"></div>
@@ -564,6 +567,225 @@
                         }
                     });
                 }
+            });
+        });
+    });
+</script>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-modal="true" role="dialog">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-gradient-to-r from-primary to-red-800 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">Record Cash Payment</h3>
+                    <button type="button" class="text-white hover:text-gray-200 close-payment-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <form id="paymentForm">
+                @csrf
+                <input type="hidden" name="student_id" id="payment_student_id">
+                <input type="hidden" name="payment_method" value="cash">
+                
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6">
+                    <div class="student-info mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm font-medium text-gray-700">Student: <span id="student_name_display" class="font-bold"></span></p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Amount -->
+                        <div>
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount (₵)</label>
+                            <div class="relative mt-1 rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₵</span>
+                                </div>
+                                <input type="number" name="amount" id="amount" step="0.01" required class="focus:ring-primary focus:border-primary block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <!-- Discount -->
+                        <div>
+                            <label for="discount" class="block text-sm font-medium text-gray-700 mb-1">Discount (₵)</label>
+                            <div class="relative mt-1 rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₵</span>
+                                </div>
+                                <input type="number" name="discount" id="discount" step="0.01" value="0" class="focus:ring-primary focus:border-primary block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <!-- Final Amount (calculated automatically) -->
+                        <div>
+                            <label for="final_amount" class="block text-sm font-medium text-gray-700 mb-1">Final Amount (₵)</label>
+                            <div class="relative mt-1 rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">₵</span>
+                                </div>
+                                <input type="number" name="final_amount" id="final_amount" step="0.01" readonly class="bg-gray-50 focus:ring-primary focus:border-primary block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <!-- Information Note -->
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-info-circle text-blue-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700">
+                                        A receipt number will be automatically generated and the payment will be marked as completed.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden fields -->
+                        <input type="hidden" name="status" value="completed">
+                        <input type="hidden" name="payment_method" value="cash">
+                        
+                        <!-- Notes -->
+                        <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea name="notes" id="notes" rows="3" class="focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Additional information about this payment"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                        <i class="fas fa-save mr-2"></i> Save Payment
+                    </button>
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm close-payment-modal">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Modal elements
+        const paymentModal = document.getElementById('paymentModal');
+        const paymentForm = document.getElementById('paymentForm');
+        const openButtons = document.querySelectorAll('.open-payment-modal');
+        const closeButtons = document.querySelectorAll('.close-payment-modal');
+        const studentIdInput = document.getElementById('payment_student_id');
+        const studentNameDisplay = document.getElementById('student_name_display');
+        
+        // Amount calculation fields
+        const amountInput = document.getElementById('amount');
+        const discountInput = document.getElementById('discount');
+        const finalAmountInput = document.getElementById('final_amount');
+        
+        // Calculate final amount when amount or discount changes
+        function calculateFinalAmount() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const discount = parseFloat(discountInput.value) || 0;
+            const finalAmount = Math.max(0, amount - discount);
+            finalAmountInput.value = finalAmount.toFixed(2);
+        }
+        
+        amountInput.addEventListener('input', calculateFinalAmount);
+        discountInput.addEventListener('input', calculateFinalAmount);
+        
+        // Open payment modal
+        openButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const studentId = this.dataset.studentId;
+                const studentName = this.dataset.studentName;
+                
+                studentIdInput.value = studentId;
+                studentNameDisplay.textContent = studentName;
+                
+                // Reset form
+                paymentForm.reset();
+                calculateFinalAmount();
+                
+                // Show modal
+                paymentModal.classList.remove('hidden');
+            });
+        });
+        
+        // Close payment modal
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                paymentModal.classList.add('hidden');
+            });
+        });
+        
+        // Handle form submission
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Show processing state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            submitButton.disabled = true;
+            
+            // Submit payment data via AJAX
+            fetch('/admin/payments/store', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                
+                if (data.success) {
+                    // Close modal
+                    paymentModal.classList.add('hidden');
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Recorded',
+                        text: data.message || 'Payment has been successfully recorded',
+                        confirmButtonColor: '#950713'
+                    }).then(() => {
+                        // Reload page to reflect changes
+                        window.location.reload();
+                    });
+                } else {
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'There was an error recording the payment',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Reset button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                
+                // Show error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was a problem connecting to the server',
+                    confirmButtonColor: '#950713'
+                });
             });
         });
     });

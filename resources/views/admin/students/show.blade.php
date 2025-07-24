@@ -293,16 +293,75 @@
             <div x-show="activeTab === 'payment'" style="display: none;">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Payment History</h3>
                 
-                <!-- No Payment Records Message -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
-                    <div class="flex flex-col items-center justify-center py-12">
-                        <div class="bg-gray-100 rounded-full p-6 mb-4">
-                            <i class="fas fa-receipt text-gray-400 text-4xl"></i>
+                @if($student->payments->count() > 0)
+                    <!-- Payment Records Table -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt #</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Final</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($student->payments as $payment)
+                                    <tr>
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900">
+                                            {{ $payment->reference_number }}
+                                        </td>
+                                        <td class="px-4 py-4 text-sm text-gray-500">
+                                            {{ $payment->created_at->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-4 py-4 text-sm text-gray-500">
+                                            ₵{{ number_format($payment->amount, 2) }}
+                                        </td>
+                                        <td class="px-4 py-4 text-sm font-medium text-gray-900">
+                                            ₵{{ number_format($payment->final_amount, 2) }}
+                                        </td>
+                                        <td class="px-4 py-4 text-sm text-gray-500">
+                                            {{ ucfirst($payment->payment_method) }}
+                                        </td>
+                                        <td class="px-4 py-4 text-sm">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                {{ ucfirst($payment->status) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <!-- Payment Details Row -->
+                                    <tr class="bg-gray-50">
+                                        <td colspan="6" class="px-4 py-2 text-sm">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <span class="font-medium">Discount:</span> ₵{{ number_format($payment->discount, 2) }}
+                                                </div>
+                                                <div>
+                                                    <span class="font-medium">Notes:</span> {{ $payment->notes ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-1">No Payment Records</h3>
-                        <p class="text-gray-500 max-w-md">There are no payment records available for this student at this time.</p>
                     </div>
-                </div>
+                @else
+                    <!-- No Payment Records Message -->
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+                        <div class="flex flex-col items-center justify-center py-12">
+                            <div class="bg-gray-100 rounded-full p-6 mb-4">
+                                <i class="fas fa-receipt text-gray-400 text-4xl"></i>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">No Payment Records</h3>
+                            <p class="text-gray-500 max-w-md">There are no payment records available for this student at this time.</p>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

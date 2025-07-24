@@ -355,6 +355,10 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/stages/update-order', '\App\Http\Controllers\Admin\StageController@updateOrder')->name('admin.stages.update-order');
     Route::patch('/stages/{stage}/toggle-active', '\App\Http\Controllers\Admin\StageController@toggleActive')->name('admin.stages.toggle-active');
     Route::post('/stages/{stage}/toggle-status', '\App\Http\Controllers\Admin\StageController@toggleStatus')->name('admin.stages.toggle-status');
+    
+    // Payment Management Routes
+    Route::post('/payments/store', '\App\Http\Controllers\Admin\PaymentController@store')->name('admin.payments.store');
+    Route::get('/payments/student/{student}', '\App\Http\Controllers\Admin\PaymentController@getStudentPayments')->name('admin.payments.student');
 });
 
 // School Admin Routes
