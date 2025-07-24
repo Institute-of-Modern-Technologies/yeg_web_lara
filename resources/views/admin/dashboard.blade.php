@@ -438,10 +438,7 @@
                                     <i class="fas fa-tasks w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Activities</span>
                                 </a>
-                                <a href="{{ route('admin.levels.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.levels.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
-                                    <i class="fas fa-layer-group w-4 mr-2"></i>
-                                    <span class="sidebar-link-text">Levels</span>
-                                </a>
+
                                 <a href="{{ route('admin.stages.index') }}" class="flex items-center py-2 px-4 rounded-lg {{ request()->routeIs('admin.stages.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                                     <i class="fas fa-chart-line w-4 mr-2"></i>
                                     <span class="sidebar-link-text">Stages</span>

@@ -32,7 +32,7 @@ class StageController extends Controller
     {
         try {
             $validator = validator($request->all(), [
-                'name' => 'required|string|max:255|unique:stages',
+                'name' => 'required|string|max:255',
                 'status' => 'required|in:active,inactive',
                 'level' => 'nullable|string|max:255',
                 'activities' => 'nullable|array',
@@ -122,7 +122,7 @@ class StageController extends Controller
     {
         try {
             $validator = validator($request->all(), [
-                'name' => 'required|string|max:255|unique:stages,name,'.$id,
+                'name' => 'required|string|max:255',
                 'status' => 'required|in:active,inactive',
                 'level' => 'nullable|string|max:255',
                 'activities' => 'nullable|array',
@@ -144,7 +144,21 @@ class StageController extends Controller
             
             $stage = Stage::findOrFail($id);
             $stage->name = $request->name;
-            $stage->slug = Str::slug($request->name);
+            
+            // Generate a unique slug by appending a random string if needed
+            $baseSlug = Str::slug($request->name);
+            $slug = $baseSlug;
+            $counter = 1;
+            
+            // Only check for existing slugs if we're changing the slug
+            if ($slug != $stage->slug) {
+                // Keep checking until we find a unique slug
+                while (Stage::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                    $slug = $baseSlug . '-' . uniqid();
+                }
+            }
+            
+            $stage->slug = $slug;
             $stage->status = $request->status;
             $stage->level = $request->level;
             $stage->description = $request->description;
@@ -174,7 +188,8 @@ class StageController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'An error occurred while updating the stage.'
+                    'message' => 'An error occurred while updating the stage: ' . $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
                 ], 500);
             }
             

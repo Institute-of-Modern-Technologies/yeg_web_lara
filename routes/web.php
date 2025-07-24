@@ -342,14 +342,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
         'destroy' => 'admin.activities.destroy'
     ]);
     
-    // Levels Setup Management Routes
-    Route::resource('levels', '\App\Http\Controllers\Admin\LevelController')->names([
-        'index' => 'admin.levels.index',
-        'store' => 'admin.levels.store',
-        'edit' => 'admin.levels.edit',
-        'update' => 'admin.levels.update',
-        'destroy' => 'admin.levels.destroy'
-    ]);
+
     
     // Stages Setup Management Routes
     Route::resource('stages', '\App\Http\Controllers\Admin\StageController')->names([

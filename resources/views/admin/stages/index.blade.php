@@ -15,20 +15,7 @@
             </button>
         </div>
 
-        <!-- Information Banner -->
-        <div class="p-4 mb-6 text-sm bg-blue-50 rounded-lg border-l-4 border-blue-500">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-blue-800">About Stages</h3>
-                    <div class="text-blue-700 mt-1">
-                        Stages are used to organize activities at IMT. Each stage can have multiple activities assigned to it.
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Stages List -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -583,10 +570,20 @@
                             $('#' + field + 'Error').text(messages[0]).removeClass('hidden');
                         });
                     } else {
+                        // Get detailed error message if available
+                        var errorMsg = 'An unexpected error occurred.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                            // Log trace if available
+                            if (xhr.responseJSON.trace) {
+                                console.error('Error trace:', xhr.responseJSON.trace);
+                            }
+                        }
+                        
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: 'An unexpected error occurred. Please try again.',
+                            text: errorMsg,
                             confirmButtonColor: '#950713'
                         });
                     }
