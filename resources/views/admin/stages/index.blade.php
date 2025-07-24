@@ -162,101 +162,152 @@
         </div>
     </div>
     
-    <!-- Stage Modal -->
-    <div id="stageModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-[9999] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center">
+    <!-- Stage Modal - Modernized UI -->
+    <div id="stageModal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-[9999] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center bg-gray-900/50">
         <div class="relative w-full max-w-2xl max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow">
+            <div class="relative bg-white rounded-xl shadow-2xl overflow-hidden">
                 <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t bg-gradient-to-r from-[#950713] to-red-800">
-                    <h3 class="text-xl font-semibold text-white">
-                        <i class="fas fa-plus-circle mr-2"></i> <span id="modalTitleText">Add New Stage</span>
+                <div class="flex items-center justify-between p-5 border-b bg-gradient-to-r from-[#950713] to-red-800">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-layer-group mr-3"></i> <span id="modalTitleText">Add New Stage</span>
                     </h3>
-                    <button type="button" class="text-white bg-transparent hover:text-gray-200 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="stageModal" id="closeModalBtnX">
-                        <i class="fas fa-times text-xl"></i>
+                    <button id="closeModalBtnX" type="button" class="text-white bg-white/10 hover:bg-white/20 rounded-lg text-sm p-2 inline-flex justify-center items-center transition-colors duration-200 ease-in-out">
+                        <i class="fas fa-times"></i>
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
-                    <form id="stageForm" class="space-y-5">
+                
+                <!-- Modal body with form -->
+                <div class="p-6 max-h-[60vh] overflow-y-auto bg-gray-50">
+                    <form id="stageForm" class="space-y-6">
                         @csrf
                         <input type="hidden" id="stageId" name="id" value="">
                         
-                        <!-- Name Input -->
-                        <div class="mb-4">
-                            <label for="stageName" class="block mb-2 text-sm font-medium text-gray-900">Stage Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="stageName" name="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5" placeholder="Enter stage name">
-                            <span class="text-red-500 text-xs error-message mt-1" id="nameError"></span>
-                        </div>
-                        
-                        <!-- Description Input -->
-                        <div class="mb-4">
-                            <label for="stageDescription" class="block mb-2 text-sm font-medium text-gray-900">Description</label>
-                            <textarea id="stageDescription" name="description" rows="3" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#950713] focus:border-[#950713]" placeholder="Provide a brief description of this stage"></textarea>
-                            <span class="text-red-500 text-xs error-message" id="descriptionError"></span>
-                        </div>
-                        
-                        <!-- Row with Status, Level and Order -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Status Select -->
-                            <div>
-                                <label for="stageStatus" class="block mb-2 text-sm font-medium text-gray-900">Status</label>
-                                <select id="stageStatus" name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                                <span class="text-red-500 text-xs error-message" id="statusError"></span>
-                            </div>
-                            
-                            <!-- Level Input -->
-                            <div>
-                                <label for="stageLevel" class="block mb-2 text-sm font-medium text-gray-900">Level</label>
-                                <div class="form-group">
-                                    <label for="stageLevel">Level</label>
-                                    <input type="text" id="stageLevel" name="level" class="form-control" placeholder="Enter level">
-                                    <span class="error-message text-danger hidden" data-error="level"></span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
+                            <div class="space-y-5">
+                                <!-- Name Input -->
+                                <div class="relative">
+                                    <label for="stageName" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-tag text-[#950713] mr-2"></i> Stage Name
+                                    </label>
+                                    <input type="text" id="stageName" name="name" 
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-3" 
+                                        placeholder="Enter stage name" required>
+                                    <span class="text-red-500 text-xs error-message absolute -bottom-5 left-0" id="nameError"></span>
                                 </div>
-                            
-                            <!-- Order Input -->
-                            <div>
-                                <label for="stageOrder" class="block mb-2 text-sm font-medium text-gray-900">Display Order</label>
-                                <input type="number" id="stageOrder" name="order" min="0" value="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-2.5">
-                                <span class="text-red-500 text-xs error-message" id="orderError"></span>
+                                
+                                <!-- Status Select -->
+                                <div class="relative">
+                                    <label for="stageStatus" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-toggle-on text-[#950713] mr-2"></i> Status
+                                    </label>
+                                    <select id="stageStatus" name="status" 
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-3" 
+                                        required>
+                                        <option value="">Select Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                    <span class="text-red-500 text-xs error-message absolute -bottom-5 left-0" id="statusError"></span>
+                                </div>
+                                
+                                <!-- Level Input -->
+                                <div class="relative">
+                                    <label for="stageLevel" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-layer-group text-[#950713] mr-2"></i> Level
+                                    </label>
+                                    <input type="text" id="stageLevel" name="level" 
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-3" 
+                                        placeholder="Enter level">
+                                    <span class="text-red-500 text-xs error-message absolute -bottom-5 left-0" data-error="level"></span>
+                                </div>
+                                
+                                <!-- Order Input -->
+                                <div class="relative">
+                                    <label for="stageOrder" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-sort-numeric-down text-[#950713] mr-2"></i> Display Order
+                                    </label>
+                                    <input type="number" id="stageOrder" name="order" min="0" 
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-3" 
+                                        value="0">
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- Activities Multi-select -->
-                        <div class="mb-4">
-                            <label class="block mb-2 text-sm font-medium text-gray-900">
-                                <i class="fas fa-tasks text-[#950713] mr-2"></i> Assign Activities
-                            </label>
-                            <div class="max-h-48 overflow-y-auto p-3 border rounded-lg bg-gray-50">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    @foreach($activities as $activity)
-                                        <div class="flex items-center p-2 hover:bg-white rounded transition-colors">
-                                            <input type="checkbox" name="activities[]" id="activity{{ $activity->id }}" value="{{ $activity->id }}" class="activity-checkbox h-4 w-4 text-[#950713] focus:ring-[#950713] border-gray-300 rounded">
-                                            <label for="activity{{ $activity->id }}" class="ms-2 text-sm font-medium text-gray-900 select-none cursor-pointer">{{ $activity->name }}</label>
+                            
+                            <!-- Right Column -->
+                            <div class="space-y-5">
+                                <!-- Description Textarea -->
+                                <div>
+                                    <label for="stageDescription" class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-align-left text-[#950713] mr-2"></i> Description
+                                    </label>
+                                    <textarea id="stageDescription" name="description" rows="4" 
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full p-3" 
+                                        placeholder="Enter stage description"></textarea>
+                                </div>
+                                
+                                <!-- Activities Section with Search -->
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-900 flex items-center">
+                                        <i class="fas fa-tasks text-[#950713] mr-2"></i> Assign Activities
+                                    </label>
+                                    
+                                    <!-- Search Activities Input -->
+                                    <div class="relative mb-3">
+                                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                            <i class="fas fa-search text-gray-400"></i>
                                         </div>
-                                    @endforeach
-                                </div>
-                                @if(count($activities) === 0)
-                                    <div class="text-gray-500 text-center py-2">
-                                        <i class="fas fa-info-circle mr-1"></i> No activities available
+                                        <input type="text" id="activity-search" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full ps-10 p-2.5" 
+                                            placeholder="Search activities...">
+                                        <div class="absolute inset-y-0 end-0 flex items-center pe-3">
+                                            <span id="activity-count" class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">{{ count($activities) }} items</span>
+                                        </div>
                                     </div>
-                                @endif
+                                    
+                                    <!-- Activities List -->
+                                    <div class="max-h-[150px] overflow-y-auto p-4 border rounded-lg bg-white">
+                                        <div id="activities-container" class="space-y-2.5">
+                                            @forelse($activities as $activity)
+                                                <div class="flex items-center activity-item" data-activity-name="{{ strtolower($activity->name) }}">
+                                                    <input type="checkbox" id="activity_{{ $activity->id }}" name="activities[]" value="{{ $activity->id }}" 
+                                                        class="w-5 h-5 text-[#950713] bg-white border-gray-300 rounded focus:ring-[#950713] focus:ring-1">
+                                                    <label for="activity_{{ $activity->id }}" class="ms-3 text-sm font-medium text-gray-700 hover:text-[#950713] cursor-pointer transition-colors">
+                                                        {{ $activity->name }}
+                                                    </label>
+                                                </div>
+                                            @empty
+                                                <div class="flex items-center justify-center py-4 no-activities">
+                                                    <p class="text-sm text-gray-500 italic flex items-center">
+                                                        <i class="fas fa-info-circle mr-2"></i>
+                                                        No activities available. Please create activities first.
+                                                    </p>
+                                                </div>
+                                            @endforelse
+                                        </div>
+                                        <!-- No Results Message (hidden by default) -->
+                                        <div id="no-results" class="hidden py-4 text-center">
+                                            <p class="text-sm text-gray-500 italic flex items-center justify-center">
+                                                <i class="fas fa-search mr-2"></i>
+                                                No matching activities found
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="text-red-500 text-xs error-message mt-1" id="activitiesError"></span>
                         </div>
                     </form>
                 </div>
+                
                 <!-- Modal footer -->
-                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b bg-gray-50">
-                    <button id="saveStageBtn" type="button" class="text-white bg-[#950713] hover:bg-[#850612] focus:ring-4 focus:outline-none focus:ring-[#950713]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2">
+                <div class="flex items-center justify-end p-5 border-t border-gray-200 bg-white">
+                    <button id="saveStageBtn" type="button" 
+                        class="flex items-center justify-center text-white bg-[#950713] hover:bg-[#7a0610] focus:ring-4 focus:outline-none focus:ring-[#950713]/30 font-medium rounded-lg text-sm px-5 py-3 text-center me-3 transition-colors duration-200 ease-in-out shadow-sm hover:shadow-md">
                         <i class="fas fa-save mr-2"></i> Save Stage
                     </button>
-                    <button id="closeModalBtn" type="button" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
-                        Cancel
+                    <button id="closeModalBtn" type="button" 
+                        class="flex items-center justify-center text-gray-600 bg-gray-100 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-lg text-sm font-medium px-5 py-3 hover:text-gray-900 focus:z-10 transition-colors duration-200 ease-in-out">
+                        <i class="fas fa-times-circle mr-2"></i> Cancel
                     </button>
                 </div>
             </div>
@@ -742,11 +793,45 @@
         // SEARCH FUNCTIONALITY
         // =========================
         
+        // Main stages table search
         $('#stageSearchInput').on('keyup', function() {
             var value = $(this).val().toLowerCase().trim();
             $('#stages-table-body tr').filter(function() {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             });
         });
+        
+        // Activities search in modal
+        $('#activity-search').on('keyup', function() {
+            const searchValue = $(this).val().toLowerCase().trim();
+            const $activityItems = $('.activity-item');
+            let visibleCount = 0;
+            
+            $activityItems.each(function() {
+                const activityName = $(this).data('activity-name');
+                const isVisible = activityName.includes(searchValue);
+                $(this).toggle(isVisible);
+                
+                if (isVisible) visibleCount++;
+            });
+            
+            // Update the counter
+            $('#activity-count').text(visibleCount + ' items');
+            
+            // Toggle no results message
+            if (visibleCount === 0 && $activityItems.length > 0) {
+                $('#no-results').removeClass('hidden');
+            } else {
+                $('#no-results').addClass('hidden');
+            }
+        });
+        
+        // Reset activity search when modal opens
+        function resetActivitySearch() {
+            $('#activity-search').val('');
+            $('.activity-item').show();
+            $('#activity-count').text($('.activity-item').length + ' items');
+            $('#no-results').addClass('hidden');
+        }
     });
 </script>
