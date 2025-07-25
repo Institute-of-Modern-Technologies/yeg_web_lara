@@ -38,12 +38,13 @@ class PaymentController extends Controller
                 ], 422);
             }
 
-            // Always autogenerate a reference number in format YEG/day/month/year
+            // Generate a unique reference number in format YEGdaymonthyearrandom_suffix
             $date = now();
             $day = $date->format('d');
             $month = $date->format('m');
             $year = $date->format('Y');
-            $reference_number = "YEG/{$day}/{$month}/{$year}";
+            $randomSuffix = mt_rand(1000, 9999); // 4-digit random number
+            $reference_number = "YEG{$day}{$month}{$year}{$randomSuffix}";
             
             // Create the payment record
             $payment = Payment::create([
@@ -64,6 +65,7 @@ class PaymentController extends Controller
                 'success' => true,
                 'message' => 'Payment recorded successfully',
                 'payment' => $payment,
+                'payment_id' => $payment->id,
                 'student' => [
                     'id' => $student->id,
                     'name' => $student->first_name . ' ' . $student->last_name
@@ -91,6 +93,26 @@ class PaymentController extends Controller
             return view('admin.payments.show', compact('payment'));
         } catch (\Exception $e) {
             return redirect()->route('admin.students.index')->with('error', 'Payment not found');
+        }
+    }
+    
+    /**
+     * Display the receipt for a specific payment.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showReceipt($id)
+    {
+        try {
+            $payment = Payment::with('student')->findOrFail($id);
+            
+            return view('admin.payments.receipt', compact('payment'));
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment not found'
+            ], 404);
         }
     }
 

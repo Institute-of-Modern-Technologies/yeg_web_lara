@@ -300,22 +300,37 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt #</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Final</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Reference #
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Amount
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Final Amount
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Method
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($student->payments as $payment)
                                     <tr>
                                         <td class="px-4 py-4 text-sm font-medium text-gray-900">
-                                            {{ $payment->reference_number }}
+                                            {{ $payment->created_at->format('M d, Y') }}
                                         </td>
                                         <td class="px-4 py-4 text-sm text-gray-500">
-                                            {{ $payment->created_at->format('M d, Y') }}
+                                            {{ $payment->reference_number }}
                                         </td>
                                         <td class="px-4 py-4 text-sm text-gray-500">
                                             ₵{{ number_format($payment->amount, 2) }}
@@ -330,6 +345,11 @@
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                 {{ ucfirst($payment->status) }}
                                             </span>
+                                        </td>
+                                        <td class="px-4 py-4 text-sm">
+                                            <button type="button" onclick="openReceiptModal({{ $payment->id }})" class="bg-primary hover:bg-red-800 text-white text-xs py-1 px-2 rounded">
+                                                <i class="fas fa-receipt mr-1"></i> View Receipt
+                                            </button>
                                         </td>
                                     </tr>
                                     <!-- Payment Details Row -->
@@ -367,6 +387,51 @@
     </div>
 </div>
 @endsection
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center bg-gray-100 py-3 px-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold text-gray-900">Payment Receipt</h3>
+                <button type="button" class="close-receipt-modal text-gray-400 hover:text-gray-500" onclick="closeReceiptModal()">
+                    <span class="text-2xl">&times;</span>
+                </button>
+            </div>
+            
+            <!-- Modal Body - Receipt Content -->
+            <div id="receipt-content" class="p-4">
+                <!-- Receipt will be loaded here via AJAX -->
+                <div class="flex justify-center items-center py-12">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-primary" role="status">
+                        <span class="hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Footer - Action Buttons -->
+            <div class="bg-gray-100 px-4 py-3 flex flex-wrap gap-3 justify-center md:justify-end rounded-b-lg">
+                <!-- Print Button -->
+                <button id="print-receipt" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-print mr-2"></i> Print Receipt
+                </button>
+                
+                <!-- Send via WhatsApp Button -->
+                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
+                </button>
+                
+                <!-- Send via Email Button -->
+                <button id="email-receipt" class="bg-primary hover:bg-red-800 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> Send via Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('js/receipt-modal.js') }}"></script>
 
 <script>
     // Student delete confirmation

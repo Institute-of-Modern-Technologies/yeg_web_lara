@@ -430,7 +430,242 @@
                 <!-- Pagination -->
                 <div class="px-4 py-4 border-t border-gray-200">
                     {{ $students->withQueryString()->links() }}
+            </div>
+        </div>
+    </div>
+</div>
+@end@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center bg-gray-100 py-3 px-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold text-gray-900">Payment Receipt</h3>
+                <button type="button" class="close-receipt-modal text-gray-400 hover:text-gray-500" onclick="closeReceiptModal()">
+                    <span class="text-2xl">&times;</span>
+                </button>
+            </div>
+            
+            <!-- Modal Body - Receipt Content -->
+            <div id="receipt-content" class="p-4">
+                <!-- Receipt will be loaded here via AJAX -->
+                <div class="flex justify-center items-center py-12">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-primary" role="status">
+                        <span class="hidden">Loading...</span>
+                    </div>
                 </div>
+            </div>
+            
+            <!-- Modal Footer - Action Buttons -->
+            <div class="bg-gray-100 px-4 py-3 flex flex-wrap gap-3 justify-center md:justify-end rounded-b-lg">
+                <!-- Print Button -->
+                <button id="print-receipt" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-print mr-2"></i> Print Receipt
+                </button>
+                
+                <!-- Send via WhatsApp Button -->
+                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
+                </button>
+                
+                <!-- Send via Email Button -->
+                <button id="email-receipt" class="bg-primary hover:bg-red-800 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> Send via Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('js/receipt-modal.js') }}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Payment form submission handler
+        const paymentForm = document.getElementById('paymentForm');
+        
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                // Show processing state
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                submitButton.disabled = true;
+                
+                // Submit payment data via AJAX
+                fetch('/admin/payments/store', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    if (data.success) {
+                        // Close payment modal
+                        document.getElementById('paymentModal').classList.add('hidden');
+                        
+                        const paymentId = data.payment_id;
+                        console.log('Payment ID:', paymentId); // Debug log
+                        
+                        // Show success message with View Receipt option
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Recorded',
+                            text: data.message || 'Payment has been successfully recorded',
+                            confirmButtonColor: '#950713',
+                            showCancelButton: true,
+                            cancelButtonText: 'Close',
+                            confirmButtonText: 'View Receipt',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            timer: null, // Prevent auto-closing
+                            timerProgressBar: false
+                        }).then((result) => {
+                            if (result.isConfirmed && typeof openReceiptModal === 'function') {
+                                // Open receipt modal
+                                console.log('Opening receipt for payment ID:', paymentId); // Debug log
+                                openReceiptModal(paymentId);
+                            } else {
+                                // Reload page to reflect changes
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        // Show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'There was an error recording the payment',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'There was an error processing your request.',
+                        confirmButtonColor: '#950713'
+                    });
+                });
+            });
+        }
+        
+        // Add event listeners to close receipt modal buttons
+        const closeButtons = document.querySelectorAll('.close-receipt-modal');
+        if (closeButtons.length > 0) {
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    closeReceiptModal();
+                });
+            });
+        }
+    });
+</script>
+
+<!-- Receipt Modal -->
+<div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center bg-gray-100 py-3 px-4 rounded-t-lg">
+                <h3 class="text-lg font-semibold text-gray-900">Payment Receipt</h3>
+                <button type="button" class="close-receipt-modal text-gray-400 hover:text-gray-500" onclick="closeReceiptModal()">
+                    <span class="text-2xl">&times;</span>
+                </button>
+            </div>
+            
+            <!-- Modal Body - Receipt Content -->
+            <div id="receipt-content" class="p-4">
+                <!-- Receipt will be loaded here via AJAX -->
+                <div class="flex justify-center items-center py-12">
+                    <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-primary" role="status">
+                        <span class="hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Footer - Action Buttons -->
+            <div class="bg-gray-100 px-4 py-3 flex flex-wrap gap-3 justify-center md:justify-end rounded-b-lg">
+                <!-- Print Button -->
+                <button id="print-receipt" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-print mr-2"></i> Print Receipt
+                </button>
+                
+                <!-- Send via WhatsApp Button -->
+                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
+                </button>
+                
+                <!-- Send via Email Button -->
+                <button id="email-receipt" class="bg-primary hover:bg-red-800 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> Send via Email
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('js/receipt-modal.js') }}"></script>
+
+<!-- Custom Success Modal -->
+<div id="custom-success-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <!-- Success content -->
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <!-- Success icon -->
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <!-- Modal text -->
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Payment Successful
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500" id="success-message">
+                                Payment has been successfully recorded
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Action buttons -->
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="view-receipt-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    View Receipt
+                </button>
+                <button type="button" id="close-success-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -749,27 +984,65 @@
                 submitButton.disabled = false;
                 
                 if (data.success) {
-                    // Close modal
+                    // Close payment modal
                     paymentModal.classList.add('hidden');
                     
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Payment Recorded',
-                        text: data.message || 'Payment has been successfully recorded',
-                        confirmButtonColor: '#950713'
-                    }).then(() => {
+                    const paymentId = data.payment_id;
+                    
+                    // Get the custom success modal elements
+                    const successModal = document.getElementById('custom-success-modal');
+                    const closeSuccessBtn = document.getElementById('close-success-modal');
+                    const viewReceiptBtn = document.getElementById('view-receipt-btn');
+                    const successMessage = document.getElementById('success-message');
+                    
+                    // Set the success message
+                    successMessage.textContent = data.message || 'Payment has been successfully recorded';
+                    
+                    // Store payment ID in view receipt button data attribute
+                    viewReceiptBtn.setAttribute('data-payment-id', paymentId);
+                    
+                    // Show the success modal
+                    successModal.classList.remove('hidden');
+                    
+                    // Handle view receipt button click
+                    viewReceiptBtn.onclick = function() {
+                        // Hide success modal
+                        successModal.classList.add('hidden');
+                        // Open receipt modal
+                        openReceiptModal(paymentId);
+                    };
+                    
+                    // Handle close button click
+                    closeSuccessBtn.onclick = function() {
+                        // Hide success modal
+                        successModal.classList.add('hidden');
                         // Reload page to reflect changes
                         window.location.reload();
-                    });
+                    };
                 } else {
-                    // Show error message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'There was an error recording the payment',
-                        confirmButtonColor: '#950713'
-                    });
+                    // Get the custom success modal elements
+                    const successModal = document.getElementById('custom-success-modal');
+                    const closeSuccessBtn = document.getElementById('close-success-modal');
+                    const viewReceiptBtn = document.getElementById('view-receipt-btn');
+                    const successMessage = document.getElementById('success-message');
+                    
+                    // Hide view receipt button for errors
+                    viewReceiptBtn.classList.add('hidden');
+                    
+                    // Update modal title and message for error
+                    document.querySelector('#modal-title').textContent = 'Error';
+                    successMessage.textContent = data.message || 'An error occurred while processing payment';
+                    
+                    // Show the modal
+                    successModal.classList.remove('hidden');
+                    
+                    // Handle close button click
+                    closeSuccessBtn.onclick = function() {
+                        // Hide success modal
+                        successModal.classList.add('hidden');
+                        // Restore view receipt button visibility for future use
+                        viewReceiptBtn.classList.remove('hidden');
+                    };
                 }
             })
             .catch(error => {
@@ -778,14 +1051,32 @@
                 // Reset button state
                 submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
+
+                // Get the custom success modal elements
+                const successModal = document.getElementById('custom-success-modal');
+                const closeSuccessBtn = document.getElementById('close-success-modal');
+                const viewReceiptBtn = document.getElementById('view-receipt-btn');
+                const successMessage = document.getElementById('success-message');
                 
-                // Show error message
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'There was a problem connecting to the server',
-                    confirmButtonColor: '#950713'
-                });
+                // Hide view receipt button for errors
+                viewReceiptBtn.classList.add('hidden');
+                
+                // Update modal title and message for error
+                document.querySelector('#modal-title').textContent = 'Error';
+                successMessage.textContent = 'There was a network error processing the payment. Please try again.';
+                
+                // Show the modal
+                successModal.classList.remove('hidden');
+                
+                // Handle close button click
+                closeSuccessBtn.onclick = function() {
+                    // Hide success modal
+                    successModal.classList.add('hidden');
+                    // Restore view receipt button visibility for future use
+                    viewReceiptBtn.classList.remove('hidden');
+                };
+
+                console.error('Error:', error);
             });
         });
     });
