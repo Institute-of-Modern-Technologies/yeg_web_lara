@@ -206,6 +206,63 @@
             <!-- Program Information Tab -->
             <div x-show="activeTab === 'program'" style="display: none;">
                 <h3 class="text-lg font-medium text-gray-900 mb-6">Program Details</h3>
+                
+                <!-- Stage Management Section - New Addition -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 mb-8">
+                    <div class="bg-gradient-to-r from-[#950713] to-red-800 px-6 py-4">
+                        <h4 class="font-semibold text-white flex items-center text-lg">
+                            <i class="fas fa-layer-group mr-2"></i> Stage Information
+                        </h4>
+                    </div>
+                    
+                    <div class="p-6">
+                        @if($student->stage)
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <p class="text-sm text-gray-500 mb-1">Current Stage</p>
+                                    <div class="flex items-center">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-flag-checkered mr-1"></i> {{ $student->stage->name }}
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-3">
+                                        {{ $student->stage->description ?? 'No description available.' }}
+                                    </p>
+                                </div>
+                                
+                                <div class="flex space-x-3">
+                                    <form action="{{ route('admin.students.promote-stage', $student->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                            <i class="fas fa-arrow-circle-up mr-2"></i> Promote
+                                        </button>
+                                    </form>
+                                    
+                                    <form action="{{ route('admin.students.repeat-stage', $student->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                            <i class="fas fa-redo mr-2"></i> Repeat
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @else
+                            <div class="bg-yellow-50 p-4 rounded-md">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700">
+                                            This student does not have a stage assigned yet. New students are automatically assigned to the first stage.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-6">
                         <!-- Program Type Card -->

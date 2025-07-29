@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\ProgramType;
 use App\Models\School;
 use App\Models\Payment;
+use App\Models\Stage;
 
 class Student extends Model
 {
@@ -94,5 +95,13 @@ class Student extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+    
+    /**
+     * Get the stage associated with the student.
+     */
+    public function stage()
+    {
+        return $this->belongsTo(Stage::class);
     }
 }

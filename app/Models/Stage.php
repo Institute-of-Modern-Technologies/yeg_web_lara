@@ -40,4 +40,12 @@ class Stage extends Model
     {
         return $this->hasMany(Level::class)->orderBy('level_number');
     }
+    
+    /**
+     * The students at this stage.
+     */
+    public function students(): HasMany
+    {
+        return $this->hasMany(Student::class);
+    }
 }

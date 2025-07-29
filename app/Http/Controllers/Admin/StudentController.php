@@ -9,6 +9,7 @@ use App\Models\School;
 use App\Models\ProgramType;
 use App\Models\User;
 use App\Models\UserType;
+use App\Models\Stage;
 use Illuminate\Support\Facades\DB;
 use App\Imports\StudentsImport;
 use App\Exports\StudentsExport;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Notifications\StudentApprovalNotification;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Session;
 
 class StudentController extends Controller
 {
@@ -681,8 +683,8 @@ class StudentController extends Controller
                 $username = $baseUsername . $counter++;
             }
             
-            // Generate a random password
-            $password = 'YEG' . rand(1000, 9999);
+            // Use default password for all student accounts
+            $password = 'student123';
             
             // Create the user
             $user = User::create([
@@ -799,5 +801,61 @@ class StudentController extends Controller
             Log::error('Failed to create user for student: ' . $e->getMessage());
             return null;
         }
+    }
+    
+    /**
+     * Promote a student to the next stage
+     *
+     * @param int $id Student ID
+     * @return \Illuminate\Http\Response
+     */
+    public function promoteStage($id)
+    {
+        $student = Student::with('stage')->findOrFail($id);
+        $currentStage = $student->stage;
+        
+        if (!$currentStage) {
+            Session::flash('error', 'Student does not have a current stage assigned.');
+            return redirect()->back();
+        }
+        
+        // Get the next stage based on order
+        $nextStage = Stage::where('status', 'active')
+            ->where('order', '>', $currentStage->order)
+            ->orderBy('order')
+            ->first();
+            
+        if (!$nextStage) {
+            Session::flash('error', 'Student is already at the highest stage level.');
+            return redirect()->back();
+        }
+        
+        // Update student stage
+        $student->stage_id = $nextStage->id;
+        $student->save();
+        
+        Session::flash('success', 'Student successfully promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
+        return redirect()->back();
+    }
+    
+    /**
+     * Make student repeat current stage (no change, but marks the decision)
+     *
+     * @param int $id Student ID
+     * @return \Illuminate\Http\Response
+     */
+    public function repeatStage($id)
+    {
+        $student = Student::with('stage')->findOrFail($id);
+        $currentStage = $student->stage;
+        
+        if (!$currentStage) {
+            Session::flash('error', 'Student does not have a current stage assigned.');
+            return redirect()->back();
+        }
+        
+        // No stage change, but we'll record this action in the session message
+        Session::flash('info', 'Student will repeat the current stage: "' . $currentStage->name . '"');
+        return redirect()->back();
     }
 }
