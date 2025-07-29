@@ -455,12 +455,15 @@
                         </h2>
                     </div>
                     
-                    <!-- Main YouTube Video with Info Row -->
+                    <!-- YouTube Videos Section -->
                     <div class="flex flex-col space-y-4">
-                        <!-- Row 1: YEG Workshop Video -->
-                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up">
-                            <div class="flex-shrink-0 mr-4">
-                                <div class="relative rounded-md overflow-hidden w-48 h-32 shadow-md">
+                        <!-- Section Title -->
+                        <h3 class="text-xl font-bold mb-4">Latest From Our Channel</h3>
+                        
+                        <!-- Video 1: YEG Workshop Highlights -->
+                        <div class="flex flex-col md:flex-row bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up">
+                            <div class="flex-shrink-0 md:mr-6 mb-4 md:mb-0 w-full md:w-1/3 lg:w-1/4">
+                                <div class="relative rounded-md overflow-hidden w-full h-48 md:h-64 shadow-lg">
                                     <iframe width="100%" height="100%" src="https://www.youtube.com/embed/fE0mA2GG3Ug" 
                                         title="YEG Workshop Highlights" 
                                         frameborder="0" 
@@ -470,66 +473,66 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <div class="flex items-center text-xs mb-1">
-                                    <span class="mr-3"><i class="fas fa-user text-secondary mr-1" style="color: #ffcb05 !important;"></i> YOUNG EXPERTS GROUP</span>
-                                    <span><i class="far fa-calendar text-secondary mr-1" style="color: #ffcb05 !important;"></i> LATEST UPDATE</span>
+                                <div class="flex flex-wrap items-center text-xs mb-2">
+                                    <span class="mr-3 mb-1"><i class="fas fa-user text-secondary mr-1" style="color: #ffcb05 !important;"></i> YOUNG EXPERTS GROUP</span>
+                                    <span class="mb-1"><i class="far fa-calendar text-secondary mr-1" style="color: #ffcb05 !important;"></i> JULY 15, 2025</span>
                                 </div>
                                 <h3 class="text-xl font-bold mb-2">YEG Workshop Highlights</h3>
-                                <p class="text-sm text-gray-200 mb-2">
+                                <p class="text-sm text-gray-200 mb-4">
                                     Experience our hands-on approach to teaching technology and innovation. Our workshops are designed to engage students in practical learning experiences that build real-world skills and confidence.
                                 </p>
-                                <div class="text-xs text-gray-300">
-                                    Posted in: Technology Workshops
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Workshop Details -->
-                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up" data-aos-delay="100">
-                            <div class="flex-shrink-0 mr-4 flex items-center justify-center">
-                                <div class="w-48 h-32 flex items-center justify-center">
-                                    <i class="fas fa-chalkboard-teacher text-5xl" style="color: #ffcb05 !important;"></i>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center text-xs mb-1">
-                                    <span class="mr-3"><i class="fas fa-graduation-cap text-secondary mr-1" style="color: #ffcb05 !important;"></i> EDUCATION PROGRAMS</span>
-                                </div>
-                                <h3 class="text-xl font-bold mb-2">Join Our Next Workshop</h3>
-                                <p class="text-sm text-gray-200 mb-2">
-                                    Interested in participating in our next workshop? Our educational programs are designed to equip young minds with the skills needed for success in the modern technological landscape.
-                                </p>
-                                <div class="text-xs text-gray-300">
-                                    <a href="#" class="text-white hover:text-secondary transition-colors duration-200 inline-flex items-center">
-                                        <span>Register Now</span>
-                                        <i class="fas fa-arrow-right ml-1"></i>
+                                <div class="flex space-x-4">
+                                    <a href="https://www.youtube.com/watch?v=fE0mA2GG3Ug" target="_blank" 
+                                       class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                        <i class="fab fa-youtube mr-2"></i> Watch on YouTube
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Row 3: Additional Resources -->
-                        <div class="flex bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up" data-aos-delay="200">
-                            <div class="flex-shrink-0 mr-4 flex items-center justify-center">
-                                <div class="w-48 h-32 flex items-center justify-center">
-                                    <i class="fas fa-book-open text-5xl" style="color: #ffcb05 !important;"></i>
-                                </div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center text-xs mb-1">
-                                    <span class="mr-3"><i class="fas fa-lightbulb text-secondary mr-1" style="color: #ffcb05 !important;"></i> LEARNING RESOURCES</span>
-                                </div>
-                                <h3 class="text-xl font-bold mb-2">Explore Our Materials</h3>
-                                <p class="text-sm text-gray-200 mb-2">
-                                    Access supplementary learning resources designed to complement our workshop curriculum. Perfect for students looking to enhance their understanding of key concepts.
+                        <!-- Young Experts Group YouTube Videos Section -->
+                        <div class="bg-black bg-opacity-20 rounded-md p-4" data-aos="fade-up" style="background-color: rgba(149, 7, 19, 0.2) !important;">
+                            <div class="mb-4 text-center">
+                                <h3 class="text-xl font-bold">Young Experts Group Video Gallery</h3>
+                                <p class="text-sm text-gray-200">
+                                    Watch our latest videos showcasing student projects and workshop highlights.
                                 </p>
-                                <div class="text-xs text-gray-300">
-                                    <a href="#" class="text-white hover:text-secondary transition-colors duration-200 inline-flex items-center">
-                                        <span>Browse Resources</span>
-                                        <i class="fas fa-arrow-right ml-1"></i>
-                                    </a>
-                                </div>
                             </div>
+                            
+                            <!-- Featured Video (your original embed that worked) -->
+                            <div class="mb-6">
+                                <div class="relative w-full overflow-hidden" style="padding-bottom: 56.25%;">
+                                    <iframe class="absolute top-0 left-0 w-full h-full shadow-lg rounded-lg" 
+                                        src="https://www.youtube.com/embed/fk1zODdid0A?si=mlH9XC1urpW3rvDe" 
+                                        title="YouTube video player" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                        referrerpolicy="strict-origin-when-cross-origin" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <h4 class="mt-2 text-center font-medium">Featured: Young Experts Group Classes</h4>
+                            </div>
+                            
+                            <!-- Spacer between video and button -->
+                            <div class="mb-6"></div>
+                            
+                            <!-- Visit Channel Button -->
+                            <div class="mt-4 flex justify-center">
+                                <a href="https://www.youtube.com/@YoungExpertsGroup" target="_blank" 
+                                   class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white" style="background-color: #950713;">
+                                    <i class="fab fa-youtube mr-2"></i> Visit Our YouTube Channel for More Videos
+                                </a>
+                            </div>
+                        </div>
+
+                        
+                        <!-- More Videos Button -->
+                        <div class="text-center mt-6">
+                            <a href="https://www.youtube.com/@YoungExpertsGroup" target="_blank" 
+                               class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                <i class="fab fa-youtube mr-2"></i> View All Videos
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -886,15 +889,23 @@
                                     <!-- School logo with robust fallback -->
                                     <div class="school-logo-container flex items-center justify-center h-full w-full">
                                         @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
-                                            <img class="max-w-full" src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+                                            <img src="{{ asset('storage/' . $school->image_path) }}" 
+                                                 alt="{{ $school->name }}" 
+                                                 class="w-auto h-auto max-h-96 mx-auto object-contain" 
+                                                 style="min-height: 250px; min-width: 350px;" 
+                                                 onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                             <div class="hidden text-center">
-                                                <img class="max-w-full" src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
-                                                <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
+                                                <img src="{{ asset('images/favicon.png') }}" 
+                                                     alt="{{ $school->name }}" 
+                                                     class="w-24 h-24 mx-auto mb-3">
+                                                <p class="text-gray-700 font-semibold text-lg">{{ $school->name }}</p>
                                             </div>
                                         @else
                                             <div class="text-center">
-                                                <img class="max-w-full" src="{{ asset('images/favicon.png') }}" alt="{{ $school->name }}" class="w-16 h-16 mx-auto mb-3">
-                                                <p class="text-gray-700 font-semibold">{{ $school->name }}</p>
+                                                <img src="{{ asset('images/favicon.png') }}" 
+                                                     alt="{{ $school->name }}" 
+                                                     class="w-24 h-24 mx-auto mb-3">
+                                                <p class="text-gray-700 font-semibold text-lg">{{ $school->name }}</p>
                                             </div>
                                         @endif
                                     </div>
@@ -1309,7 +1320,7 @@
                                 <div class="inline-block mx-3 sm:mx-5 md:mx-7">
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
-                                         style="height: 25px; max-width: 50px;" 
+                                         style="height: 50px; max-width: 50px;" 
                                          class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
@@ -1319,7 +1330,7 @@
                                 <div class="inline-block mx-3 sm:mx-5 md:mx-7">
                                     <img src="{{ asset('storage/' . $logo->logo_path) }}" 
                                          alt="{{ $logo->name }}" 
-                                         style="height: 25px; max-width: 50px;" 
+                                         style="height: 50px; max-width: 50px;" 
                                          class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                                          onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
                                 </div>
