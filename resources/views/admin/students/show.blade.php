@@ -640,6 +640,7 @@
 </div>
 
 <script src="{{ asset('js/receipt-modal.js') }}"></script>
+<script src="{{ asset('js/tab-persistence.js') }}"></script>
 
 <script>
     // Student delete confirmation
