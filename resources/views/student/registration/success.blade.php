@@ -455,6 +455,19 @@
                             <p class="text-md text-gray-700 mt-2">
                                 Your registration is currently <span class="font-semibold">under review</span> by our admissions team. Once approved, your login credentials will be automatically sent to your email. Please check your inbox regularly for updates.
                             </p>
+                            <div class="mt-4 p-4 bg-primary bg-opacity-5 rounded-lg border border-primary border-opacity-30">
+                                <div class="flex items-start">
+                                    <svg class="h-5 w-5 text-primary mr-2 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
+                                    </svg>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">Payment Information:</p>
+                                        <p class="text-sm text-gray-700 mt-1">Welcome to Young Experts Group! Kindly let us know if the payment of GHS <span class="font-semibold">{{ session('registration.fee_amount') ? session('registration.fee_amount') : '(The price)' }}</span> has been made so the team can update the registration status.</p>
+                                        <p class="text-sm text-gray-700 mt-2">If not yet done, you may please make payment via MoMo to <span class="font-semibold text-primary">0547147313</span> with the reference: <span class="font-semibold text-primary">{{ session('registration.student')->full_name }}YEG</span>.</p>
+                                        <p class="text-sm text-primary font-medium mt-2">Thank you very much for your cooperation!</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
                                 <div class="flex items-start">
                                     <svg class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
