@@ -450,7 +450,7 @@
         </div>
     </div>
 </div>
-@end@section('scripts')
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Receipt Modal -->
@@ -1097,3 +1097,4 @@
         });
     });
 </script>
+@endsection
