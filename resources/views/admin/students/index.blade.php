@@ -271,17 +271,18 @@
                                 <a href="{{ route('admin.students.show', $student->id) }}" class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors flex items-center">
                                     <i class="fas fa-eye mr-1"></i> View
                                 </a>
-                                <a href="{{ route('admin.students.edit', $student->id) }}" class="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors flex items-center">
+                                <a href="{{ route('admin.students.edit', $student->id) }}" class="px-3 py-1.5 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors flex items-center">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
-                                @if($student->status == 'pending')
-                                <form method="POST" action="{{ route('admin.students.approve', $student->id) }}">
-                                    @csrf
-                                    <button type="submit" class="px-3 py-1.5 text-xs bg-green-50 text-green-600 rounded-md hover:bg-green-100 transition-colors flex items-center">
-                                        <i class="fas fa-check-circle mr-1"></i> Approve
-                                    </button>
-                                </form>
-                                @endif
+                                <a href="{{ route('admin.students.show', $student->id) }}?tab=program#promote" class="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors flex items-center">
+                                    <i class="fas fa-arrow-circle-up mr-1"></i> Promote
+                                </a>
+                                <a href="{{ route('admin.students.show', $student->id) }}?tab=program#repeat" class="px-3 py-1.5 text-xs bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition-colors flex items-center">
+                                    <i class="fas fa-redo mr-1"></i> Repeat
+                                </a>
+                                <button onclick="event.preventDefault(); confirmDelete({{ $student->id }});" class="px-3 py-1.5 text-xs bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors flex items-center">
+                                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                                </button>
                             </div>
                         </div>
                         @endforeach
@@ -380,6 +381,21 @@
                                                                     <button type="button" class="text-blue-600 block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 open-payment-modal" data-student-id="{{ $student->id }}" data-student-name="{{ $student->first_name }} {{ $student->last_name }}">
                                                                         <i class="fas fa-money-bill-wave mr-2"></i> Record Payment
                                                                     </button>
+                                                                    <div class="border-t border-gray-100 mt-1"></div>
+                                                                    <form method="POST" action="{{ route('admin.students.promote-stage', $student->id) }}" class="block">
+                                                                        @csrf
+                                                                        <input type="hidden" name="active_tab" value="program">
+                                                                        <button type="button" onclick="window.location.href='{{ route('admin.students.show', $student->id) }}?tab=program#promote'" class="text-green-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                                            <i class="fas fa-arrow-circle-up mr-2"></i> Promote Stage
+                                                                        </button>
+                                                                    </form>
+                                                                    <form method="POST" action="{{ route('admin.students.repeat-stage', $student->id) }}" class="block">
+                                                                        @csrf
+                                                                        <input type="hidden" name="active_tab" value="program">
+                                                                        <button type="button" onclick="window.location.href='{{ route('admin.students.show', $student->id) }}?tab=program#repeat'" class="text-yellow-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                                            <i class="fas fa-redo mr-2"></i> Repeat Stage
+                                                                        </button>
+                                                                    </form>
                                                                 </div>
                                                                 @if($student->status == 'pending')
                                                                 <div class="border-t border-gray-100 mt-1"></div>

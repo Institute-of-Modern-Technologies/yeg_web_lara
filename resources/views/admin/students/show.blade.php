@@ -97,7 +97,7 @@
     </div>
 
     <!-- Tabbed Content -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden" x-data="{ activeTab: 'personal' }">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden" x-data="{ activeTab: '{{ session('active_tab', 'personal') }}' }">
         <!-- Tabs Navigation -->
         <div class="border-b border-gray-200">
             <nav class="flex -mb-px" aria-label="Tabs">
@@ -216,50 +216,39 @@
                     </div>
                     
                     <div class="p-6">
-                        @if($student->stage)
-                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                                <div>
-                                    <p class="text-sm text-gray-500 mb-1">Current Stage</p>
-                                    <div class="flex items-center">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Current Stage</p>
+                                <div class="flex items-center">
+                                    @if($student->stage)
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                                             <i class="fas fa-flag-checkered mr-1"></i> {{ $student->stage->name }}
                                         </span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 mt-3">
-                                        {{ $student->stage->description ?? 'No description available.' }}
-                                    </p>
+                                    @else
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i> No Stage Assigned
+                                        </span>
+                                    @endif
                                 </div>
+                                <p class="text-sm text-gray-600 mt-3">
+                                    {{ $student->stage->description ?? 'No stage description available. Please assign a stage to this student.' }}
+                                </p>
+                            </div>
+                            
+                            <div class="flex space-x-3">
+                                <button type="button" 
+                                    onclick="document.getElementById('promote-stage-modal').classList.remove('hidden');"
+                                    class="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <i class="fas fa-arrow-circle-up mr-2"></i> Promote
+                                </button>
                                 
-                                <div class="flex space-x-3">
-                                    <form action="{{ route('admin.students.promote-stage', $student->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                            <i class="fas fa-arrow-circle-up mr-2"></i> Promote
-                                        </button>
-                                    </form>
-                                    
-                                    <form action="{{ route('admin.students.repeat-stage', $student->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                            <i class="fas fa-redo mr-2"></i> Repeat
-                                        </button>
-                                    </form>
-                                </div>
+                                <button type="button" 
+                                    onclick="document.getElementById('repeat-stage-modal').classList.remove('hidden');"
+                                    class="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                    <i class="fas fa-redo mr-2"></i> Repeat
+                                </button>
                             </div>
-                        @else
-                            <div class="bg-yellow-50 p-4 rounded-md">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm text-yellow-700">
-                                            This student does not have a stage assigned yet. New students are automatically assigned to the first stage.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
                 
@@ -444,6 +433,168 @@
     </div>
 </div>
 @endsection
+
+<!-- Stage Assignment Modal -->
+<div
+    x-data="{ open: false }"
+    @open-modal.window="if($event.detail.id === 'change-stage-modal') open = true"
+    x-show="open"
+    x-cloak
+    class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4"
+    style="display: none;"
+>
+    <!-- Backdrop -->
+    <div x-show="open" class="fixed inset-0 transform" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+    </div>
+    
+    <!-- Modal -->
+    <div x-show="open" class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        <div class="bg-[#950713] px-4 py-3 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-white">Manually Assign Stage</h3>
+            <button @click="open = false" class="text-white hover:text-gray-200 focus:outline-none">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <form action="{{ route('admin.students.change-stage', $student->id) }}" method="POST">
+            @csrf
+            <div class="p-6">
+                <div class="mb-4">
+                    <p class="mb-2 text-sm text-gray-600">Select a stage to assign to <strong>{{ $student->full_name }}</strong>:</p>
+                    <select name="stage_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#950713] focus:border-transparent">
+                        @php
+                        $stages = \App\Models\Stage::orderBy('order')->get();
+                        @endphp
+                        @foreach($stages as $stage)
+                            <option value="{{ $stage->id }}" {{ $student->stage_id == $stage->id ? 'selected' : '' }}>
+                                {{ $stage->name }} {{ $stage->level ? '- ' . $stage->level : '' }} (Order: {{ $stage->order }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <div class="bg-yellow-50 p-4 rounded-md mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                This will override the normal stage progression. Use this feature to correct stage assignments or handle special cases.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#950713] text-base font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Assign Stage
+                </button>
+                <button type="button" @click="open = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Promote Stage Modal -->
+<div id="promote-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                <i class="fas fa-arrow-circle-up text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Promote Student to Next Stage</h3>
+            <form action="{{ route('admin.students.promote-stage', $student->id) }}" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="active_tab" value="program">
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="promote_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage:</label>
+                            <select name="stage_id" id="promote_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                @php
+                                $nextStages = $stages->where('status', 'active')->where('order', '>', optional($student->stage)->order ?? 0)->sortBy('order');
+                                @endphp
+                                
+                                @foreach($nextStages as $stage)
+                                    <option value="{{ $stage->id }}">
+                                        {{ $stage->name }} (Level {{ $stage->order }})
+                                    </option>
+                                @endforeach
+                                
+                                @if($nextStages->isEmpty())
+                                    <option disabled>No higher stages available</option>
+                                @endif
+                            </select>
+                            <p class="text-sm text-green-600 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                This will promote the student to the selected stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Promote Student
+                    </button>
+                    <button type="button" onclick="document.getElementById('promote-stage-modal').classList.add('hidden');" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Repeat Stage Modal -->
+<div id="repeat-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <i class="fas fa-redo text-yellow-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Assign Student to Repeat a Stage</h3>
+            <form action="{{ route('admin.students.repeat-stage', $student->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="active_tab" value="program">
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="repeat_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage to Repeat:</label>
+                            <select name="stage_id" id="repeat_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                @foreach($stages->where('status', 'active')->sortBy('order') as $stage)
+                                    <option value="{{ $stage->id }}" {{ $student->stage_id == $stage->id ? 'selected' : '' }}>
+                                        {{ $stage->name }} (Level {{ $stage->order }}) {{ $student->stage_id == $stage->id ? '(Current)' : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-sm text-yellow-600 mt-2">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                This will assign the student to repeat the selected stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Assign to Repeat
+                    </button>
+                    <button type="button" onclick="document.getElementById('repeat-stage-modal').classList.add('hidden');" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Receipt Modal -->
 <div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">

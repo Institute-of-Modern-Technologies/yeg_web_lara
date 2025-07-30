@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\CreateUserAccountsForExistingRecords::class,
         Commands\GenerateUserAccountsForStudents::class,
         Commands\ResetStudentPasswords::class,
+        Commands\AssignStagesToStudents::class,
     ];
 
     /**

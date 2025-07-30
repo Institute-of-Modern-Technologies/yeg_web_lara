@@ -807,11 +807,12 @@ class StudentController extends Controller
      * Promote a student to the next stage
      *
      * @param int $id Student ID
+     * @param int $stage_id Stage ID
      * @return \Illuminate\Http\Response
      */
-    public function promoteStage($id)
+    public function promoteStage($id, Request $request)
     {
-        $student = Student::with('stage')->findOrFail($id);
+        $student = Student::findOrFail($id);
         $currentStage = $student->stage;
         
         if (!$currentStage) {
@@ -819,43 +820,93 @@ class StudentController extends Controller
             return redirect()->back();
         }
         
-        // Get the next stage based on order
-        $nextStage = Stage::where('status', 'active')
-            ->where('order', '>', $currentStage->order)
-            ->orderBy('order')
-            ->first();
+        // Check if stage_id was provided via form
+        if ($request->has('stage_id')) {
+            $nextStage = Stage::findOrFail($request->stage_id);
             
-        if (!$nextStage) {
-            Session::flash('error', 'Student is already at the highest stage level.');
-            return redirect()->back();
+            // Update student stage
+            $student->stage_id = $nextStage->id;
+            $student->save();
+            
+            Session::flash('success', 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
+        } else {
+            // Get next stage by order (fallback to original behavior)
+            $nextStage = Stage::where('status', 'active')
+                            ->where('order', '>', $currentStage->order)
+                            ->orderBy('order')
+                            ->first();
+            
+            if (!$nextStage) {
+                Session::flash('info', 'Student is already at the highest stage.');
+                return redirect()->back();
+            }
+            
+            // Update student stage
+            $student->stage_id = $nextStage->id;
+            $student->save();
+            
+            Session::flash('success', 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
         }
         
-        // Update student stage
-        $student->stage_id = $nextStage->id;
-        $student->save();
+        // Get the active tab from the form, default to 'program' if not provided
+        $activeTab = $request->input('active_tab', 'program');
         
-        Session::flash('success', 'Student successfully promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
-        return redirect()->back();
+        return redirect()->route('admin.students.show', $id)->with('active_tab', $activeTab);
     }
     
     /**
-     * Make student repeat current stage (no change, but marks the decision)
+     * Mark a student to repeat the current stage or reassign to a specific stage
+     *
+     * @param int $id Student ID
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function repeatStage($id, Request $request)
+    {
+        $student = Student::findOrFail($id);
+        
+        // Check if a specific stage was selected for repeating
+        if ($request->has('stage_id')) {
+            $stage = Stage::findOrFail($request->stage_id);
+            $student->stage_id = $stage->id;
+            $student->save();
+            
+            session()->flash('success', "Student {$student->full_name} has been assigned to repeat {$stage->name}.");
+        } else {
+            // No stage selected, just mark current stage as repeating
+            session()->flash('success', "Student {$student->full_name} has been marked to repeat the current stage.");
+        }
+        
+        // Get the active tab from the form, default to 'program' if not provided
+        $activeTab = $request->input('active_tab', 'program');
+        
+        return redirect()->route('admin.students.show', $id)->with('active_tab', $activeTab);
+    }
+    
+    /**
+     * Manually assign a student to a specific stage
      *
      * @param int $id Student ID
      * @return \Illuminate\Http\Response
      */
-    public function repeatStage($id)
+    public function changeStage($id, Request $request)
     {
-        $student = Student::with('stage')->findOrFail($id);
-        $currentStage = $student->stage;
+        $student = Student::findOrFail($id);
         
-        if (!$currentStage) {
-            Session::flash('error', 'Student does not have a current stage assigned.');
-            return redirect()->back();
-        }
+        // Validate request
+        $validated = $request->validate([
+            'stage_id' => 'required|exists:stages,id',
+        ]);
         
-        // No stage change, but we'll record this action in the session message
-        Session::flash('info', 'Student will repeat the current stage: "' . $currentStage->name . '"');
+        // Update student stage
+        $student->stage_id = $validated['stage_id'];
+        $student->save();
+        
+        // Get stage name for the message
+        $stage = Stage::find($validated['stage_id']);
+        
+        session()->flash('success', "Student {$student->full_name} has been manually assigned to {$stage->name}.");
+        
         return redirect()->back();
     }
 }
