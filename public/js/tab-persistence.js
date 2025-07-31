@@ -132,11 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
             activeTabInput.value = currentTab;
             
             // Also modify the form action to include the active tab
-            const formAction = this.getAttribute('action');
-            if (formAction && !formAction.includes('active_tab')) {
-                const separator = formAction.includes('?') ? '&' : '?';
-                this.setAttribute('action', `${formAction}${separator}active_tab=${currentTab}`);
-            }
+            // BUT DON'T modify the form action as this can break the route/endpoint
+            // Instead, just make sure the hidden field is properly set
+            console.log('Form submitting with active_tab:', activeTabInput.value);
         });
     });
 });
