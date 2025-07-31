@@ -841,17 +841,29 @@ class StudentController extends Controller
         $currentStage = $student->stage;
         
         if (!$currentStage) {
-            $message = 'Student does not have a current stage assigned.';
-            
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $message
-                ]);
+            // If student doesn't have a stage, assign them to the first stage
+            $firstStage = Stage::where('status', 'active')
+                ->orderBy('order')
+                ->first();
+                
+            if (!$firstStage) {
+                $message = 'No active stages found in the system.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message
+                    ]);
+                }
+                
+                Session::flash('error', $message);
+                return redirect()->back();
             }
             
-            Session::flash('error', $message);
-            return redirect()->back();
+            // Set first stage as current stage
+            $currentStage = $firstStage;
+            $student->stage_id = $firstStage->id;
+            $student->save();
         }
         
         // Check if stage_id was provided via form
@@ -915,6 +927,33 @@ class StudentController extends Controller
     public function repeatStage($id, Request $request)
     {
         $student = Student::findOrFail($id);
+        $currentStage = $student->stage;
+        
+        // If student doesn't have a stage, assign them to the first stage
+        if (!$currentStage) {
+            $firstStage = Stage::where('status', 'active')
+                ->orderBy('order')
+                ->first();
+                
+            if (!$firstStage) {
+                $message = 'No active stages found in the system.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message
+                    ]);
+                }
+                
+                Session::flash('error', $message);
+                return redirect()->back();
+            }
+            
+            // Set first stage as current stage
+            $currentStage = $firstStage;
+            $student->stage_id = $firstStage->id;
+            $student->save();
+        }
         
         // Check if a specific stage was selected for repeating
         if ($request->has('stage_id')) {
