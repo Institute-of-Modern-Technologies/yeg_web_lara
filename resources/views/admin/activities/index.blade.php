@@ -173,11 +173,16 @@
             document.getElementById('nameError').classList.add('hidden');
         }
         
-        cancelBtn.addEventListener('click', closeModal);
+        // Handle clicking outside the modal to close it
         overlay.addEventListener('click', closeModal);
         
+        // Cancel button closes modal without saving
+        cancelBtn.addEventListener('click', closeModal);
+        
         // Submit form
-        saveBtn.addEventListener('click', function() {
+        saveBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent any default behavior
+            
             const nameInput = document.getElementById('name');
             const nameError = document.getElementById('nameError');
             
@@ -195,16 +200,28 @@
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
             
+            // Debug
+            console.log('Submitting form to:', activityForm.action);
+            
             fetch(activityForm.action, {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                credentials: 'same-origin'
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
                 if (data.success) {
+                    // Close modal first
+                    closeModal();
+                    
                     // Show success message
                     Swal.fire({
                         title: 'Success!',

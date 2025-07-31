@@ -231,7 +231,7 @@
                                     @endif
                                 </div>
                                 <p class="text-sm text-gray-600 mt-3">
-                                    {{ $student->stage->description ?? 'No stage description available. Please assign a stage to this student.' }}
+                                    {{ $student->stage->description ?? 'No description available.' }}
                                 </p>
                             </div>
                             
