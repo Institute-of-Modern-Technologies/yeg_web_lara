@@ -247,7 +247,10 @@
                                         </div>
                                         <input type="text" id="activity-search" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#950713] focus:border-[#950713] block w-full ps-10 p-2.5" 
                                             placeholder="Search activities...">
-                                        <div class="absolute inset-y-0 end-0 flex items-center pe-3">
+                                        <div class="absolute inset-y-0 end-0 flex items-center pe-3 space-x-2">
+                                            <button type="button" id="add-activity-btn" class="text-[#950713] hover:text-[#7a0610] focus:outline-none" title="Add New Activity">
+                                                <i class="fas fa-plus-circle"></i>
+                                            </button>
                                             <span id="activity-count" class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">{{ count($activities) }} items</span>
                                         </div>
                                     </div>
@@ -342,6 +345,55 @@
             </div>
         </div>
     </div>
+    
+    <!-- Quick Activity Modal (for adding activities from stage modal) -->
+    <div id="quickActivityModal" class="hidden fixed inset-0 overflow-y-auto z-[9999]" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <!-- Modal backdrop -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-800 opacity-75"></div>
+            </div>
+            
+            <!-- Modal panel -->
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto z-50 overflow-hidden transform transition-all">
+                <!-- Modal header -->
+                <div class="bg-[#950713] px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-white" id="activityModalTitle">
+                        <i class="fas fa-plus-circle mr-2"></i> Add New Activity
+                    </h3>
+                    <button id="closeActivityModalBtn" type="button" class="text-white hover:text-gray-200 focus:outline-none">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Modal body -->
+                <div class="p-6">
+                    <form id="quickActivityForm" action="{{ route('admin.activities.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="activityName" class="block text-sm font-medium text-gray-700 mb-2">Activity Name</label>
+                            <input type="text" 
+                                   class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#950713] focus:border-[#950713] border-gray-300" 
+                                   id="activityName" name="name" required>
+                            <p class="mt-1 text-sm text-red-600 hidden" id="activityNameError"></p>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Modal footer -->
+                <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                    <button id="cancelActivityBtn" type="button"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="saveActivityBtn" type="button"
+                            class="px-4 py-2 bg-[#950713] text-white rounded-lg hover:bg-[#7a0610] focus:outline-none focus:ring-2 focus:ring-[#950713] focus:ring-opacity-50 transition-colors">
+                        <i class="fas fa-save mr-2"></i> Save Activity
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Only keeping one instance of the Stage Modal -->
 
@@ -356,6 +408,146 @@
 <script>
     $(document).ready(function() {
         console.log('DOM Content Loaded - Complete Rewrite');
+        
+        // =========================
+        // QUICK ACTIVITY MODAL
+        // =========================
+        
+        // Open the quick activity modal when clicking the add button
+        $('#add-activity-btn').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent bubbling to the stage modal
+            
+            // Store current scroll position
+            const scrollPosition = window.scrollY;
+            
+            // Make sure activity modal is properly positioned in center
+            $('#quickActivityModal').css({
+                'position': 'fixed',
+                'top': 0,
+                'left': 0,
+                'right': 0,
+                'bottom': 0,
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center',
+                'opacity': '1'
+            });
+            
+            // Add a higher z-index to ensure it's above other modals
+            $('#quickActivityModal').addClass('!z-[9999]');
+            
+            // Focus on the activity name input
+            setTimeout(function() {
+                $('#activityName').focus();
+            }, 100);
+            
+            // Prevent background scrolling
+            $('body').addClass('overflow-hidden');
+        });
+        
+        // Close the activity modal
+        $('#closeActivityModalBtn, #cancelActivityBtn').on('click', function() {
+            $('#quickActivityModal').hide();
+            $('#activityName').val('');
+            $('#activityNameError').text('').addClass('hidden');
+            // Re-enable body scrolling
+            $('body').removeClass('overflow-hidden');
+        });
+        
+        // Save the new activity via AJAX
+        $('#saveActivityBtn').on('click', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const activityName = $('#activityName').val().trim();
+            
+            // Simple validation
+            if (!activityName) {
+                $('#activityNameError').text('Activity name is required').removeClass('hidden');
+                return;
+            }
+            
+            // Disable button to prevent multiple submissions
+            const saveBtn = $(this);
+            saveBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Saving...');
+            
+            // Submit via AJAX
+            $.ajax({
+                url: $('#quickActivityForm').attr('action'),
+                type: 'POST',
+                data: {
+                    _token: $('input[name="_token"]').val(),
+                    name: activityName
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Add the new activity to the activities list
+                        const newActivity = response.activity;
+                        const newActivityHtml = `
+                            <div class="flex items-center activity-item" data-activity-name="${newActivity.name.toLowerCase()}">
+                                <input type="checkbox" id="activity_${newActivity.id}" name="activities[]" value="${newActivity.id}" 
+                                    class="w-5 h-5 text-[#950713] bg-white border-gray-300 rounded focus:ring-[#950713] focus:ring-1">
+                                <label for="activity_${newActivity.id}" class="ms-3 text-sm font-medium text-gray-700 hover:text-[#950713] cursor-pointer transition-colors">
+                                    ${newActivity.name}
+                                </label>
+                            </div>
+                        `;
+                        
+                        // Remove "no activities" message if it exists
+                        $('.no-activities').remove();
+                        
+                        // Append the new activity to the container and select it
+                        $('#activities-container').append(newActivityHtml);
+                        $(`#activity_${newActivity.id}`).prop('checked', true);
+                        
+                        // Update activity count
+                        const currentCount = parseInt($('#activity-count').text().split(' ')[0]) + 1;
+                        $('#activity-count').text(`${currentCount} items`);
+                        
+                        // Show success message
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Activity created and selected',
+                            icon: 'success',
+                            confirmButtonColor: '#950713',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                        
+                        // Close the modal
+                        $('#quickActivityModal').hide();
+                        
+                        // Reset form
+                        $('#activityName').val('');
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: response.message || 'Failed to create activity',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    const errors = xhr.responseJSON?.errors;
+                    if (errors?.name) {
+                        $('#activityNameError').text(errors.name[0]).removeClass('hidden');
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to create activity. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                },
+                complete: function() {
+                    // Re-enable button
+                    saveBtn.prop('disabled', false).html('<i class="fas fa-save mr-2"></i> Save Activity');
+                }
+            });
+        });
         
         // =========================
         // MODAL CONTROL FUNCTIONS
