@@ -77,9 +77,11 @@
             <!-- Logo Overlay -->
             <div class="absolute top-8 left-8">
                 <div class="flex items-center">
-                    <span class="text-white text-2xl font-bold">Young</span>
-                    <span class="text-secondary mx-1 text-2xl font-bold">Experts</span>
-                    <span class="text-white text-2xl font-bold">Group</span>
+                    <a href="{{ url('/') }}" class="flex items-center hover:opacity-90 transition-opacity">
+                        <span class="text-white text-2xl font-bold">Young</span>
+                        <span class="text-secondary mx-1 text-2xl font-bold">Experts</span>
+                        <span class="text-white text-2xl font-bold">Group</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -89,9 +91,11 @@
             <div class="w-full max-w-md">
                 <!-- Mobile Logo (visible only on small screens) -->
                 <div class="mb-8 flex items-center justify-center md:hidden">
-                    <span class="text-primary text-2xl font-bold">Young</span>
-                    <span class="text-secondary mx-1 text-2xl font-bold">Experts</span>
-                    <span class="text-primary text-2xl font-bold">Group</span>
+                    <a href="{{ url('/') }}" class="flex items-center hover:opacity-90 transition-opacity">
+                        <span class="text-primary text-2xl font-bold">Young</span>
+                        <span class="text-secondary mx-1 text-2xl font-bold">Experts</span>
+                        <span class="text-primary text-2xl font-bold">Group</span>
+                    </a>
                 </div>
                 
                 <div class="text-center mb-10">
