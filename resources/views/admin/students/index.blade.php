@@ -274,12 +274,12 @@
                                 <a href="{{ route('admin.students.edit', $student->id) }}" class="px-3 py-1.5 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors flex items-center">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
-                                <a href="{{ route('admin.students.show', $student->id) }}?tab=program#promote" class="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors flex items-center">
+                                <button type="button" onclick="openPromoteModal({{ $student->id }})" class="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors flex items-center">
                                     <i class="fas fa-arrow-circle-up mr-1"></i> Promote
-                                </a>
-                                <a href="{{ route('admin.students.show', $student->id) }}?tab=program#repeat" class="px-3 py-1.5 text-xs bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition-colors flex items-center">
+                                </button>
+                                <button type="button" onclick="openRepeatModal({{ $student->id }})" class="px-3 py-1.5 text-xs bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition-colors flex items-center">
                                     <i class="fas fa-redo mr-1"></i> Repeat
-                                </a>
+                                </button>
                                 <button onclick="event.preventDefault(); confirmDelete({{ $student->id }});" class="px-3 py-1.5 text-xs bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors flex items-center">
                                     <i class="fas fa-trash-alt mr-1"></i> Delete
                                 </button>
@@ -382,20 +382,12 @@
                                                                         <i class="fas fa-money-bill-wave mr-2"></i> Record Payment
                                                                     </button>
                                                                     <div class="border-t border-gray-100 mt-1"></div>
-                                                                    <form method="POST" action="{{ route('admin.students.promote-stage', $student->id) }}" class="block">
-                                                                        @csrf
-                                                                        <input type="hidden" name="active_tab" value="program">
-                                                                        <button type="button" onclick="window.location.href='{{ route('admin.students.show', $student->id) }}?tab=program#promote'" class="text-green-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                                                                            <i class="fas fa-arrow-circle-up mr-2"></i> Promote Stage
-                                                                        </button>
-                                                                    </form>
-                                                                    <form method="POST" action="{{ route('admin.students.repeat-stage', $student->id) }}" class="block">
-                                                                        @csrf
-                                                                        <input type="hidden" name="active_tab" value="program">
-                                                                        <button type="button" onclick="window.location.href='{{ route('admin.students.show', $student->id) }}?tab=program#repeat'" class="text-yellow-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                                                                            <i class="fas fa-redo mr-2"></i> Repeat Stage
-                                                                        </button>
-                                                                    </form>
+                                                                    <button type="button" onclick="openPromoteModal({{ $student->id }})" class="text-green-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                                        <i class="fas fa-arrow-circle-up mr-2"></i> Promote Stage
+                                                                    </button>
+                                                                    <button type="button" onclick="openRepeatModal({{ $student->id }})" class="text-yellow-600 w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
+                                                                        <i class="fas fa-redo mr-2"></i> Repeat Stage
+                                                                    </button>
                                                                 </div>
                                                                 @if($student->status == 'pending')
                                                                 <div class="border-t border-gray-100 mt-1"></div>
@@ -1096,5 +1088,365 @@
             });
         });
     });
+</script>
+
+<!-- Promote Stage Modal -->
+<div id="promote-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                <i class="fas fa-arrow-circle-up text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Promote Student to Next Stage</h3>
+            <form id="promoteForm" action="" method="POST" class="space-y-6">
+                @csrf
+                <input type="hidden" name="active_tab" value="program">
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="promote_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage:</label>
+                            <select name="stage_id" id="promote_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                <!-- Stage options will be populated dynamically -->
+                            </select>
+                            <p class="text-sm text-green-600 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                This will promote the student to the selected stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Promote Student
+                    </button>
+                    <button type="button" onclick="closePromoteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Repeat Stage Modal -->
+<div id="repeat-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <i class="fas fa-redo text-yellow-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Assign Student to Repeat a Stage</h3>
+            <form id="repeatForm" action="" method="POST">
+                @csrf
+                <input type="hidden" name="active_tab" value="program">
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="repeat_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage to Repeat:</label>
+                            <select name="stage_id" id="repeat_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                <!-- Stage options will be populated dynamically -->
+                            </select>
+                            <p class="text-sm text-yellow-600 mt-2">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                This will assign the student to repeat the selected stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Assign to Repeat
+                    </button>
+                    <button type="button" onclick="closeRepeatModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Handling Script -->
+<script>
+    let stages = [];
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load stages data once the document is loaded
+        loadStages();
+        
+        // Set up form submit handlers for the promote and repeat forms
+        setupFormHandlers();
+    });
+
+    function setupFormHandlers() {
+        // Promote form submission
+        const promoteForm = document.getElementById('promoteForm');
+        if (promoteForm) {
+            promoteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formAction = this.action;
+                const formData = new FormData(this);
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                fetch(formAction, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide modal
+                    closePromoteModal();
+                    
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message || 'Student promoted successfully',
+                        confirmButtonColor: '#950713'
+                    }).then(() => {
+                        // Reload the page to refresh the student list
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to promote student. Please try again.',
+                        confirmButtonColor: '#950713'
+                    });
+                });
+            });
+        }
+        
+        // Repeat form submission
+        const repeatForm = document.getElementById('repeatForm');
+        if (repeatForm) {
+            repeatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formAction = this.action;
+                const formData = new FormData(this);
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                fetch(formAction, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide modal
+                    closeRepeatModal();
+                    
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message || 'Student assigned to repeat stage successfully',
+                        confirmButtonColor: '#950713'
+                    }).then(() => {
+                        // Reload the page to refresh the student list
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to assign student to repeat stage. Please try again.',
+                        confirmButtonColor: '#950713'
+                    });
+                });
+            });
+        }
+    }
+
+    function loadStages() {
+        // Make an AJAX request to get all active stages
+        fetch('{{ route("admin.stages.get-active") }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    stages = data.stages;
+                    console.log('Stages loaded successfully:', stages);
+                } else {
+                    console.error('Error loading stages:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading stages:', error);
+            });
+    }
+
+    function openPromoteModal(studentId) {
+        console.log('Opening promote modal for student ID:', studentId);
+        // Get the student information using AJAX
+        fetch(`/admin/students/${studentId}/get-stage-info`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Student stage info:', data);
+                    // Set the form action
+                    document.getElementById('promoteForm').action = `/admin/students/${studentId}/promote-stage`;
+                    
+                    // Get the promote stage select element
+                    const promoteSelect = document.getElementById('promote_stage_id');
+                    promoteSelect.innerHTML = '';
+
+                    // Current stage order
+                    const currentStageOrder = data.current_stage_order || 0;
+
+                    // Filter stages with higher order than the current stage
+                    const nextStages = stages.filter(stage => stage.order > currentStageOrder);
+
+                    if (nextStages.length > 0) {
+                        // Add options for next stages
+                        nextStages.forEach(stage => {
+                            const option = document.createElement('option');
+                            option.value = stage.id;
+                            option.textContent = `${stage.name} (Level ${stage.order})`;
+                            promoteSelect.appendChild(option);
+                        });
+                    } else {
+                        // If no higher stages available
+                        const option = document.createElement('option');
+                        option.disabled = true;
+                        option.textContent = 'No higher stages available';
+                        promoteSelect.appendChild(option);
+                    }
+
+                    // Show the modal
+                    document.getElementById('promote-stage-modal').classList.remove('hidden');
+                } else {
+                    console.error('Error getting student stage info:', data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Error getting student stage information',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was an error fetching student information.',
+                    confirmButtonColor: '#950713'
+                });
+            });
+    }
+
+    function openRepeatModal(studentId) {
+        console.log('Opening repeat modal for student ID:', studentId);
+        // Get the student information using AJAX
+        fetch(`/admin/students/${studentId}/get-stage-info`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Student stage info:', data);
+                    // Set the form action
+                    document.getElementById('repeatForm').action = `/admin/students/${studentId}/repeat-stage`;
+                    
+                    // Get the repeat stage select element
+                    const repeatSelect = document.getElementById('repeat_stage_id');
+                    repeatSelect.innerHTML = '';
+
+                    // Current stage ID
+                    const currentStageId = data.current_stage_id;
+
+                    if (stages.length > 0) {
+                        // Add options for all stages
+                        stages.forEach(stage => {
+                            const option = document.createElement('option');
+                            option.value = stage.id;
+                            option.textContent = `${stage.name} (Level ${stage.order})`;
+                            
+                            // Mark the current stage as selected
+                            if (stage.id == currentStageId) {
+                                option.selected = true;
+                                option.textContent += ' (Current)';
+                            }
+                            
+                            repeatSelect.appendChild(option);
+                        });
+                    } else {
+                        // If no stages available
+                        const option = document.createElement('option');
+                        option.disabled = true;
+                        option.textContent = 'No stages available';
+                        repeatSelect.appendChild(option);
+                    }
+
+                    // Show the modal
+                    document.getElementById('repeat-stage-modal').classList.remove('hidden');
+                } else {
+                    console.error('Error getting student stage info:', data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Error getting student stage information',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was an error fetching student information.',
+                    confirmButtonColor: '#950713'
+                });
+            });
+    }
+
+    function closePromoteModal() {
+        document.getElementById('promote-stage-modal').classList.add('hidden');
+    }
+
+    function closeRepeatModal() {
+        document.getElementById('repeat-stage-modal').classList.add('hidden');
+    }
 </script>
 @endsection

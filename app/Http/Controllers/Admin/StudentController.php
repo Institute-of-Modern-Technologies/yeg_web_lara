@@ -20,9 +20,34 @@ use Illuminate\Support\Str;
 use App\Notifications\StudentApprovalNotification;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 
 class StudentController extends Controller
 {
+    /**
+     * Get stage information for a student (for AJAX requests)
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getStageInfo($id)
+    {
+        try {
+            $student = Student::with('stage')->findOrFail($id);
+            
+            return Response::json([
+                'success' => true,
+                'current_stage_id' => $student->stage_id,
+                'current_stage_order' => optional($student->stage)->order ?? 0,
+                'current_stage_name' => optional($student->stage)->name ?? 'No Stage'
+            ]);
+        } catch (\Exception $e) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Error retrieving student stage information'
+            ], 500);
+        }
+    }
     /**
      * Display a listing of students with optional filtering.
      *
@@ -816,7 +841,16 @@ class StudentController extends Controller
         $currentStage = $student->stage;
         
         if (!$currentStage) {
-            Session::flash('error', 'Student does not have a current stage assigned.');
+            $message = 'Student does not have a current stage assigned.';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message
+                ]);
+            }
+            
+            Session::flash('error', $message);
             return redirect()->back();
         }
         
@@ -828,7 +862,7 @@ class StudentController extends Controller
             $student->stage_id = $nextStage->id;
             $student->save();
             
-            Session::flash('success', 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
+            $message = 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"';
         } else {
             // Get next stage by order (fallback to original behavior)
             $nextStage = Stage::where('status', 'active')
@@ -837,7 +871,16 @@ class StudentController extends Controller
                             ->first();
             
             if (!$nextStage) {
-                Session::flash('info', 'Student is already at the highest stage.');
+                $message = 'Student is already at the highest stage.';
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message
+                    ]);
+                }
+                
+                Session::flash('info', $message);
                 return redirect()->back();
             }
             
@@ -845,12 +888,20 @@ class StudentController extends Controller
             $student->stage_id = $nextStage->id;
             $student->save();
             
-            Session::flash('success', 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"');
+            $message = 'Student has been promoted from "' . $currentStage->name . '" to "' . $nextStage->name . '"';
         }
         
-        // Get the active tab from the form, default to 'program' if not provided
-        $activeTab = $request->input('active_tab', 'program');
+        // Handle response
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+        }
         
+        // For non-AJAX requests, use the regular redirect flow
+        Session::flash('success', $message);
+        $activeTab = $request->input('active_tab', 'program');
         return redirect()->route('admin.students.show', $id)->with('active_tab', $activeTab);
     }
     
@@ -871,15 +922,23 @@ class StudentController extends Controller
             $student->stage_id = $stage->id;
             $student->save();
             
-            session()->flash('success', "Student {$student->full_name} has been assigned to repeat {$stage->name}.");
+            $message = "Student {$student->full_name} has been assigned to repeat {$stage->name}.";
         } else {
             // No stage selected, just mark current stage as repeating
-            session()->flash('success', "Student {$student->full_name} has been marked to repeat the current stage.");
+            $message = "Student {$student->full_name} has been marked to repeat the current stage.";
         }
         
-        // Get the active tab from the form, default to 'program' if not provided
-        $activeTab = $request->input('active_tab', 'program');
+        // Handle response based on request type
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message
+            ]);
+        }
         
+        // For non-AJAX requests, use the regular redirect flow
+        session()->flash('success', $message);
+        $activeTab = $request->input('active_tab', 'program');
         return redirect()->route('admin.students.show', $id)->with('active_tab', $activeTab);
     }
     

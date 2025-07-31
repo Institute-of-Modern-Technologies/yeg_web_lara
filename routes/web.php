@@ -307,6 +307,8 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::delete('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'destroy'])->name('admin.students.destroy');
     Route::post('/students/{student}/approve', ['\App\Http\Controllers\Admin\StudentController', 'approveStudent'])->name('admin.students.approve');
     Route::post('/students/{student}/promote-stage', ['\App\Http\Controllers\Admin\StudentController', 'promoteStage'])->name('admin.students.promote-stage');
+    Route::get('/students/{student}/get-stage-info', ['\App\Http\Controllers\Admin\StudentController', 'getStageInfo'])->name('admin.students.get-stage-info');
+    Route::get('/stages/get-active', ['\App\Http\Controllers\Admin\StageController', 'getActiveStages'])->name('admin.stages.get-active');
     Route::post('/students/{student}/repeat-stage', ['\App\Http\Controllers\Admin\StudentController', 'repeatStage'])->name('admin.students.repeat-stage');
     Route::post('/students/{student}/change-stage', ['\App\Http\Controllers\Admin\StudentController', 'changeStage'])->name('admin.students.change-stage');
     

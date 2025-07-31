@@ -6,10 +6,34 @@ use App\Http\Controllers\Controller;
 use App\Models\Stage;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
 class StageController extends Controller
 {
+    /**
+     * Get all active stages (for AJAX requests)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getActiveStages()
+    {
+        try {
+            $stages = Stage::where('status', 'active')
+                ->orderBy('order')
+                ->get(['id', 'name', 'order']);
+                
+            return Response::json([
+                'success' => true,
+                'stages' => $stages
+            ]);
+        } catch (\Exception $e) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Error retrieving active stages'
+            ], 500);
+        }
+    }
     /**
      * Display a listing of the stages.
      *
