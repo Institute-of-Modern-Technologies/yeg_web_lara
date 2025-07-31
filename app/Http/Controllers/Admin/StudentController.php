@@ -805,8 +805,8 @@ class StudentController extends Controller
                 $username = $baseUsername . $counter++;
             }
             
-            // Generate a random password
-            $password = Str::random(8);
+            // Use default password for all student accounts
+            $password = 'student123';
             
             // Create user account
             $user = User::create([
