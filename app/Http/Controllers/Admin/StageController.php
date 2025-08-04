@@ -76,9 +76,20 @@ class StageController extends Controller
                 return back()->withErrors($validator)->withInput();
             }
             
+            // Generate a base slug
+            $baseSlug = Str::slug($request->name);
+            $slug = $baseSlug;
+            
+            // Check if the slug already exists and make it unique if needed
+            $counter = 1;
+            while (Stage::where('slug', $slug)->exists()) {
+                // Append timestamp to make slug unique
+                $slug = $baseSlug . '-' . time() . rand(100, 999);
+            }
+            
             $stage = Stage::create([
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
+                'slug' => $slug, // Use potentially modified slug
                 'status' => $request->status,
                 'level' => $request->level,
                 'description' => $request->description,
@@ -104,7 +115,9 @@ class StageController extends Controller
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'An error occurred while creating the stage.'
+                    'message' => 'An error occurred while creating the stage: ' . $e->getMessage(),
+                    'exception' => get_class($e),
+                    'trace' => $e->getTraceAsString()
                 ], 500);
             }
             
@@ -169,16 +182,16 @@ class StageController extends Controller
             $stage = Stage::findOrFail($id);
             $stage->name = $request->name;
             
-            // Generate a unique slug by appending a random string if needed
+            // Generate a unique slug by appending a timestamp if needed
             $baseSlug = Str::slug($request->name);
             $slug = $baseSlug;
-            $counter = 1;
             
             // Only check for existing slugs if we're changing the slug
             if ($slug != $stage->slug) {
                 // Keep checking until we find a unique slug
                 while (Stage::where('slug', $slug)->where('id', '!=', $id)->exists()) {
-                    $slug = $baseSlug . '-' . uniqid();
+                    // Append timestamp and random number to make slug unique
+                    $slug = $baseSlug . '-' . time() . rand(100, 999);
                 }
             }
             
@@ -213,6 +226,7 @@ class StageController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'An error occurred while updating the stage: ' . $e->getMessage(),
+                    'exception' => get_class($e),
                     'trace' => $e->getTraceAsString()
                 ], 500);
             }

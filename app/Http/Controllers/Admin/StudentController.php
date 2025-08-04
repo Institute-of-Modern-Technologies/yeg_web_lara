@@ -99,7 +99,12 @@ class StudentController extends Controller
         $schools = School::orderBy('name')->get();
         $programTypes = ProgramType::where('is_active', true)->orderBy('name')->get();
         
-        return view('admin.students.index', compact('students', 'schools', 'programTypes', 'schoolId', 'programTypeId', 'status'));
+        // Get all stages with their level information for modals
+        $stages = Stage::select('id', 'name', 'level', 'order', 'slug')
+            ->orderBy('order')
+            ->get();
+        
+        return view('admin.students.index', compact('students', 'schools', 'programTypes', 'schoolId', 'programTypeId', 'status', 'stages'));
     }
     
     /**

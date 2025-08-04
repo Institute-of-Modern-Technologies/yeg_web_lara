@@ -694,6 +694,9 @@
     <!-- jQuery (if needed) -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
+    <!-- CSRF Token Setup for AJAX -->
+    <script src="{{ asset('js/csrf-setup.js') }}"></script>
+    
     <!-- Extra Scripts -->
     @yield('scripts')
 </body>

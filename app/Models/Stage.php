@@ -21,7 +21,8 @@ class Stage extends Model
         'slug',
         'status',
         'description',
-        'order'
+        'order',
+        'level'
     ];
     
     /**

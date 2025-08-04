@@ -1170,29 +1170,7 @@
 
 <!-- Modal Handling Script -->
 <script>
-    // Make stages globally accessible for the fix script
-    window.stages = [];
-    
-    // Initialize stages with data from the server
-    function loadStages() {
-        // Get stages data from PHP and assign to global window.stages
-        window.stages = @json($stages);
-        console.log('Stages loaded:', window.stages);
-        
-        // Debug each stage to check level property
-        if (window.stages && window.stages.length > 0) {
-            console.log('Detailed stage data:');
-            window.stages.forEach((stage, index) => {
-                console.log(`Stage ${index + 1}:`, {
-                    id: stage.id,
-                    name: stage.name,
-                    level: stage.level,
-                    order: stage.order,
-                    slug: stage.slug
-                });
-            });
-        }
-    }
+    let stages = [];
     
     document.addEventListener('DOMContentLoaded', function() {
         // Load stages data once the document is loaded
@@ -1322,8 +1300,22 @@
         }
     }
 
-    // The loadStages function is now defined at the top of this script
-    // and initialized with the PHP data directly from the controller
+    function loadStages() {
+        // Make an AJAX request to get all active stages
+        fetch('{{ route("admin.stages.get-active") }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    stages = data.stages;
+                    console.log('Stages loaded successfully:', stages);
+                } else {
+                    console.error('Error loading stages:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading stages:', error);
+            });
+    }
 
     function openPromoteModal(studentId) {
         console.log('Opening promote modal for student ID:', studentId);
@@ -1351,7 +1343,7 @@
                         nextStages.forEach(stage => {
                             const option = document.createElement('option');
                             option.value = stage.id;
-                            option.textContent = `${stage.name} - ${stage.level}`;
+                            option.textContent = `${stage.name} - Level ${stage.order}`;
                             promoteSelect.appendChild(option);
                         });
                     } else {
@@ -1408,7 +1400,7 @@
                         stages.forEach(stage => {
                             const option = document.createElement('option');
                             option.value = stage.id;
-                            option.textContent = `${stage.name} - ${stage.level}`;
+                            option.textContent = `${stage.name} - Level ${stage.order}`;
                             
                             // Mark the current stage as selected
                             if (stage.id == currentStageId) {
@@ -1457,7 +1449,4 @@
         document.getElementById('repeat-stage-modal').classList.add('hidden');
     }
 </script>
-
-<!-- Include stage modal level fix script -->
-<script src="{{ asset('js/stage-modal-level-fix.js') }}"></script>
 @endsection

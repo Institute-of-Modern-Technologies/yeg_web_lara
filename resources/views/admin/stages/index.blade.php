@@ -401,11 +401,12 @@
 
 @endsection
 
+@section('scripts')
     <!-- Required Scripts for Stages Management -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
     $(document).ready(function() {
         console.log('DOM Content Loaded - Complete Rewrite');
         
@@ -753,6 +754,25 @@
                 },
                 error: function(xhr) {
                     console.error('Error saving stage:', xhr);
+                    
+                    // Log the full XHR response object for debugging
+                    console.log('Full XHR response:', xhr);
+                    console.log('Status Code:', xhr.status);
+                    console.log('Status Text:', xhr.statusText);
+                    
+                    // Log response text if available
+                    if (xhr.responseText) {
+                        console.log('Response Text:', xhr.responseText);
+                        try {
+                            // Try to parse as JSON if possible
+                            var jsonResponse = JSON.parse(xhr.responseText);
+                            console.log('Parsed JSON response:', jsonResponse);
+                        } catch(e) {
+                            console.log('Response is not JSON format');
+                        }
+                    }
+                    
+                    // Reset button state
                     $('#saveStageBtn').prop('disabled', false).html('<i class="fas fa-save mr-2"></i> Save Stage');
                     
                     if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
@@ -763,7 +783,7 @@
                         });
                     } else {
                         // Get detailed error message if available
-                        var errorMsg = 'An unexpected error occurred.';
+                        var errorMsg = 'An unexpected error occurred (Status: ' + xhr.status + ')';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMsg = xhr.responseJSON.message;
                             // Log trace if available
@@ -1024,3 +1044,4 @@
         }
     });
 </script>
+@endsection
