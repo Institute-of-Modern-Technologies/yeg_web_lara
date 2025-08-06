@@ -88,6 +88,15 @@ Route::prefix('students')->name('student.registration.')->group(function () {
     Route::get('/students/register/success', $successHandler)->name('student.registration.success');
 });
 
+// Student Routes
+Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('student.dashboard');
+    
+    // Student Activity Routes
+    Route::post('/activities/{id}/complete', [\App\Http\Controllers\Student\ActivityController::class, 'complete'])->name('student.activities.complete');
+    Route::post('/activities/{id}/revert', [\App\Http\Controllers\Student\ActivityController::class, 'revert'])->name('student.activities.revert');
+});
+
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -382,7 +391,62 @@ Route::middleware(['auth', 'user.type:school_admin'])->prefix('school')->group(f
 
 // Student Routes
 Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(function () {
+    // Student Dashboard Route
     Route::get('/dashboard', function () {
-        return view('student.dashboard');
+        // Get the authenticated student user
+        $user = auth()->user();
+        
+        // Get the student record associated with this user
+        $student = \App\Models\Student::where('email', $user->email)->first();
+        
+        // Check if student has a stage assigned
+        $stage = null;
+        $stageActivities = collect();
+        
+        if ($student && $student->stage_id) {
+            $stage = \App\Models\Stage::find($student->stage_id);
+            
+            // Get activities for this stage
+            if ($stage) {
+                $stageActivities = $stage->activities()->get();
+                
+                // Check completion status for each activity
+                foreach ($stageActivities as $activity) {
+                    $completedActivity = \App\Models\StudentActivity::where('student_id', $student->id)
+                        ->where('activity_id', $activity->id)
+                        ->whereNotNull('completed_at')
+                        ->first();
+                    
+                    // Add completed property to the activity object
+                    $activity->completed = $completedActivity ? true : false;
+                    
+                    // Add completed_at date if available
+                    $activity->completed_at = $completedActivity ? $completedActivity->completed_at : null;
+                }
+            }
+        }
+        
+        // Get all stages to show progression path
+        $allStages = \App\Models\Stage::where('status', 'active')
+                           ->orderBy('order')
+                           ->get();
+                           
+        // Eager load activities for all stages
+        $allStages->load('activities');
+        
+        return view('student.dashboard', compact('student', 'stage', 'stageActivities', 'allStages'));
     })->name('student.dashboard');
+    
+    // Activity Routes
+    Route::post('/activities/{id}/complete', [\App\Http\Controllers\Student\ActivityController::class, 'complete'])->name('student.activities.complete');
+    Route::post('/activities/{id}/revert', [\App\Http\Controllers\Student\ActivityController::class, 'revert'])->name('student.activities.revert');
+    
+    // AJAX endpoint to get stage activities
+    Route::get('/stage/{stage}/activities', function (\App\Models\Stage $stage) {
+        $activities = $stage->activities()->get();
+        return response()->json([
+            'success' => true,
+            'activities' => $activities
+        ]);
+    })->name('student.stage.activities');
 });
