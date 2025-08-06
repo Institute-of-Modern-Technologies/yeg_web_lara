@@ -301,6 +301,12 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/students/import/match-schools', ['\App\Http\Controllers\Admin\StudentController', 'matchSchools'])->name('admin.students.import.match_schools');
     Route::post('/students/import/process', ['\App\Http\Controllers\Admin\StudentController', 'processImport'])->name('admin.students.import.process');
     Route::get('/students/export', ['\App\Http\Controllers\Admin\StudentController', 'export'])->name('admin.students.export');
+    
+    // Bulk student actions - IMPORTANT: These must be defined BEFORE the /students/{student} routes
+    Route::put('/students/bulk-promote', ['\App\Http\Controllers\Admin\StudentController', 'bulkPromoteStage'])->name('admin.students.bulk-promote');
+    Route::put('/students/bulk-repeat', ['\App\Http\Controllers\Admin\StudentController', 'bulkRepeatStage'])->name('admin.students.bulk-repeat');
+    
+    // Individual student routes with parameters
     Route::get('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'show'])->name('admin.students.show');
     Route::get('/students/{student}/edit', ['\App\Http\Controllers\Admin\StudentController', 'edit'])->name('admin.students.edit');
     Route::put('/students/{student}', ['\App\Http\Controllers\Admin\StudentController', 'update'])->name('admin.students.update');

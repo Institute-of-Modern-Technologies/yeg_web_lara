@@ -1012,4 +1012,110 @@ class StudentController extends Controller
         
         return redirect()->back();
     }
+
+    /**
+     * Bulk promote students to a specific stage
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkPromoteStage(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'exists:students,id',
+            'stage_id' => 'required|exists:stages,id',
+        ]);
+
+        try {
+            $stage = Stage::findOrFail($validated['stage_id']);
+            $studentCount = 0;
+            
+            // Update all selected students
+            foreach ($validated['student_ids'] as $studentId) {
+                $student = Student::findOrFail($studentId);
+                $student->stage_id = $validated['stage_id'];
+                $student->save();
+                $studentCount++;
+            }
+            
+            $message = "{$studentCount} students have been promoted to {$stage->name}";
+            
+            // Handle response based on request type
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message
+                ]);
+            }
+            
+            return redirect()->route('admin.students.index')->with('success', $message);
+            
+        } catch (\Exception $e) {
+            Log::error('Bulk promote students failed: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to promote students: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Failed to promote students: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk repeat students to a specific stage
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkRepeatStage(Request $request)
+    {
+        // Validate request
+        $validated = $request->validate([
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'exists:students,id',
+            'stage_id' => 'required|exists:stages,id',
+        ]);
+
+        try {
+            $stage = Stage::findOrFail($validated['stage_id']);
+            $studentCount = 0;
+            
+            // Update all selected students
+            foreach ($validated['student_ids'] as $studentId) {
+                $student = Student::findOrFail($studentId);
+                $student->stage_id = $validated['stage_id'];
+                $student->save();
+                $studentCount++;
+            }
+            
+            $message = "{$studentCount} students have been assigned to repeat {$stage->name}";
+            
+            // Handle response based on request type
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message
+                ]);
+            }
+            
+            return redirect()->route('admin.students.index')->with('success', $message);
+            
+        } catch (\Exception $e) {
+            Log::error('Bulk repeat students failed: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to repeat students: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Failed to repeat students: ' . $e->getMessage());
+        }
+    }
 }

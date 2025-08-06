@@ -173,13 +173,29 @@
                             <input type="checkbox" id="selectAll" class="h-4 w-4 text-white border-white border-opacity-50 rounded">
                             <label for="selectAll" class="ml-2 text-sm text-white cursor-pointer">Select All</label>
                         </div>
-                        <form id="bulkDeleteForm" action="{{ route('admin.students.bulk-destroy') }}" method="POST" class="hidden">
-                            @csrf
-                            @method('DELETE')
-                        </form>
-                        <button id="bulkDeleteBtn" disabled class="px-3 py-1.5 bg-red-600 bg-opacity-80 text-white text-sm rounded-md hover:bg-red-700 transition-colors flex items-center opacity-50 shadow-sm">
-                            <i class="fas fa-trash-alt mr-1.5"></i> Delete
-                        </button>
+                        <div class="flex space-x-2">
+                            <form id="bulkPromoteForm" action="{{ route('admin.students.bulk-promote') }}" method="POST" class="hidden">
+                                @csrf
+                                @method('PUT')
+                            </form>
+                            <button id="bulkPromoteBtn" disabled class="px-3 py-1.5 bg-green-600 bg-opacity-80 text-white text-sm rounded-md hover:bg-green-700 transition-colors flex items-center opacity-50 shadow-sm">
+                                <i class="fas fa-arrow-circle-up mr-1.5"></i> Promote
+                            </button>
+                            <form id="bulkRepeatForm" action="{{ route('admin.students.bulk-repeat') }}" method="POST" class="hidden">
+                                @csrf
+                                @method('PUT')
+                            </form>
+                            <button id="bulkRepeatBtn" disabled class="px-3 py-1.5 bg-yellow-600 bg-opacity-80 text-white text-sm rounded-md hover:bg-yellow-700 transition-colors flex items-center opacity-50 shadow-sm">
+                                <i class="fas fa-redo mr-1.5"></i> Repeat
+                            </button>
+                            <form id="bulkDeleteForm" action="{{ route('admin.students.bulk-destroy') }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            <button id="bulkDeleteBtn" disabled class="px-3 py-1.5 bg-red-600 bg-opacity-80 text-white text-sm rounded-md hover:bg-red-700 transition-colors flex items-center opacity-50 shadow-sm">
+                                <i class="fas fa-trash-alt mr-1.5"></i> Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -715,12 +731,16 @@
         });
     }
     
-    // Bulk delete functionality
+    // Bulk actions functionality
     document.addEventListener('DOMContentLoaded', function() {
         const selectAllCheckbox = document.getElementById('selectAll');
         const studentCheckboxes = document.querySelectorAll('.student-checkbox');
         const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+        const bulkPromoteBtn = document.getElementById('bulkPromoteBtn');
+        const bulkRepeatBtn = document.getElementById('bulkRepeatBtn');
         const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+        const bulkPromoteForm = document.getElementById('bulkPromoteForm');
+        const bulkRepeatForm = document.getElementById('bulkRepeatForm');
         
         // Select all functionality
         if (selectAllCheckbox) {
@@ -731,14 +751,14 @@
                     checkbox.checked = isChecked;
                 });
                 
-                updateBulkDeleteButton();
+                updateBulkActionButtons();
             });
         }
         
         // Individual checkbox change
         studentCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function() {
-                updateBulkDeleteButton();
+                updateBulkActionButtons();
                 
                 // Update 'select all' checkbox
                 if (selectAllCheckbox) {
@@ -751,17 +771,34 @@
             });
         });
         
-        // Enable/disable bulk delete button based on selection
-        function updateBulkDeleteButton() {
+        // Enable/disable all bulk action buttons based on selection
+        function updateBulkActionButtons() {
             const checkedCount = document.querySelectorAll('.student-checkbox:checked').length;
+            const buttons = [bulkDeleteBtn, bulkPromoteBtn, bulkRepeatBtn];
             
-            if (checkedCount > 0) {
-                bulkDeleteBtn.disabled = false;
-                bulkDeleteBtn.classList.remove('opacity-50');
-            } else {
-                bulkDeleteBtn.disabled = true;
-                bulkDeleteBtn.classList.add('opacity-50');
-            }
+            buttons.forEach(button => {
+                if (checkedCount > 0) {
+                    button.disabled = false;
+                    button.classList.remove('opacity-50');
+                } else {
+                    button.disabled = true;
+                    button.classList.add('opacity-50');
+                }
+            });
+        }
+
+        // Setup bulk promote button click handler
+        if (bulkPromoteBtn) {
+            bulkPromoteBtn.addEventListener('click', function() {
+                openBulkPromoteModal();
+            });
+        }
+
+        // Setup bulk repeat button click handler
+        if (bulkRepeatBtn) {
+            bulkRepeatBtn.addEventListener('click', function() {
+                openBulkRepeatModal();
+            });
         }
         
         // Import error details toggle
@@ -1156,10 +1193,94 @@
                 </div>
                 
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    <button type="button" onclick="submitBulkRepeat()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
                         Assign to Repeat
                     </button>
                     <button type="button" onclick="closeRepeatModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Promote Stage Modal -->
+<div id="bulk-promote-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                <i class="fas fa-arrow-circle-up text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Bulk Promote Students</h3>
+            <p class="text-sm text-gray-500 text-center mt-2"><span id="selectedStudentCount">0</span> students selected</p>
+            <form id="bulkPromoteForm" action="{{ route('admin.students.bulk-promote') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <!-- Hidden inputs for selected student IDs will be added dynamically -->
+                <div id="bulkPromoteStudentIds"></div>
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="bulk_promote_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage to Promote To:</label>
+                            <select name="stage_id" id="bulk_promote_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                <!-- Stage options will be populated dynamically -->
+                            </select>
+                            <p class="text-sm text-green-600 mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                This will promote all selected students to the chosen stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="submitBulkPromote()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Promote Students
+                    </button>
+                    <button type="button" onclick="closeBulkPromoteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Repeat Stage Modal -->
+<div id="bulk-repeat-stage-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <i class="fas fa-redo text-yellow-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center mt-2">Bulk Assign Students to Repeat</h3>
+            <p class="text-sm text-gray-500 text-center mt-2"><span id="selectedRepeatStudentCount">0</span> students selected</p>
+            <form id="bulkRepeatForm" action="{{ route('admin.students.bulk-repeat') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <!-- Hidden inputs for selected student IDs will be added dynamically -->
+                <div id="bulkRepeatStudentIds"></div>
+                <div class="mt-4">
+                    <div class="px-4">
+                        <div class="mb-4">
+                            <label for="bulk_repeat_stage_id" class="block text-sm font-medium text-gray-700 mb-2">Select Stage to Repeat:</label>
+                            <select name="stage_id" id="bulk_repeat_stage_id" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#950713] focus:border-[#950713]">
+                                <!-- Stage options will be populated dynamically -->
+                            </select>
+                            <p class="text-sm text-yellow-600 mt-2">
+                                <i class="fas fa-exclamation-circle mr-1"></i>
+                                This will assign all selected students to repeat the chosen stage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="submitBulkRepeat()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Assign to Repeat
+                    </button>
+                    <button type="button" onclick="closeBulkRepeatModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancel
                     </button>
                 </div>
@@ -1456,8 +1577,429 @@
     function closeRepeatModal() {
         document.getElementById('repeat-stage-modal').classList.add('hidden');
     }
+    
+    function closeBulkPromoteModal() {
+        document.getElementById('bulk-promote-stage-modal').classList.add('hidden');
+    }
+
+    function closeBulkRepeatModal() {
+        document.getElementById('bulk-repeat-stage-modal').classList.add('hidden');
+    }
+    
+    // Define explicit submit functions for bulk actions
+    function submitBulkPromote() {
+        console.log('Submitting bulk promote');
+        const form = document.getElementById('bulkPromoteForm');
+        const submitButton = form.querySelector('button');
+        
+        // Show loading state
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        submitButton.disabled = true;
+        
+        // Create XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        // Add _method=PUT to handle Laravel's PUT method
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        
+                        // Close modal
+                        closeBulkPromoteModal();
+                        
+                        // Show success message
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonColor: '#950713'
+                            }).then(function() {
+                                // Refresh the page to update student list
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message || 'An error occurred during bulk promotion',
+                                icon: 'error',
+                                confirmButtonColor: '#950713'
+                            });
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Invalid response from server',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Server error: ' + xhr.status,
+                        icon: 'error',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            }
+        };
+        
+        var formData = new FormData(form);
+        xhr.send(formData);
+    }
+    
+    function submitBulkRepeat() {
+        console.log('Submitting bulk repeat');
+        const form = document.getElementById('bulkRepeatForm');
+        const submitButton = form.querySelector('button');
+        
+        // Show loading state
+        const originalButtonText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+        submitButton.disabled = true;
+        
+        // Create XMLHttpRequest
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                // Reset button
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        
+                        // Close modal
+                        closeBulkRepeatModal();
+                        
+                        // Show success message
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonColor: '#950713'
+                            }).then(function() {
+                                // Refresh the page to update student list
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message || 'An error occurred during bulk repeat',
+                                icon: 'error',
+                                confirmButtonColor: '#950713'
+                            });
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Invalid response from server',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Server error: ' + xhr.status,
+                        icon: 'error',
+                        confirmButtonColor: '#950713'
+                    });
+                }
+            }
+        };
+        
+        var formData = new FormData(form);
+        xhr.send(formData);
+    }
+    
+    // Set up AJAX form handling for bulk actions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bulk Promote Form AJAX submission
+        const bulkPromoteForm = document.getElementById('bulkPromoteForm');
+        if (bulkPromoteForm) {
+            bulkPromoteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                
+                // Update button to show loading state
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                submitButton.disabled = true;
+                
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Close modal
+                    closeBulkPromoteModal();
+                    
+                    // Show success message
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#950713'
+                        }).then(() => {
+                            // Refresh the page to update student list
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.message || 'An error occurred during bulk promotion',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Show error message
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to process bulk promote request',
+                        icon: 'error',
+                        confirmButtonColor: '#950713'
+                    });
+                });
+            });
+        }
+        
+        // Bulk Repeat Form AJAX submission
+        const bulkRepeatForm = document.getElementById('bulkRepeatForm');
+        if (bulkRepeatForm) {
+            bulkRepeatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalButtonText = submitButton.innerHTML;
+                
+                // Update button to show loading state
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                submitButton.disabled = true;
+                
+                // Send AJAX request
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Close modal
+                    closeBulkRepeatModal();
+                    
+                    // Show success message
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#950713'
+                        }).then(() => {
+                            // Refresh the page to update student list
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.message || 'An error occurred during bulk repeat',
+                            icon: 'error',
+                            confirmButtonColor: '#950713'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Reset button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
+                    
+                    // Show error message
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to process bulk repeat request',
+                        icon: 'error',
+                        confirmButtonColor: '#950713'
+                    });
+                });
+            });
+        }
+    });
+    
+    function openBulkPromoteModal() {
+        console.log('Opening bulk promote modal');
+        
+        // Get all selected student IDs
+        const selectedStudents = Array.from(document.querySelectorAll('.student-checkbox:checked'))
+            .map(checkbox => checkbox.value);
+        
+        if (selectedStudents.length === 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Please select at least one student to promote',
+                icon: 'error',
+                confirmButtonColor: '#950713'
+            });
+            return;
+        }
+        
+        // Set selected student IDs to hidden inputs in the form
+        const bulkPromoteForm = document.getElementById('bulkPromoteForm');
+        
+        // Clear any existing hidden inputs
+        const existingInputs = bulkPromoteForm.querySelectorAll('input[name="student_ids[]"]');
+        existingInputs.forEach(input => input.remove());
+        
+        // Add new hidden inputs for each selected student
+        selectedStudents.forEach(studentId => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'student_ids[]';
+            input.value = studentId;
+            bulkPromoteForm.appendChild(input);
+        });
+        
+        // Update count in modal - using the correct ID from the HTML
+        document.getElementById('selectedStudentCount').textContent = selectedStudents.length;
+        
+        // Build dropdown options
+        const selectElement = document.getElementById('bulk_promote_stage_id');
+        // Clear existing options
+        selectElement.innerHTML = '';
+        
+        // Default empty option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a stage';
+        selectElement.appendChild(defaultOption);
+        
+        // Add available stages
+        if (window.stages && window.stages.length > 0) {
+            window.stages.forEach(stage => {
+                const option = document.createElement('option');
+                option.value = stage.id;
+                option.textContent = `${stage.name} ${stage.level ? '(Level ' + stage.level + ')' : '(No Level)'}`;
+                selectElement.appendChild(option);
+            });
+        }
+        
+        // Show the modal
+        document.getElementById('bulk-promote-stage-modal').classList.remove('hidden');
+    }
+    
+    function openBulkRepeatModal() {
+        console.log('Opening bulk repeat modal');
+        
+        // Get all selected student IDs
+        const selectedStudents = Array.from(document.querySelectorAll('.student-checkbox:checked'))
+            .map(checkbox => checkbox.value);
+        
+        if (selectedStudents.length === 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Please select at least one student to repeat',
+                icon: 'error',
+                confirmButtonColor: '#950713'
+            });
+            return;
+        }
+        
+        // Set selected student IDs to hidden inputs in the form
+        const bulkRepeatForm = document.getElementById('bulkRepeatForm');
+        
+        // Clear any existing hidden inputs
+        const existingInputs = bulkRepeatForm.querySelectorAll('input[name="student_ids[]"]');
+        existingInputs.forEach(input => input.remove());
+        
+        // Add new hidden inputs for each selected student
+        selectedStudents.forEach(studentId => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'student_ids[]';
+            input.value = studentId;
+            bulkRepeatForm.appendChild(input);
+        });
+        
+        // Update count in modal - using the correct ID from HTML
+        document.getElementById('selectedRepeatStudentCount').textContent = selectedStudents.length;
+        
+        // Build dropdown options
+        const selectElement = document.getElementById('bulk_repeat_stage_id');
+        // Clear existing options
+        selectElement.innerHTML = '';
+        
+        // Default empty option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select a stage';
+        selectElement.appendChild(defaultOption);
+        
+        // Add available stages
+        if (window.stages && window.stages.length > 0) {
+            window.stages.forEach(stage => {
+                const option = document.createElement('option');
+                option.value = stage.id;
+                option.textContent = `${stage.name} ${stage.level ? '(Level ' + stage.level + ')' : '(No Level)'}`;
+                selectElement.appendChild(option);
+            });
+        }
+        
+        // Show the modal
+        document.getElementById('bulk-repeat-stage-modal').classList.remove('hidden');
+    }
 </script>
 
 <!-- Include stage modal level fix script -->
 <script src="{{ asset('js/stage-modal-level-fix.js') }}"></script>
+
+<!-- Include Direct bulk actions script for reliable AJAX handling -->
+<script src="{{ asset('js/bulk-actions-direct.js') }}"></script>
+
 @endsection

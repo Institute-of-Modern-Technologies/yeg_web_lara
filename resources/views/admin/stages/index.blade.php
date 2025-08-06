@@ -969,17 +969,23 @@
                         $(this).text(index + 1);
                     });
                     
-                    // Get new order
-                    var stageOrder = {};
+                    // Get new order - convert to the format expected by the backend
+                    var stages = [];
                     $('tr[data-stage-id]').each(function(index) {
-                        stageOrder[$(this).data('stage-id')] = index + 1;
+                        stages.push({
+                            id: $(this).data('stage-id'),
+                            order: index + 1
+                        });
                     });
+                    
+                    // Log the data being sent (for debugging)
+                    console.log('Updating stage order:', { stages: stages });
                     
                     // Update order in database
                     $.ajax({
                         url: '/admin/stages/update-order',
                         type: 'POST',
-                        data: JSON.stringify({ order: stageOrder }),
+                        data: JSON.stringify({ stages: stages }),
                         contentType: 'application/json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
