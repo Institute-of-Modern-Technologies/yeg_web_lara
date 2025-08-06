@@ -89,6 +89,9 @@ function completeActivity() {
             hideElement(document.getElementById('completeActivityBtn'));
             showElement(document.getElementById('revertActivityBtn'));
             
+            // Update progress bar
+            updateProgressBar(data.completionPercentage);
+            
             // Close modal after delay
             setTimeout(hideActivityCompletionModal, 2000);
         } else {
@@ -151,6 +154,9 @@ function revertActivityCompletion() {
             showElement(document.getElementById('completeActivityBtn'));
             hideElement(document.getElementById('revertActivityBtn'));
             
+            // Update progress bar
+            updateProgressBar(data.completionPercentage);
+            
             // Close modal after delay
             setTimeout(hideActivityCompletionModal, 2000);
         } else {
@@ -193,4 +199,32 @@ function showActivities() {
 
 function hideActivities() {
     document.getElementById('activitiesModal').classList.add('hidden');
+}
+
+/**
+ * Updates the progress bar with the given percentage
+ * @param {number} percentage - The completion percentage (0-100)
+ */
+function updateProgressBar(percentage) {
+    // Ensure percentage is a number and between 0-100
+    percentage = Math.min(Math.max(0, parseFloat(percentage) || 0), 100);
+    percentage = Math.round(percentage);
+    
+    // Find the progress bar by using the container first, then finding the inner element
+    // This is more reliable than direct class selection with dots
+    const progressContainer = document.querySelector('.w-full.bg-gray-200.rounded-full');
+    if (progressContainer) {
+        const progressBar = progressContainer.firstElementChild;
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+        }
+    }
+    
+    // Update the progress text - find by proximity to the progress bar
+    if (progressContainer) {
+        const progressTextElement = progressContainer.nextElementSibling;
+        if (progressTextElement) {
+            progressTextElement.textContent = `${percentage}% complete`;
+        }
+    }
 }

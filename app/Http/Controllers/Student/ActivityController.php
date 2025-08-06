@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Stage;
 use App\Models\Student;
 use App\Models\StudentActivity;
 use Illuminate\Http\Request;
@@ -39,10 +40,14 @@ class ActivityController extends Controller
             $studentActivity->completed_at = now();
             $studentActivity->save();
             
+            // Calculate completion percentage
+            $completionPercentage = $this->calculateCompletionPercentage($student);
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Activity marked as complete',
-                'completed_at' => $studentActivity->completed_at->format('Y-m-d H:i:s')
+                'completed_at' => $studentActivity->completed_at->format('Y-m-d H:i:s'),
+                'completionPercentage' => $completionPercentage
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -75,15 +80,62 @@ class ActivityController extends Controller
                 $studentActivity->save();
             }
             
+            // Calculate completion percentage
+            $completionPercentage = $this->calculateCompletionPercentage($student);
+            
             return response()->json([
                 'success' => true,
-                'message' => 'Activity completion status reverted'
+                'message' => 'Activity completion status reverted',
+                'completionPercentage' => $completionPercentage
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to revert activity completion: ' . $e->getMessage()
             ], 500);
+        }
+    }
+    
+    /**
+     * Calculate completion percentage for a student
+     * 
+     * @param Student $student
+     * @return int
+     */
+    protected function calculateCompletionPercentage(Student $student)
+    {
+        try {
+            // Get current stage (ideally should come from a student_stage relationship)
+            // For now, we'll just get the first stage as an example
+            $stage = Stage::first();
+            
+            if (!$stage) {
+                return 0;
+            }
+            
+            // Get activities for the student's current stage
+            $stageActivities = Activity::whereHas('stages', function($query) use ($stage) {
+                $query->where('stages.id', $stage->id);
+            })->get();
+            
+            $totalActivities = $stageActivities->count();
+            
+            if ($totalActivities === 0) {
+                return 0;
+            }
+            
+            // Count completed activities
+            $completedActivitiesCount = StudentActivity::where('student_id', $student->id)
+                ->whereIn('activity_id', $stageActivities->pluck('id'))
+                ->whereNotNull('completed_at')
+                ->count();
+            
+            // Calculate percentage
+            $percentage = ($completedActivitiesCount / $totalActivities) * 100;
+            return round($percentage); // Round to nearest integer
+        } catch (\Exception $e) {
+            // If any error occurs, return 0%
+            return 0;
         }
     }
 }
