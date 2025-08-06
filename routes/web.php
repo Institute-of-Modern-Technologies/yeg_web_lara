@@ -15,6 +15,9 @@ Route::get('/enrollment', [\App\Http\Controllers\PageController::class, 'enrollm
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact/send', [\App\Http\Controllers\ContactController::class, 'sendMessage'])->name('contact.send');
 
+// Custom file serving route - no authentication required
+Route::get('/files/student-works/{type}/{filename}', [\App\Http\Controllers\FileController::class, 'serveFile'])->name('serve.file');
+
 // Make event details publicly accessible with a clearly named public route
 Route::get('/event-details/{id}', [EventController::class, 'publicShow'])->name('events.public.show');
 
@@ -95,6 +98,14 @@ Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(funct
     // Student Activity Routes
     Route::post('/activities/{id}/complete', [\App\Http\Controllers\Student\ActivityController::class, 'complete'])->name('student.activities.complete');
     Route::post('/activities/{id}/revert', [\App\Http\Controllers\Student\ActivityController::class, 'revert'])->name('student.activities.revert');
+    
+    // Student My Work Routes
+    Route::get('/mywork', [\App\Http\Controllers\Student\MyWorkController::class, 'index'])->name('student.mywork');
+    Route::get('/mywork/create', [\App\Http\Controllers\Student\MyWorkController::class, 'create'])->name('student.mywork.create');
+    Route::post('/mywork', [\App\Http\Controllers\Student\MyWorkController::class, 'store'])->name('student.mywork.store');
+    Route::get('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'show'])->name('student.mywork.show');
+    Route::delete('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'destroy'])->name('student.mywork.delete');
+    Route::get('/mywork/{id}/file', [\App\Http\Controllers\Student\MyWorkController::class, 'getFile'])->name('student.mywork.file');
 });
 
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type

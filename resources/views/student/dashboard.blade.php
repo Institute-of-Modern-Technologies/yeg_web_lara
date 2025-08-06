@@ -83,8 +83,8 @@
                             <a href="#" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center">
                                 <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
                             </a>
-                            <a href="#" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
-                                <i class="fas fa-clipboard-list mr-2"></i> My Requests
+                            <a href="{{ route('student.mywork') }}" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
+                                <i class="fas fa-briefcase mr-2"></i> My Work
                             </a>
                             <a href="#" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
                                 <i class="fas fa-cog mr-2"></i> Solutions
