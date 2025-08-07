@@ -103,6 +103,7 @@ Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(funct
     Route::get('/mywork', [\App\Http\Controllers\Student\MyWorkController::class, 'index'])->name('student.mywork');
     Route::get('/mywork/create', [\App\Http\Controllers\Student\MyWorkController::class, 'create'])->name('student.mywork.create');
     Route::post('/mywork', [\App\Http\Controllers\Student\MyWorkController::class, 'store'])->name('student.mywork.store');
+    Route::get('/mywork/category/{type}', [\App\Http\Controllers\Student\MyWorkController::class, 'category'])->name('student.mywork.category');
     Route::get('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'show'])->name('student.mywork.show');
     Route::delete('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'destroy'])->name('student.mywork.delete');
     Route::get('/mywork/{id}/file', [\App\Http\Controllers\Student\MyWorkController::class, 'getFile'])->name('student.mywork.file');

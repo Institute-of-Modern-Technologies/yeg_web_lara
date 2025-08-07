@@ -148,32 +148,84 @@ class MyWorkController extends Controller
     }
     
     /**
-     * Delete the specified work item
+     * Show all works of a specific category/type.
+     *
+     * @param  string  $type
+     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function category($type)
     {
-        // Get current student by email
+        // Validate the type
+        $validTypes = ['image', 'video', 'website', 'book'];
+        if (!in_array($type, $validTypes)) {
+            abort(404, 'Invalid category type');
+        }
+        
+        // Get the current student
         $student = Student::where('email', Auth::user()->email)->first();
         
         if (!$student) {
             return redirect()->route('login')->with('error', 'Student record not found');
         }
         
-        $work = StudentWork::findOrFail($id);
+        // Get all works of the specified type for this student
+        $works = StudentWork::where('student_id', $student->id)
+            ->where('type', $type)
+            ->orderBy('created_at', 'desc')
+            ->paginate(12); // 12 items per page for better grid layout
         
-        // Check if the work belongs to the logged-in student
-        if ($work->student_id !== $student->id) {
-            abort(403, 'Unauthorized action.');
+        // Get type-specific data
+        $typeData = [
+            'image' => [
+                'title' => 'All Images',
+                'icon' => 'fas fa-images',
+                'description' => 'Your complete image portfolio'
+            ],
+            'video' => [
+                'title' => 'All Videos',
+                'icon' => 'fas fa-video',
+                'description' => 'Your complete video collection'
+            ],
+            'website' => [
+                'title' => 'All Websites',
+                'icon' => 'fas fa-globe',
+                'description' => 'Your complete website portfolio'
+            ],
+            'book' => [
+                'title' => 'All Books',
+                'icon' => 'fas fa-book',
+                'description' => 'Your complete book collection'
+            ]
+        ];
+        
+        return view('student.mywork.category', compact('works', 'type', 'typeData', 'student'));
+    }
+    
+    /**
+     * Delete the specified work item
+     */
+    public function destroy($id)
+    {
+        try {
+            $work = StudentWork::findOrFail($id);
+            
+            // Check if the work belongs to the current student
+            $student = Student::where('email', Auth::user()->email)->first();
+            if (!$student || $work->student_id !== $student->id) {
+                return redirect()->route('student.mywork')->with('error', 'Unauthorized access.');
+            }
+            
+            // Delete the file if it exists
+            if ($work->file_path && Storage::disk('public')->exists($work->file_path)) {
+                Storage::disk('public')->delete($work->file_path);
+            }
+            
+            // Delete the work record
+            $work->delete();
+            
+            return redirect()->route('student.mywork')->with('success', 'Work deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('student.mywork')->with('error', 'Failed to delete work.');
         }
-        
-        // Delete the file if it exists
-        if ($work->file_path && Storage::disk('public')->exists($work->file_path)) {
-            Storage::disk('public')->delete($work->file_path);
-        }
-        
-        $work->delete();
-        
-        return redirect()->route('student.mywork')
-            ->with('success', 'Work has been deleted successfully.');
     }
 }

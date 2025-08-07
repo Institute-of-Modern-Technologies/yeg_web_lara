@@ -175,7 +175,7 @@
                     
                     @if(count($works['image']) > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            @foreach($works['image'] as $work)
+                            @foreach(array_slice($works['image'], 0, 4) as $work)
                                 <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
                                     <a href="{{ route('student.mywork.show', $work->id) }}" class="block">
                                         <div class="h-48 overflow-hidden">
@@ -189,6 +189,16 @@
                                 </div>
                             @endforeach
                         </div>
+                        
+                        @if(count($works['image']) > 4)
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('student.mywork.category', 'image') }}" 
+                                   class="inline-flex items-center px-6 py-3 bg-[#950713] text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200">
+                                    <i class="fas fa-images mr-2"></i>
+                                    View All Images ({{ count($works['image']) }})
+                                </a>
+                            </div>
+                        @endif
                     @else
                         <p class="text-gray-500">No images uploaded yet.</p>
                     @endif
@@ -202,7 +212,7 @@
                     
                     @if(count($works['video']) > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            @foreach($works['video'] as $work)
+                            @foreach(array_slice($works['video'], 0, 4) as $work)
                                 <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
                                     <div class="h-48 overflow-hidden bg-gray-200 relative group">
                                         <!-- Video Preview -->
@@ -233,6 +243,16 @@
                                 </div>
                             @endforeach
                         </div>
+                        
+                        @if(count($works['video']) > 4)
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('student.mywork.category', 'video') }}" 
+                                   class="inline-flex items-center px-6 py-3 bg-[#950713] text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200">
+                                    <i class="fas fa-video mr-2"></i>
+                                    View All Videos ({{ count($works['video']) }})
+                                </a>
+                            </div>
+                        @endif
                     @else
                         <p class="text-gray-500">No videos uploaded yet.</p>
                     @endif
@@ -246,7 +266,7 @@
                     
                     @if(count($works['website']) > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            @foreach($works['website'] as $work)
+                            @foreach(array_slice($works['website'], 0, 4) as $work)
                                 <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
                                     <a href="{{ $work->website_url }}" target="_blank" class="block">
                                         <div class="h-48 overflow-hidden bg-gray-200 relative">
@@ -271,6 +291,16 @@
                                 </div>
                             @endforeach
                         </div>
+                        
+                        @if(count($works['website']) > 4)
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('student.mywork.category', 'website') }}" 
+                                   class="inline-flex items-center px-6 py-3 bg-[#950713] text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200">
+                                    <i class="fas fa-globe mr-2"></i>
+                                    View All Websites ({{ count($works['website']) }})
+                                </a>
+                            </div>
+                        @endif
                     @else
                         <p class="text-gray-500">No websites shared yet.</p>
                     @endif
@@ -284,7 +314,7 @@
                     
                     @if(count($works['book']) > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                            @foreach($works['book'] as $work)
+                            @foreach(array_slice($works['book'], 0, 4) as $work)
                                 <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
                                     <a href="{{ route('student.mywork.show', $work->id) }}" class="block">
                                         <div class="h-64 overflow-hidden relative">
@@ -307,6 +337,16 @@
                                 </div>
                             @endforeach
                         </div>
+                        
+                        @if(count($works['book']) > 4)
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('student.mywork.category', 'book') }}" 
+                                   class="inline-flex items-center px-6 py-3 bg-[#950713] text-white font-semibold rounded-lg hover:bg-red-800 transition-colors duration-200">
+                                    <i class="fas fa-book mr-2"></i>
+                                    View All Books ({{ count($works['book']) }})
+                                </a>
+                            </div>
+                        @endif
                     @else
                         <p class="text-gray-500">No books uploaded yet.</p>
                     @endif
