@@ -242,29 +242,13 @@
                         </div>
                         
                         <div class="mb-4">
-                            @php
-                                // Default value if variable is not set
-                                $completionPercentage = $completionPercentage ?? 0;
-                                
-                                // Calculate completion if we have student activities data
-                                if (!isset($completionPercentage) && isset($student) && isset($stageActivities)) {
-                                    $totalActivities = $stageActivities->count();
-                                    $completedActivities = $stageActivities->filter(function($activity) use ($student) {
-                                        // Check if this activity is completed by the student
-                                        return $activity->studentActivities->where('student_id', $student->id)
-                                            ->where('completed_at', '!=', null)
-                                            ->count() > 0;
-                                    })->count();
-                                    
-                                    $completionPercentage = $totalActivities > 0 ? 
-                                        round(($completedActivities / $totalActivities) * 100) : 0;
-                                }
-                            @endphp
                             <h3 class="text-sm font-medium text-gray-500 mb-1">Progress</h3>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
-                                <div class="bg-teal-600 h-2.5 rounded-full" style="width: {{ $completionPercentage }}%"></div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1" id="progress-container">
+                                <div class="bg-teal-600 h-2.5 rounded-full transition-all duration-500" 
+                                     id="progress-bar" 
+                                     style="width: {{ $completionPercentage ?? 0 }}%"></div>
                             </div>
-                            <p class="text-xs text-gray-500">{{ $completionPercentage }}% complete</p>
+                            <p class="text-xs text-gray-500" id="progress-text">{{ $completionPercentage ?? 0 }}% complete</p>
                         </div>
                         
                         <div>

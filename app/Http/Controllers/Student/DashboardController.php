@@ -27,23 +27,70 @@ class DashboardController extends Controller
             return redirect()->route('login')->with('error', 'Student record not found');
         }
         
-        // Get current stage (this would ideally come from a student_stage relationship)
-        // For now, we'll just get the first stage as an example
-        $stage = Stage::first();
+        // Get current stage - use a more robust method
+        $stage = $this->getCurrentStageForStudent($student);
         
         // Get activities for the student's current stage
-        $stageActivities = [];
+        $stageActivities = collect();
         if ($stage) {
             $stageActivities = Activity::whereHas('stages', function($query) use ($stage) {
                 $query->where('stages.id', $stage->id);
             })->get();
         }
         
-        // Calculate completion percentage
-        $completionPercentage = 0;
-        $totalActivities = $stageActivities->count();
+        // Calculate completion percentage using the same method as ActivityController
+        $completionPercentage = $this->calculateCompletionPercentage($student, $stage);
         
-        if ($totalActivities > 0 && $student) {
+        // Ensure completionPercentage is never null
+        $completionPercentage = $completionPercentage ?? 0;
+        
+        return view('student.dashboard', compact('student', 'stage', 'stageActivities', 'completionPercentage'));
+    }
+    
+    /**
+     * Get the current stage for a student
+     * This method provides a centralized way to determine a student's current stage
+     *
+     * @param Student $student
+     * @return Stage|null
+     */
+    private function getCurrentStageForStudent(Student $student)
+    {
+        // TODO: In the future, this should check a student_stages table or similar
+        // For now, we'll use the first stage but make it consistent across the app
+        return Stage::first();
+    }
+    
+    /**
+     * Calculate completion percentage for a student
+     * This method should match the one in ActivityController for consistency
+     * 
+     * @param Student $student
+     * @param Stage|null $stage
+     * @return int
+     */
+    private function calculateCompletionPercentage(Student $student, $stage = null)
+    {
+        try {
+            if (!$stage) {
+                $stage = $this->getCurrentStageForStudent($student);
+            }
+            
+            if (!$stage) {
+                return 0;
+            }
+            
+            // Get activities for the student's current stage
+            $stageActivities = Activity::whereHas('stages', function($query) use ($stage) {
+                $query->where('stages.id', $stage->id);
+            })->get();
+            
+            $totalActivities = $stageActivities->count();
+            
+            if ($totalActivities === 0) {
+                return 0;
+            }
+            
             // Count completed activities
             $completedActivitiesCount = StudentActivity::where('student_id', $student->id)
                 ->whereIn('activity_id', $stageActivities->pluck('id'))
@@ -51,10 +98,11 @@ class DashboardController extends Controller
                 ->count();
             
             // Calculate percentage
-            $completionPercentage = ($completedActivitiesCount / $totalActivities) * 100;
-            $completionPercentage = round($completionPercentage); // Round to nearest integer
+            $percentage = ($completedActivitiesCount / $totalActivities) * 100;
+            return round($percentage); // Round to nearest integer
+        } catch (\Exception $e) {
+            // If any error occurs, return 0%
+            return 0;
         }
-        
-        return view('student.dashboard', compact('student', 'stage', 'stageActivities', 'completionPercentage'));
     }
 }

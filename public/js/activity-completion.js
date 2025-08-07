@@ -210,21 +210,56 @@ function updateProgressBar(percentage) {
     percentage = Math.min(Math.max(0, parseFloat(percentage) || 0), 100);
     percentage = Math.round(percentage);
     
-    // Find the progress bar by using the container first, then finding the inner element
-    // This is more reliable than direct class selection with dots
-    const progressContainer = document.querySelector('.w-full.bg-gray-200.rounded-full');
-    if (progressContainer) {
-        const progressBar = progressContainer.firstElementChild;
-        if (progressBar) {
-            progressBar.style.width = `${percentage}%`;
-        }
+    // Use specific IDs for more reliable element selection
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    if (progressBar) {
+        progressBar.style.width = `${percentage}%`;
+        console.log(`Progress bar updated to ${percentage}%`); // Debug logging
+    } else {
+        console.error('Progress bar element not found');
     }
     
-    // Update the progress text - find by proximity to the progress bar
-    if (progressContainer) {
-        const progressTextElement = progressContainer.nextElementSibling;
-        if (progressTextElement) {
-            progressTextElement.textContent = `${percentage}% complete`;
+    if (progressText) {
+        progressText.textContent = `${percentage}% complete`;
+    } else {
+        console.error('Progress text element not found');
+    }
+    
+    // Store the current progress in localStorage for persistence
+    localStorage.setItem('dashboardProgress', percentage);
+    console.log(`Progress stored in localStorage: ${percentage}%`);
+}
+
+/**
+ * Initialize progress bar on page load
+ * Checks if there's a stored progress value and uses it if the server value seems outdated
+ */
+function initializeProgressBar() {
+    const storedProgress = localStorage.getItem('dashboardProgress');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    if (storedProgress && progressBar && progressText) {
+        const currentWidth = progressBar.style.width;
+        const currentPercentage = parseInt(currentWidth.replace('%', '')) || 0;
+        const storedPercentage = parseInt(storedProgress);
+        
+        // If stored progress is higher than current, use stored value
+        // This handles the case where activities were completed but page refresh shows old value
+        if (storedPercentage > currentPercentage) {
+            console.log(`Restoring progress from localStorage: ${storedPercentage}% (was ${currentPercentage}%)`);
+            updateProgressBar(storedPercentage);
+        } else {
+            console.log(`Current progress is up to date: ${currentPercentage}%`);
+            // Update localStorage with current value to keep it in sync
+            localStorage.setItem('dashboardProgress', currentPercentage);
         }
     }
 }
+
+// Initialize progress bar when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeProgressBar();
+});

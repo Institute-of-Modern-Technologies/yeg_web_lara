@@ -97,7 +97,23 @@ class ActivityController extends Controller
     }
     
     /**
+     * Get the current stage for a student
+     * This method provides a centralized way to determine a student's current stage
+     * Should match the method in DashboardController for consistency
+     *
+     * @param Student $student
+     * @return Stage|null
+     */
+    private function getCurrentStageForStudent(Student $student)
+    {
+        // TODO: In the future, this should check a student_stages table or similar
+        // For now, we'll use the first stage but make it consistent across the app
+        return Stage::first();
+    }
+    
+    /**
      * Calculate completion percentage for a student
+     * This method should match the one in DashboardController for consistency
      * 
      * @param Student $student
      * @return int
@@ -105,9 +121,8 @@ class ActivityController extends Controller
     protected function calculateCompletionPercentage(Student $student)
     {
         try {
-            // Get current stage (ideally should come from a student_stage relationship)
-            // For now, we'll just get the first stage as an example
-            $stage = Stage::first();
+            // Get current stage using centralized method
+            $stage = $this->getCurrentStageForStudent($student);
             
             if (!$stage) {
                 return 0;
