@@ -1,4 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.student-clean')
+
+@section('title', '{{ $work->title }} - My Work - YEG Student Portal')
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
@@ -67,16 +69,42 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Page Header with Back Button -->
-            <div class="py-8 flex items-center">
-                <a href="{{ route('student.mywork') }}" class="mr-4 text-gray-600 hover:text-gray-900">
-                    <i class="fas fa-arrow-left"></i>
+    <!-- Hero Section -->
+    <div class="relative bg-gray-900 text-white">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" 
+                 alt="Creative workspace" 
+                 class="w-full h-full object-cover opacity-30">
+        </div>
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex items-center mb-4">
+                <a href="{{ route('student.mywork') }}" class="mr-4 text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
                 </a>
-                <h1 class="text-3xl font-bold text-gray-900">{{ $work->title }}</h1>
+                <div class="flex items-center space-x-3">
+                    @if($work->type === 'image')
+                        <i class="fas fa-image text-2xl"></i>
+                    @elseif($work->type === 'video')
+                        <i class="fas fa-video text-2xl"></i>
+                    @elseif($work->type === 'website')
+                        <i class="fas fa-globe text-2xl"></i>
+                    @elseif($work->type === 'book')
+                        <i class="fas fa-book text-2xl"></i>
+                    @endif
+                    <span class="text-lg opacity-80 capitalize">{{ $work->type }}</span>
+                </div>
             </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ $work->title }}</h1>
+            @if($work->description)
+                <p class="text-xl opacity-90 max-w-3xl">{{ $work->description }}</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Work Display Container -->
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">

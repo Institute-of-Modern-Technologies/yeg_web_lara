@@ -1,4 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.student-clean')
+
+@section('title', 'My Work Portfolio - YEG Student Portal')
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
@@ -103,15 +105,51 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Page Header with Upload Button -->
-            <div class="py-8 flex justify-between items-center">
-                <h1 class="text-3xl font-bold text-gray-900">My Work</h1>
-                <a href="{{ route('student.mywork.create') }}" class="bg-[#950713] hover:bg-red-800 text-white px-4 py-2 rounded-md flex items-center">
-                    <i class="fas fa-plus mr-2"></i> Upload New Work
+    <!-- Hero Section -->
+    <div class="relative bg-gray-900 text-white">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" 
+                 alt="Students working" 
+                 class="w-full h-full object-cover opacity-30">
+        </div>
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">My Work Portfolio</h1>
+                <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+                    Showcase your creativity and achievements. Upload, organize, and share your best work.
+                </p>
+                <a href="{{ route('student.mywork.create') }}" 
+                   class="inline-flex items-center px-8 py-4 bg-white text-[#950713] font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200 shadow-lg">
+                    <i class="fas fa-plus mr-3"></i> Upload New Work
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Stats Section -->
+            <div class="py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-[#950713]">{{ count($works['image']) }}</div>
+                        <div class="text-gray-600 mt-1">Images</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-[#950713]">{{ count($works['video']) }}</div>
+                        <div class="text-gray-600 mt-1">Videos</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-[#950713]">{{ count($works['website']) }}</div>
+                        <div class="text-gray-600 mt-1">Websites</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-[#950713]">{{ count($works['book']) }}</div>
+                        <div class="text-gray-600 mt-1">Books</div>
+                    </div>
+                </div>
             </div>
 
             <!-- Flash Messages -->
@@ -166,20 +204,32 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             @foreach($works['video'] as $work)
                                 <div class="bg-gray-50 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
-                                    <a href="{{ route('student.mywork.show', $work->id) }}" class="block">
-                                        <div class="h-48 overflow-hidden bg-gray-200 relative">
+                                    <div class="h-48 overflow-hidden bg-gray-200 relative group">
+                                        <!-- Video Preview -->
+                                        <video class="w-full h-full object-cover" muted preload="metadata" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime = 0;">
+                                            <source src="{{ $work->getViewUrl() }}#t=0.5" type="video/mp4">
+                                            <!-- Fallback thumbnail if video fails to load -->
                                             <img src="{{ $work->getThumbnailUrl() }}" alt="{{ $work->title }}" class="w-full h-full object-cover">
-                                            <div class="absolute inset-0 flex items-center justify-center">
-                                                <div class="w-16 h-16 bg-[#950713] bg-opacity-75 rounded-full flex items-center justify-center">
-                                                    <i class="fas fa-play text-white text-2xl"></i>
-                                                </div>
+                                        </video>
+                                        
+                                        <!-- Play Button Overlay -->
+                                        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-200">
+                                            <div class="w-16 h-16 bg-[#950713] bg-opacity-90 rounded-full flex items-center justify-center shadow-lg">
+                                                <i class="fas fa-play text-white text-2xl ml-1"></i>
                                             </div>
                                         </div>
-                                        <div class="p-4">
-                                            <h3 class="font-semibold text-gray-900">{{ $work->title }}</h3>
-                                            <p class="text-sm text-gray-500 mt-1">{{ \Carbon\Carbon::parse($work->created_at)->format('M d, Y') }}</p>
+                                        
+                                        <!-- Click overlay to navigate to detail view -->
+                                        <a href="{{ route('student.mywork.show', $work->id) }}" class="absolute inset-0 z-10"></a>
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="font-semibold text-gray-900">{{ $work->title }}</h3>
+                                        <p class="text-sm text-gray-500 mt-1">{{ \Carbon\Carbon::parse($work->created_at)->format('M d, Y') }}</p>
+                                        <div class="flex items-center mt-2">
+                                            <i class="fas fa-video text-[#950713] mr-2"></i>
+                                            <span class="text-xs text-gray-600">Video • Hover to preview</span>
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
