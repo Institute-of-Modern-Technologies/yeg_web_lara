@@ -21,6 +21,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the student profile associated with the user.
+     */
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

@@ -107,6 +107,16 @@ Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(funct
     Route::get('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'show'])->name('student.mywork.show');
     Route::delete('/mywork/{id}', [\App\Http\Controllers\Student\MyWorkController::class, 'destroy'])->name('student.mywork.delete');
     Route::get('/mywork/{id}/file', [\App\Http\Controllers\Student\MyWorkController::class, 'getFile'])->name('student.mywork.file');
+    
+    // Student Challenge Routes
+    Route::get('/challenges', [\App\Http\Controllers\Student\ChallengeController::class, 'index'])->name('student.challenges.index');
+    Route::get('/challenges/create', [\App\Http\Controllers\Student\ChallengeController::class, 'create'])->name('student.challenges.create');
+    Route::post('/challenges', [\App\Http\Controllers\Student\ChallengeController::class, 'store'])->name('student.challenges.store');
+    Route::get('/challenges/active', [\App\Http\Controllers\Student\ChallengeController::class, 'active'])->name('student.challenges.active');
+    Route::get('/challenges/history', [\App\Http\Controllers\Student\ChallengeController::class, 'history'])->name('student.challenges.history');
+    Route::get('/challenges/{challenge}', [\App\Http\Controllers\Student\ChallengeController::class, 'show'])->name('student.challenges.show');
+    Route::post('/challenges/{challenge}/answer', [\App\Http\Controllers\Student\ChallengeController::class, 'submitAnswer'])->name('student.challenges.submit-answer');
+    Route::get('/challenges/{challenge}/result', [\App\Http\Controllers\Student\ChallengeController::class, 'showResult'])->name('student.challenges.result');
 });
 
 // Dashboard shortcut route - redirects to appropriate dashboard based on user type
@@ -388,6 +398,32 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::patch('/stages/{stage}/toggle-active', '\App\Http\Controllers\Admin\StageController@toggleActive')->name('admin.stages.toggle-active');
     Route::post('/stages/{stage}/toggle-status', '\App\Http\Controllers\Admin\StageController@toggleStatus')->name('admin.stages.toggle-status');
     
+    // Challenge Categories Management Routes
+    Route::resource('challenge-categories', '\App\Http\Controllers\Admin\ChallengeCategoryController')->names([
+        'index' => 'admin.challenge-categories.index',
+        'create' => 'admin.challenge-categories.create',
+        'store' => 'admin.challenge-categories.store',
+        'edit' => 'admin.challenge-categories.edit',
+        'update' => 'admin.challenge-categories.update',
+        'destroy' => 'admin.challenge-categories.destroy'
+    ]);
+    Route::patch('/challenge-categories/{category}/toggle-active', '\App\Http\Controllers\Admin\ChallengeCategoryController@toggleActive')
+        ->name('admin.challenge-categories.toggle-active');
+    
+    // Challenge Questions Management Routes
+    Route::resource('challenge-questions', '\App\Http\Controllers\Admin\ChallengeQuestionController')->names([
+        'index' => 'admin.challenge-questions.index',
+        'create' => 'admin.challenge-questions.create',
+        'store' => 'admin.challenge-questions.store',
+        'edit' => 'admin.challenge-questions.edit',
+        'update' => 'admin.challenge-questions.update',
+        'destroy' => 'admin.challenge-questions.destroy'
+    ]);
+    Route::get('/challenge-questions/category/{category}', '\App\Http\Controllers\Admin\ChallengeQuestionController@indexByCategory')
+        ->name('admin.challenge-questions.by-category');
+    Route::patch('/challenge-questions/{question}/toggle-active', '\App\Http\Controllers\Admin\ChallengeQuestionController@toggleActive')
+        ->name('admin.challenge-questions.toggle-active');
+    
     // Payment Management Routes
     Route::post('/payments/store', '\App\Http\Controllers\Admin\PaymentController@store')->name('admin.payments.store');
     Route::get('/payments/student/{student}', '\App\Http\Controllers\Admin\PaymentController@getStudentPayments')->name('admin.payments.student');
@@ -462,3 +498,22 @@ Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(funct
         ]);
     })->name('student.stage.activities');
 });
+
+// TEMPORARY DEBUG ROUTE - Remove after fixing challenges issue
+Route::middleware(['auth', 'user.type:student'])->get('/debug-student', function () {
+    $user = auth()->user();
+    $student = $user ? $user->student : null;
+    
+    $debug = [
+        'authenticated' => auth()->check(),
+        'user_id' => $user ? $user->id : null,
+        'username' => $user ? $user->username : null,
+        'user_type_id' => $user ? $user->user_type_id : null,
+        'student_exists' => $student ? true : false,
+        'student_id' => $student ? $student->id : null,
+        'student_name' => $student ? $student->full_name : null,
+        'student_user_id' => $student ? $student->user_id : null,
+    ];
+    
+    return response()->json($debug, 200, [], JSON_PRETTY_PRINT);
+})->name('debug.student');

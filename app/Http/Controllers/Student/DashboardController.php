@@ -19,12 +19,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Get the current student by email
-        $student = Student::where('email', Auth::user()->email)->first();
+        // Get the current student using the user-student relationship
+        $student = Auth::user()->student;
         
         if (!$student) {
-            // Fallback in case student record isn't found
-            return redirect()->route('login')->with('error', 'Student record not found');
+            // Fallback: try to find by email as secondary method
+            $student = Student::where('email', Auth::user()->email)->first();
+            
+            if (!$student) {
+                return redirect()->route('login')->with('error', 'Student record not found. Please contact support.');
+            }
         }
         
         // Get current stage - use a more robust method

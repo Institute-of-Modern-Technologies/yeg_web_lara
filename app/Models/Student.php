@@ -104,4 +104,36 @@ class Student extends Model
     {
         return $this->belongsTo(Stage::class);
     }
+    
+    /**
+     * Get the challenges initiated by this student.
+     */
+    public function challengesInitiated()
+    {
+        return $this->hasMany(Challenge::class, 'challenger_id');
+    }
+    
+    /**
+     * Get the challenges received by this student.
+     */
+    public function challengesReceived()
+    {
+        return $this->hasMany(Challenge::class, 'opponent_id');
+    }
+    
+    /**
+     * Get all challenge responses by this student.
+     */
+    public function challengeResponses()
+    {
+        return $this->hasMany(ChallengeResponse::class);
+    }
+    
+    /**
+     * Get the challenge stats for this student.
+     */
+    public function challengeStats()
+    {
+        return $this->hasOne(StudentChallengeStat::class);
+    }
 }

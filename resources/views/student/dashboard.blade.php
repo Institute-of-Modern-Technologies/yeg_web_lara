@@ -1,178 +1,50 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Student Dashboard - Young Experts Group</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#950713',
-                        'primary-dark': '#7a0610',
-                        'primary-light': '#b31a26'
-                    },
-                    animation: {
-                        'bounce-slow': 'bounce 3s infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .activity-card {
-            transition: all 0.3s ease;
-        }
-        .activity-card:hover {
-            transform: translateY(-5px);
-        }
-        .completion-badge {
-            transition: all 0.5s ease;
-        }
-        .completion-badge.completed {
-            transform: scale(1.05);
-        }
-        .card-shine {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50px;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
-        }
-    </style>
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <!-- Top Navigation Bar (Floating) -->
-        <nav class="bg-teal-600 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <!-- Left side - Logo and main navigation -->
-                    <div class="flex items-center">
-                        <!-- Logo -->
-                        <div class="flex-shrink-0 flex items-center mr-8">
-                            <span class="text-2xl font-bold">YEG</span>
-                        </div>
-                        
-                        <!-- Main Navigation Links -->
-                        <div class="hidden md:flex md:space-x-1">
-                            <a href="#" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
-                                <i class="fas fa-home mr-2"></i> Home
-                            </a>
-                            <a href="#" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center">
-                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                            </a>
-                            <a href="{{ route('student.mywork') }}" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
-                                <i class="fas fa-briefcase mr-2"></i> My Work
-                            </a>
-                            <a href="#" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
-                                <i class="fas fa-cog mr-2"></i> Solutions
-                            </a>
-                            <a href="#" class="text-white hover:bg-white hover:bg-opacity-10 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-200">
-                                <i class="fas fa-eye mr-2"></i> Observed
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Right side - User menu and notifications -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Notifications -->
-                        <div class="relative">
-                            <button class="text-white hover:text-teal-200 p-2 rounded-full relative">
-                                <i class="fas fa-bell text-lg"></i>
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">3</span>
-                            </button>
-                        </div>
-                        
-                        <!-- User Dropdown -->
-                        <div class="relative" id="user-dropdown-container">
-                            <button id="user-dropdown-button" class="flex items-center space-x-3 text-white hover:text-teal-200 p-2 rounded-md">
-                                <div class="w-8 h-8 rounded-full bg-teal-700 flex items-center justify-center text-sm font-medium">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
-                                <span class="hidden md:block text-sm font-medium">{{ Auth::user()->name }}</span>
-                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="dropdown-arrow"></i>
-                            </button>
-                            
-                            <!-- Dropdown Menu -->
-                            <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-20 hidden">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
-                                    <i class="fas fa-user-circle mr-2 text-teal-600"></i> My Profile
-                                </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
-                                    <i class="fas fa-cog mr-2 text-teal-600"></i> Settings
-                                </a>
-                                <div class="border-t"></div>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
-                                        <i class="fas fa-sign-out-alt mr-2 text-teal-600"></i> Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <!-- Mobile menu button -->
-                        <div class="md:hidden">
-                            <button id="mobile-menu-button" class="text-white hover:text-teal-200 p-2">
-                                <i class="fas fa-bars text-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Mobile Navigation Menu -->
-            <div id="mobile-menu" class="md:hidden hidden bg-teal-700">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a href="#" class="text-white hover:text-teal-200 block px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-home mr-2"></i> Home
-                    </a>
-                    <a href="#" class="bg-teal-800 text-white block px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                    </a>
-                    <a href="#" class="text-white hover:text-teal-200 block px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-clipboard-list mr-2"></i> My Activities
-                    </a>
-                    <a href="#" class="text-white hover:text-teal-200 block px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-book mr-2"></i> Resources
-                    </a>
-                    <a href="#" class="text-white hover:text-teal-200 block px-3 py-2 rounded-md text-base font-medium">
-                        <i class="fas fa-chart-line mr-2"></i> Progress
-                    </a>
-                </div>
-            </div>
-        </nav>
+@extends('layouts.student-unified')
 
-        <!-- Main Content -->
-        <div class="flex-1 pt-16">
-            <!-- Main Content Area -->
-            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+@section('title', 'Student Dashboard - IMT')
+
+@section('styles')
+<style>
+    .activity-card {
+        transition: all 0.3s ease;
+    }
+    .activity-card:hover {
+        transform: translateY(-5px);
+    }
+    .completion-badge {
+        transition: all 0.5s ease;
+    }
+    .completion-badge.completed {
+        transform: scale(1.05);
+    }
+    .card-shine {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50px;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+        0% { left: -100%; }
+        20% { left: 100%; }
+        100% { left: 100%; }
+    }
+</style>
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+@endsection
+
+@section('content')
                 <!-- Dashboard Header with Welcome Message -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
                     <div>
-                        <h1 class="text-3xl font-bold">Welcome, {{ $student->first_name }}!</h1>
+                        <h1 class="text-3xl font-bold">Welcome, {{ $student ? ($student->first_name ?? explode(' ', $student->full_name)[0] ?? 'Student') : 'Student' }}!</h1>
                         <p class="text-gray-600 mt-2">{{ now()->format('l, F j, Y') }}</p>
                     </div>
                     
@@ -490,12 +362,11 @@
                     <h2 class="text-2xl font-bold mb-4 text-[#950713]">Activities for {{ $stage ? $stage->name : 'Your Current Stage' }}</h2>
                     <p class="text-gray-600 mb-6">Complete these activities to progress in your education journey.</p>
                 </div>
-            </main>
-        </div>
-    </div>
-    
-    <!-- Stage Details Modal (Hidden by default) -->
-    <div id="stageDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+@endsection
+
+@section('scripts')
+<!-- Stage Details Modal (Hidden by default) -->
+<div id="stageDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="border-b p-4 flex justify-between items-center">
                 <h3 class="text-xl font-bold">{{ $stage ? $stage->name : 'Stage Details' }}</h3>
@@ -816,29 +687,7 @@
                 }, 300);
             });
             
-            // User dropdown toggle - click-based implementation
-            const userDropdownButton = document.getElementById('user-dropdown-button');
-            const userDropdownMenu = document.getElementById('user-dropdown-menu');
-            const dropdownArrow = document.getElementById('dropdown-arrow');
-            
-            // Function to close dropdown when clicking outside
-            function handleClickOutside(event) {
-                const container = document.getElementById('user-dropdown-container');
-                if (container && !container.contains(event.target)) {
-                    userDropdownMenu.classList.add('hidden');
-                    dropdownArrow.classList.remove('rotate-180');
-                }
-            }
-            
-            // Toggle dropdown on button click
-            userDropdownButton.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent event bubbling
-                userDropdownMenu.classList.toggle('hidden');
-                dropdownArrow.classList.toggle('rotate-180');
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', handleClickOutside);
+            // Removing conflicting dropdown code - now handled by the layout's jQuery code
             
             // Set up activity completion buttons
             document.getElementById('completeActivityBtn').addEventListener('click', markActivityComplete);
