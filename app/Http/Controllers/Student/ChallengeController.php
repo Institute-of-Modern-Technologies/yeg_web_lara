@@ -48,7 +48,42 @@ class ChallengeController extends Controller
             ->get();
             
         // Get challenge statistics
-        $stats = $student->challengeStats ?? new \App\Models\StudentChallengeStat();
+        $stats = $student->challengeStats;
+        
+        // If no stats record exists, create a default one with calculated values
+        if (!$stats) {
+            $stats = new \App\Models\StudentChallengeStat();
+            
+            // Calculate stats from completed challenges
+            $totalChallenges = \App\Models\Challenge::where(function($query) use ($student) {
+                $query->where('challenger_id', $student->id)
+                      ->orWhere('opponent_id', $student->id);
+            })->where('status', 'completed')->count();
+            
+            $wonChallenges = \App\Models\Challenge::with('result')
+                ->where(function($query) use ($student) {
+                    $query->where('challenger_id', $student->id)
+                          ->orWhere('opponent_id', $student->id);
+                })
+                ->where('status', 'completed')
+                ->whereHas('result', function($query) use ($student) {
+                    $query->where('winner_id', $student->id);
+                })
+                ->count();
+            
+            $lostChallenges = $totalChallenges - $wonChallenges;
+            
+            // Set calculated values
+            $stats->xp_points = $wonChallenges * 10; // 10 XP per win
+            $stats->challenges_won = $wonChallenges;
+            $stats->challenges_lost = $lostChallenges;
+            $stats->challenges_total = $totalChallenges;
+            $stats->total_xp = $stats->xp_points; // Add total_xp for view compatibility
+        } else {
+            // Add total_xp and challenges_total for view compatibility
+            $stats->total_xp = $stats->xp_points;
+            $stats->challenges_total = $stats->challenges_won + $stats->challenges_lost + ($stats->challenges_drawn ?? 0);
+        }
         
         // Get available categories
         $categories = \App\Models\ChallengeCategory::where('is_active', true)

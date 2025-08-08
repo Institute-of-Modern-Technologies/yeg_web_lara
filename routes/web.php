@@ -440,7 +440,13 @@ Route::middleware(['auth', 'user.type:school_admin'])->prefix('school')->group(f
 // Student Routes
 Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(function () {
     // Student Dashboard Route
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('student.dashboard');
+    
+    // Student Dashboard Progress API Route
+    Route::get('/dashboard/progress', [\App\Http\Controllers\Student\DashboardController::class, 'getProgress'])->name('student.dashboard.progress');
+    
+    // Legacy Dashboard Route (keeping for compatibility)
+    Route::get('/dashboard-legacy', function () {
         // Get the authenticated student user
         $user = auth()->user();
         

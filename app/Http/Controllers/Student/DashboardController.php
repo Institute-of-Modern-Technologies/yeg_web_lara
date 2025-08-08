@@ -109,4 +109,46 @@ class DashboardController extends Controller
             return 0;
         }
     }
+    
+    /**
+     * Get progress data for AJAX requests
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProgress()
+    {
+        try {
+            // Get the current student using the user-student relationship
+            $student = Auth::user()->student;
+            
+            if (!$student) {
+                // Fallback: try to find by email as secondary method
+                $student = Student::where('email', Auth::user()->email)->first();
+                
+                if (!$student) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Student record not found'
+                    ], 404);
+                }
+            }
+            
+            // Get current stage
+            $stage = $this->getCurrentStageForStudent($student);
+            
+            // Calculate completion percentage
+            $completionPercentage = $this->calculateCompletionPercentage($student, $stage);
+            
+            return response()->json([
+                'success' => true,
+                'completionPercentage' => $completionPercentage ?? 0
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to calculate progress',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -542,6 +542,35 @@
             currentActivityId = null;
         }
         
+        // Update progress bar dynamically
+        function updateProgressBar() {
+            // Get current completion data via AJAX
+            $.ajax({
+                url: '/student/dashboard/progress',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const percentage = response.completionPercentage || 0;
+                        
+                        // Update progress bar width
+                        const progressBar = document.getElementById('progress-bar');
+                        if (progressBar) {
+                            progressBar.style.width = percentage + '%';
+                        }
+                        
+                        // Update progress text
+                        const progressText = document.getElementById('progress-text');
+                        if (progressText) {
+                            progressText.textContent = percentage + '% complete';
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    console.log('Failed to update progress bar:', xhr.responseText);
+                }
+            });
+        }
+        
         // Mark activity as complete
         function markActivityComplete() {
             if (!currentActivityId) return;
@@ -584,6 +613,9 @@
                     document.getElementById('completeActivityBtn').innerHTML = '<i class="fas fa-check mr-2"></i> Mark Complete';
                     document.getElementById('revertActivityBtn').disabled = false;
                     document.getElementById('revertActivityBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                    
+                    // Update progress bar
+                    updateProgressBar();
                     
                     // Show success notification
                     Swal.fire({
@@ -650,11 +682,14 @@
                     document.getElementById('completeActivityBtn').disabled = false;
                     document.getElementById('completeActivityBtn').classList.remove('opacity-50', 'cursor-not-allowed');
                     
+                    // Update progress bar
+                    updateProgressBar();
+                    
                     // Show success notification
                     Swal.fire({
                         icon: 'success',
                         title: 'Activity Reverted',
-                        text: 'The activity status has been reset to pending.',
+                        text: 'The activity completion has been reverted!',
                         confirmButtonColor: '#950713'
                     });
                 },
