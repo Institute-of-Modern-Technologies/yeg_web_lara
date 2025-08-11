@@ -77,14 +77,18 @@ class BillingController extends Controller
             ->sum(DB::raw('COALESCE(fees.amount - fees.partner_discount, fees.amount, 0)'));
 
         $totalAmountPaid = Payment::where('status', 'completed')->sum('final_amount');
-        $totalBalance = $totalAmountToBePaid - $totalAmountPaid;
+        $totalOutstandingBalance = $totalAmountToBePaid - $totalAmountPaid;
+        
+        // Get program types for filter
+        $programTypes = \App\Models\ProgramType::orderBy('name')->get();
 
         return view('admin.billing.index', compact(
             'students', 
             'totalStudents', 
             'totalAmountToBePaid', 
             'totalAmountPaid', 
-            'totalBalance'
+            'totalOutstandingBalance',
+            'programTypes'
         ));
     }
 

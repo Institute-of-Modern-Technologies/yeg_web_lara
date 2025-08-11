@@ -1,148 +1,153 @@
-@extends('layouts.admin')
+@extends('admin.dashboard')
 
 @section('title', 'Student Billing Management')
 
 @section('content')
-<div class="container-fluid">
+<div class="max-w-7xl mx-auto">
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="h3 mb-0 text-gray-800">Student Billing</h1>
-            <p class="mb-0 text-muted">Manage student payments and billing information</p>
+            <h1 class="text-2xl font-semibold text-gray-900">Student Billing</h1>
+            <p class="text-gray-600 mt-1">Manage student payments and billing information</p>
         </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Students</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalStudents) }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Students Card -->
+        <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-blue-500">
+            <div class="bg-gradient-to-r from-blue-50 to-white p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Total Students</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ number_format($totalStudents) }}</p>
+                    </div>
+                    <div class="bg-blue-500 p-3 rounded-lg shadow-md">
+                        <i class="fas fa-users text-white text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Amount to be Paid</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">GH₵ {{ number_format($totalAmountToBePaid, 2) }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Amount to be Paid Card -->
+        <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-green-500">
+            <div class="bg-gradient-to-r from-green-50 to-white p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-green-600 uppercase tracking-wider mb-1">Amount to be Paid</p>
+                        <p class="text-2xl font-bold text-gray-800">GH₵ {{ number_format($totalAmountToBePaid, 2) }}</p>
+                    </div>
+                    <div class="bg-green-500 p-3 rounded-lg shadow-md">
+                        <i class="fas fa-dollar-sign text-white text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Amount Paid</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">GH₵ {{ number_format($totalAmountPaid, 2) }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-credit-card fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Amount Paid Card -->
+        <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-indigo-500">
+            <div class="bg-gradient-to-r from-indigo-50 to-white p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-indigo-600 uppercase tracking-wider mb-1">Amount Paid</p>
+                        <p class="text-2xl font-bold text-gray-800">GH₵ {{ number_format($totalAmountPaid, 2) }}</p>
+                    </div>
+                    <div class="bg-indigo-500 p-3 rounded-lg shadow-md">
+                        <i class="fas fa-credit-card text-white text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Balance</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">GH₵ {{ number_format($totalBalance, 2) }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-balance-scale fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Outstanding Balance Card -->
+        <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-yellow-500">
+            <div class="bg-gradient-to-r from-yellow-50 to-white p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-yellow-600 uppercase tracking-wider mb-1">Outstanding Balance</p>
+                        <p class="text-2xl font-bold text-gray-800">GH₵ {{ number_format($totalOutstandingBalance, 2) }}</p>
+                    </div>
+                    <div class="bg-yellow-500 p-3 rounded-lg shadow-md">
+                        <i class="fas fa-exclamation-triangle text-white text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filters and Search -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold" style="color: #950713;">Search & Filter</h6>
+    <!-- Search & Filter -->
+    <div class="card mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Search & Filter</h3>
         </div>
-        <div class="card-body">
-            <form method="GET" action="{{ route('admin.billing.index') }}">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="search">Search Students</label>
-                            <input type="text" class="form-control" id="search" name="search" 
-                                   value="{{ request('search') }}" 
-                                   placeholder="Search by name, email, or registration number...">
-                        </div>
+        <div class="p-6">
+            <form method="GET" action="{{ route('admin.billing.index') }}" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="search" class="block text-xs font-medium text-gray-700 mb-2">Search Student</label>
+                        <input type="text" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-admin-purple focus:border-admin-purple" 
+                               id="search" 
+                               name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Search by name or registration number">
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="payment_status">Payment Status</label>
-                            <select class="form-control" id="payment_status" name="payment_status">
-                                <option value="">All Students</option>
-                                <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Fully Paid</option>
-                                <option value="partial" {{ request('payment_status') == 'partial' ? 'selected' : '' }}>Partially Paid</option>
-                                <option value="unpaid" {{ request('payment_status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                            </select>
-                        </div>
+                    <div>
+                        <label for="program_type" class="block text-xs font-medium text-gray-700 mb-2">Program Type</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-admin-purple focus:border-admin-purple" 
+                                id="program_type" 
+                                name="program_type">
+                            <option value="">All Programs</option>
+                            @foreach($programTypes as $programType)
+                                <option value="{{ $programType->id }}" {{ request('program_type') == $programType->id ? 'selected' : '' }}>
+                                    {{ $programType->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>&nbsp;</label>
-                            <div>
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                            </div>
-                        </div>
+                    <div>
+                        <label for="payment_status" class="block text-xs font-medium text-gray-700 mb-2">Payment Status</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-admin-purple focus:border-admin-purple" 
+                                id="payment_status" 
+                                name="payment_status">
+                            <option value="">All Status</option>
+                            <option value="fully_paid" {{ request('payment_status') == 'fully_paid' ? 'selected' : '' }}>Fully Paid</option>
+                            <option value="partially_paid" {{ request('payment_status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
+                            <option value="unpaid" {{ request('payment_status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-2">&nbsp;</label>
+                        <button type="submit" class="w-full bg-admin-purple hover:bg-admin-purple-dark text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i> Search
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Students Billing Table -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold" style="color: #950713;">Student Billing Information</h6>
+    <!-- Student Billing Table -->
+    <div class="card">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Student Billing Information</h3>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+        <div>
+            <div class="overflow-hidden">
+                <table class="w-full table-fixed divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th>Student Name</th>
-                            <th>Registration No.</th>
-                            <th>Program Type</th>
-                            <th>School</th>
-                            <th>Amount to be Paid</th>
-                            <th>Amount Paid</th>
-                            <th>Balance</th>
-                            <th>Payment Status</th>
-                            <th>Actions</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Student</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/8">Program</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/8">School</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/8">Amount Due</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/8">Amount Paid</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/8">Balance</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Status</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($students as $student)
                             @php
                                 $amountToBePaid = $student->fee_amount ?? 0;
@@ -150,83 +155,76 @@
                                 $balance = $amountToBePaid - $totalPaid;
                                 
                                 if ($balance <= 0) {
-                                    $statusClass = 'success';
-                                    $statusText = 'Fully Paid';
+                                    $paymentStatus = 'Fully Paid';
+                                    $statusClass = 'bg-green-100 text-green-800';
                                 } elseif ($totalPaid > 0) {
-                                    $statusClass = 'warning';
-                                    $statusText = 'Partially Paid';
+                                    $paymentStatus = 'Partially Paid';
+                                    $statusClass = 'bg-yellow-100 text-yellow-800';
                                 } else {
-                                    $statusClass = 'danger';
-                                    $statusText = 'Unpaid';
+                                    $paymentStatus = 'Unpaid';
+                                    $statusClass = 'bg-red-100 text-red-800';
                                 }
                             @endphp
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="mr-3">
-                                            <div class="icon-circle bg-primary">
-                                                <i class="fas fa-user text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="font-weight-bold">{{ $student->full_name }}</div>
-                                            <div class="text-muted small">{{ $student->email }}</div>
-                                        </div>
-                                    </div>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 text-center">
+                                    <div class="text-xs font-medium text-gray-900 truncate">{{ $student->full_name }}</div>
+                                    <div class="text-xs text-gray-500 truncate">{{ $student->registration_number }}</div>
                                 </td>
-                                <td>{{ $student->registration_number ?? 'N/A' }}</td>
-                                <td>{{ $student->programType->name ?? 'N/A' }}</td>
-                                <td>{{ $student->display_school_name ?? 'N/A' }}</td>
-                                <td>
-                                    <span class="font-weight-bold text-primary">
-                                        GH₵ {{ number_format($amountToBePaid, 2) }}
+                                <td class="px-6 py-4 overflow-hidden">
+                                    <div class="text-xs truncate">{{ $student->programType->name ?? 'N/A' }}</div>
+                                </td>
+                                <td class="px-6 py-4 overflow-hidden">
+                                    <div class="text-xs truncate">{{ $student->display_school_name ?? 'N/A' }}</div>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-xs font-semibold text-gray-900">GH₵ {{ number_format($amountToBePaid, 2) }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-xs font-semibold text-green-600">GH₵ {{ number_format($totalPaid, 2) }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="text-xs font-semibold {{ $balance > 0 ? 'text-red-600' : 'text-green-600' }}">GH₵ {{ number_format($balance, 2) }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusClass }}">
+                                        {{ $paymentStatus }}
                                     </span>
                                 </td>
-                                <td>
-                                    <span class="font-weight-bold text-success">
-                                        GH₵ {{ number_format($totalPaid, 2) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="font-weight-bold {{ $balance > 0 ? 'text-danger' : 'text-success' }}">
-                                        GH₵ {{ number_format($balance, 2) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge badge-{{ $statusClass }}">{{ $statusText }}</span>
-                                </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" 
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Actions
+                                <td class="px-6 py-4 text-center">
+                                    <div class="relative inline-block text-left" x-data="{ open: false }">
+                                        <button @click="open = !open" class="bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:outline-none">
+                                            <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
                                         </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{ route('admin.billing.show', $student) }}">
-                                                <i class="fas fa-eye"></i> View Details
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('admin.students.show', $student) }}">
-                                                <i class="fas fa-user"></i> Student Profile
-                                            </a>
-                                            @if($student->payments->count() > 0)
-                                                <div class="dropdown-divider"></div>
-                                                <h6 class="dropdown-header">Payment Receipts</h6>
-                                                @foreach($student->payments->where('status', 'completed') as $payment)
-                                                    <a class="dropdown-item" href="{{ route('admin.payments.receipt', $payment->id) }}">
-                                                        <i class="fas fa-receipt"></i> Receipt #{{ $payment->id }}
-                                                    </a>
-                                                @endforeach
-                                            @endif
+                                        <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" style="display: none;">
+                                            <div class="py-1" role="menu" aria-orientation="vertical">
+                                                <a href="{{ route('admin.payments.student', $student->id) }}" class="text-gray-700 block px-4 py-2 text-xs hover:bg-gray-100">
+                                                    <i class="fas fa-history mr-2"></i> History
+                                                </a>
+                                                <button type="button" onclick="openPaymentModal({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
+                                                    <i class="fas fa-plus mr-2"></i> Pay
+                                                </button>
+                                                <a href="{{ route('admin.billing.show', $student->id) }}" class="text-gray-700 block px-4 py-2 text-xs hover:bg-gray-100">
+                                                    <i class="fas fa-eye mr-2"></i> View
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-users fa-3x mb-3"></i>
-                                        <p>No students found matching your criteria.</p>
+                                <td colspan="8" class="px-6 py-12 text-center">
+                                    <div class="text-gray-500">
+                                        <i class="fas fa-users text-4xl mb-4 text-gray-300"></i>
+                                        <p class="text-lg font-medium mb-2">No students found</p>
+                                        <p class="text-xs mb-4">No students match your current search criteria.</p>
+                                        <a href="{{ route('admin.billing.index') }}" 
+                                           class="bg-admin-purple hover:bg-admin-purple-dark text-white px-4 py-2 rounded-lg transition-colors duration-200 inline-flex items-center">
+                                            <i class="fas fa-refresh mr-2"></i>
+                                            Clear Filters
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -236,41 +234,32 @@
             </div>
 
             <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="text-muted">
-                    Showing {{ $students->firstItem() ?? 0 }} to {{ $students->lastItem() ?? 0 }} 
-                    of {{ $students->total() }} results
+            <div class="flex justify-between items-center mt-6 px-6 pb-6">
+                <div class="text-xs text-gray-700">
+                    Showing {{ $students->firstItem() ?? 0 }} to {{ $students->lastItem() ?? 0 }} of {{ $students->total() ?? 0 }} results
                 </div>
-                {{ $students->appends(request()->query())->links() }}
+                <div>
+                    {{ $students->links() }}
+                </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
 
-<style>
-.icon-circle {
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.border-left-primary {
-    border-left: 0.25rem solid #4e73df !important;
-}
-
-.border-left-success {
-    border-left: 0.25rem solid #1cc88a !important;
-}
-
-.border-left-info {
-    border-left: 0.25rem solid #36b9cc !important;
-}
-
-.border-left-warning {
-    border-left: 0.25rem solid #f6c23e !important;
-}
-</style>
+@section('scripts')
+<script>
+// Add any billing-specific JavaScript here if needed
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit search form on select change for better UX
+    const searchForm = document.querySelector('form[method="GET"]');
+    const selectElements = searchForm.querySelectorAll('select');
+    
+    selectElements.forEach(select => {
+        select.addEventListener('change', function() {
+            searchForm.submit();
+        });
+    });
+});
+</script>
 @endsection
