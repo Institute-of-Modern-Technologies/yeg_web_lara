@@ -358,6 +358,11 @@
                         <i class="fas fa-clipboard-list mr-3 {{ request()->routeIs('admin.activities.*') ? 'text-white' : 'text-gray-400' }}"></i>
                         Activities Setup
                     </a>
+                    <a href="{{ route('admin.billing.index') }}" 
+                       class="group flex items-center px-4 py-2.5 text-sm font-medium rounded-lg mb-2 sidebar-link {{ request()->routeIs('admin.billing.*') ? 'active-nav-link' : 'text-gray-600' }}">
+                        <i class="fas fa-file-invoice-dollar mr-3 {{ request()->routeIs('admin.billing.*') ? 'text-white' : 'text-gray-400' }}"></i>
+                        Billing
+                    </a>
                 </div>
 
                 <div class="mb-6">

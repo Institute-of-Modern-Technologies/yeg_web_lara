@@ -48,16 +48,39 @@
             </div>
         </div>
         
+        <!-- Billing Summary -->
+        <div class="border-b border-gray-200 pb-4 mb-4">
+            <h4 class="font-semibold mb-2">Billing Summary</h4>
+            <div class="bg-blue-50 rounded-lg p-4 mb-3">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-xs text-gray-600 uppercase tracking-wide">Total Amount to be Paid</p>
+                        <p class="text-lg font-bold text-blue-600">GH₵{{ number_format($amountToBePaid, 2) }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-600 uppercase tracking-wide">Total Amount Paid</p>
+                        <p class="text-lg font-bold text-green-600">GH₵{{ number_format($totalPaid, 2) }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-600 uppercase tracking-wide">Balance</p>
+                        <p class="text-lg font-bold {{ $balance > 0 ? 'text-red-600' : 'text-green-600' }}">
+                            GH₵{{ number_format($balance, 2) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Payment Details -->
         <div class="border-b border-gray-200 pb-4 mb-4">
-            <h4 class="font-semibold mb-2">Payment Details</h4>
+            <h4 class="font-semibold mb-2">This Payment Details</h4>
             <div class="bg-gray-50 rounded-lg p-4">
                 <div class="grid grid-cols-2 gap-y-2">
                     <div>
-                        <p class="text-sm"><span class="font-medium">Amount:</span> ₵{{ number_format($payment->amount, 2) }}</p>
+                        <p class="text-sm"><span class="font-medium">Amount:</span> GH₵{{ number_format($payment->amount, 2) }}</p>
                     </div>
                     <div>
-                        <p class="text-sm"><span class="font-medium">Discount:</span> ₵{{ number_format($payment->discount, 2) }}</p>
+                        <p class="text-sm"><span class="font-medium">Discount:</span> GH₵{{ number_format($payment->discount, 2) }}</p>
                     </div>
                     <div>
                         <p class="text-sm"><span class="font-medium">Payment Method:</span> {{ ucfirst($payment->payment_method) }}</p>

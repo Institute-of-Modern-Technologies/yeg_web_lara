@@ -105,9 +105,33 @@ class PaymentController extends Controller
     public function showReceipt($id)
     {
         try {
-            $payment = Payment::with('student')->findOrFail($id);
+            $payment = Payment::with(['student.programType', 'student.school'])->findOrFail($id);
             
-            return view('admin.payments.receipt', compact('payment'));
+            // Get the applicable fee for this student
+            $fee = \App\Models\Fee::where('program_type_id', $payment->student->program_type_id)
+                ->where(function($query) use ($payment) {
+                    $query->where('school_id', $payment->student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            
+            // Calculate previous payments (excluding current payment)
+            $previousPayments = \App\Models\Payment::where('student_id', $payment->student_id)
+                ->where('status', 'completed')
+                ->where('id', '!=', $payment->id)
+                ->sum('final_amount');
+            
+            // Total paid INCLUDING the current payment
+            $totalPaid = $previousPayments + $payment->final_amount;
+            
+            // Calculate balance after this payment
+            $balance = $amountToBePaid - $totalPaid;
+            
+            return view('admin.payments.receipt', compact('payment', 'fee', 'amountToBePaid', 'totalPaid', 'balance'));
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

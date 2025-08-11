@@ -428,6 +428,10 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/payments/store', '\App\Http\Controllers\Admin\PaymentController@store')->name('admin.payments.store');
     Route::get('/payments/student/{student}', '\App\Http\Controllers\Admin\PaymentController@getStudentPayments')->name('admin.payments.student');
     Route::get('/payments/receipt/{id}', '\App\Http\Controllers\Admin\PaymentController@showReceipt')->name('admin.payments.receipt');
+    
+    // Billing Management Routes
+    Route::get('/billing', '\App\Http\Controllers\Admin\BillingController@index')->name('admin.billing.index');
+    Route::get('/billing/{student}', '\App\Http\Controllers\Admin\BillingController@show')->name('admin.billing.show');
 });
 
 // School Admin Routes
