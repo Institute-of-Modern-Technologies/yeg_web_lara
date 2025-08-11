@@ -183,10 +183,16 @@ class PaymentController extends Controller
             
             return view('admin.payments.receipt', compact('payment', 'fee', 'amountToBePaid', 'totalPaid', 'balance'));
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Payment not found'
-            ], 404);
+            // If it's an AJAX request, return JSON
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment not found'
+                ], 404);
+            }
+            
+            // Otherwise, redirect back with error message
+            return redirect()->route('admin.billing.index')->with('error', 'Payment receipt not found');
         }
     }
 

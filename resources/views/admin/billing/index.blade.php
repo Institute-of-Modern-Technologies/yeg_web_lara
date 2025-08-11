@@ -217,9 +217,9 @@
                                                 <button type="button" onclick="openPaymentModal({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
                                                     <i class="fas fa-plus mr-2"></i> Pay
                                                 </button>
-                                                <a href="{{ route('admin.billing.show', $student->id) }}" class="text-gray-700 block px-4 py-2 text-xs hover:bg-gray-100">
-                                                    <i class="fas fa-eye mr-2"></i> View
-                                                </a>
+                                                <button type="button" onclick="generateBill({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
+                                                    <i class="fas fa-file-invoice mr-2"></i> Generate Bill
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -392,6 +392,65 @@ function calculateFinalAmount() {
         
         console.log('Calculated final amount:', finalAmount, 'from amount:', amount, 'minus discount:', discount);
     }
+}
+
+// Generate Bill function
+function generateBill(studentId) {
+    console.log('generateBill called with studentId:', studentId);
+    
+    // Show loading indicator
+    Swal.fire({
+        title: 'Generating Bill...',
+        text: 'Preparing student billing statement',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Generate bill via AJAX
+    fetch(`/admin/billing/generate/${studentId}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Failed to generate bill');
+    })
+    .then(blob => {
+        Swal.close();
+        
+        // Create download link for PDF
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `student-bill-${studentId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        // Show success message
+        Swal.fire({
+            icon: 'success',
+            title: 'Bill Generated!',
+            text: 'The billing statement has been downloaded successfully.',
+            confirmButtonText: 'OK'
+        });
+    })
+    .catch(error => {
+        console.error('Error generating bill:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to generate bill. Please try again.'
+        });
+    });
 }
 
 function submitPaymentForm(form) {

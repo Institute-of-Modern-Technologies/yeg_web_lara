@@ -433,6 +433,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     // Billing Management Routes
     Route::get('/billing', '\App\Http\Controllers\Admin\BillingController@index')->name('admin.billing.index');
     Route::get('/billing/{student}', '\App\Http\Controllers\Admin\BillingController@show')->name('admin.billing.show');
+    Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
 });
 
 // School Admin Routes

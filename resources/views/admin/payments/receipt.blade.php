@@ -1,5 +1,27 @@
-<!-- Receipt Modal Content -->
-<div class="bg-white rounded-lg shadow-lg max-w-2xl mx-auto p-0 border border-gray-200">
+@extends('admin.dashboard')
+
+@section('title', 'Payment Receipt - ' . $payment->student->full_name)
+
+@section('content')
+<div class="max-w-4xl mx-auto">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-900">Payment Receipt</h1>
+            <p class="text-gray-600 mt-1">Receipt for {{ $payment->student->full_name }}</p>
+        </div>
+        <div class="flex space-x-3">
+            <a href="{{ route('admin.payments.student', $payment->student->id) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-arrow-left mr-2"></i> Back to History
+            </a>
+            <button onclick="window.print()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-print mr-2"></i> Print Receipt
+            </button>
+        </div>
+    </div>
+
+    <!-- Receipt Content -->
+    <div class="bg-white rounded-lg shadow-lg max-w-2xl mx-auto p-0 border border-gray-200" id="receiptContent">
     <!-- Receipt Header -->
     <div class="bg-primary text-white px-6 py-4 rounded-t-lg">
         <div class="flex justify-between items-center">
@@ -109,5 +131,24 @@
     <!-- Receipt Footer -->
     <div class="bg-gray-50 px-6 py-4 rounded-b-lg text-center">
         <p class="text-sm text-gray-600">Thank you for your payment. This is an official receipt from the Institute of Modern Technologies.</p>
+        <p class="text-xs text-gray-500 mt-2">Generated on {{ now()->format('F d, Y \a\t g:i A') }}</p>
     </div>
 </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+// Print styles for receipt
+const printStyles = `
+    <style media="print">
+        body * { visibility: hidden; }
+        #receiptContent, #receiptContent * { visibility: visible; }
+        #receiptContent { position: absolute; left: 0; top: 0; width: 100%; }
+        .no-print { display: none !important; }
+        @page { margin: 0.5in; }
+    </style>
+`;
+document.head.insertAdjacentHTML('beforeend', printStyles);
+</script>
+@endsection

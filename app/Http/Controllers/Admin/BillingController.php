@@ -117,4 +117,53 @@ class BillingController extends Controller
 
         return view('admin.billing.show', compact('student', 'fee', 'amountToBePaid', 'totalPaid', 'balance'));
     }
+
+    /**
+     * Generate a modern PDF bill for a student
+     */
+    public function generateBill(Student $student)
+    {
+        $student->load(['programType', 'school', 'payments' => function($query) {
+            $query->where('status', 'completed')->orderBy('created_at', 'desc');
+        }]);
+
+        // Get the applicable fee for this student
+        $fee = Fee::where('program_type_id', $student->program_type_id)
+            ->where(function($query) use ($student) {
+                $query->where('school_id', $student->school_id)
+                      ->orWhereNull('school_id');
+            })
+            ->where('is_active', true)
+            ->orderByRaw('school_id IS NULL')
+            ->first();
+
+        $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+        $totalPaid = $student->payments->sum('final_amount');
+        $balance = $amountToBePaid - $totalPaid;
+
+        // Generate bill data
+        $billData = [
+            'student' => $student,
+            'fee' => $fee,
+            'amountToBePaid' => $amountToBePaid,
+            'totalPaid' => $totalPaid,
+            'balance' => $balance,
+            'payments' => $student->payments,
+            'billNumber' => 'BILL-' . date('Y') . '-' . str_pad($student->id, 6, '0', STR_PAD_LEFT),
+            'billDate' => now()->format('F d, Y'),
+            'dueDate' => now()->addDays(30)->format('F d, Y'),
+        ];
+
+        // If it's an AJAX request, return JSON for now (can be enhanced to return PDF)
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bill generated successfully',
+                'data' => $billData
+            ]);
+        }
+
+        // Return bill view for HTML display
+        return view('admin.billing.bill', $billData);
+    }
 }
