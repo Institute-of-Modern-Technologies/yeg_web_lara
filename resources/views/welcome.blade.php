@@ -1266,12 +1266,12 @@
                     </p>
                 </div>
                 
-                <!-- Artificial Intelligence Basics -->
+                <!-- Artificial Intelligence -->
                 <div class="text-center">
                     <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
                         <img class="max-w-full" src="{{ asset('images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" class="w-16 h-16 object-contain">
                     </div>
-                    <h3 class="text-primary font-bold mb-2">Artificial Intelligence Basics</h3>
+                    <h3 class="text-primary font-bold mb-2">Artificial Intelligence</h3>
                     <p class="text-gray-600 text-sm">
                         Create content for social media, analytics, and digital platforms
                     </p>
@@ -1587,122 +1587,6 @@
         });
     </script>
     @endpush
-
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-16" style="background-color: rgba(0, 255, 255, 0.1);">
-        <div class="w-full px-4 sm:px-6 md:container md:mx-auto mx-auto">
-            <!-- Header -->
-            <div class="text-center mb-12" data-aos="fade-up">
-                <h2 class="text-3xl font-bold mb-4" style="color: #950713;">Pricing</h2>
-                <p class="text-gray-600 max-w-3xl mx-auto">
-                    Young Experts Group offers flexible pricing options to accommodate different 
-                    needs and schedules.
-                </p>
-            </div>
-            
-            <!-- Pricing Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                
-                <!-- Card 2: Weekend & Vacation YEG -->
-                <div class="bg-white rounded-lg border border-pink-200 p-6 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-right" data-aos-delay="100">
-                    <div class="flex flex-col space-y-4">
-                        <!-- Weekend YEG -->
-                        <div data-aos="fade-up" data-aos-delay="150">
-                            <div class="flex justify-center mb-4">
-                                <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-calendar-day text-pink-500"></i>
-                                </div>
-                            </div>
-                            
-                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Weekend YEG</h3>
-                            
-                            <div class="flex items-baseline justify-center mb-6">
-                                <span class="text-pink-500 text-sm font-medium">GHC</span>
-                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
-                                <span class="text-gray-400 text-sm">- 450</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Vacation YEG -->
-                        <div data-aos="fade-up" data-aos-delay="250">
-                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Vacation YEG</h3>
-                            
-                            <div class="flex items-baseline justify-center mb-6">
-                                <span class="text-pink-500 text-sm font-medium">GHC</span>
-                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
-                                <span class="text-gray-400 text-sm">- 450</span>
-                            </div>
-                        </div>
-                        
-                        <!-- After-School YEG -->
-                        <div data-aos="fade-up" data-aos-delay="350">
-                            <h3 class="text-lg font-bold text-gray-800 text-center mb-4">After-School YEG</h3>
-                            
-                            <div class="flex items-baseline justify-center mb-2">
-                                <span class="text-pink-500 text-sm font-medium">GHC</span>
-                                <span class="text-3xl font-bold text-pink-500 mx-1">350</span>
-                                <span class="text-gray-400 text-sm">- 450</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card 3: Weekend & Vacation YEG -->
-                <div class="bg-white rounded-lg border border-yellow-200 p-6 shadow-sm hover:shadow-md transition-shadow" data-aos="fade-left" data-aos-delay="200">
-                    <div class="flex justify-center mb-4">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-umbrella-beach text-yellow-500"></i>
-                        </div>
-                    </div>
-                    
-                    <h3 class="text-lg font-bold text-gray-800 text-center mb-4">Weekend & Vacation YEG</h3>
-                    
-                    <div class="flex items-baseline justify-center mb-6">
-                        <span class="text-yellow-500 text-sm font-medium">GHC</span>
-                        <span class="text-3xl font-bold text-yellow-500 mx-1">600</span>
-                        <span class="text-gray-400 text-sm">- 700</span>
-                    </div>
-                    
-                    <p class="text-sm text-gray-600 mb-6">
-                        Combined program offering both weekend and vacation learning experiences at a discounted rate.
-                    </p>
-                    
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
-                                <i class="fas fa-check text-yellow-500 text-xs"></i>
-                            </div>
-                            <span class="text-sm text-gray-600">Best value package</span>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0 w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center mr-2 mt-0.5">
-                                <i class="fas fa-check text-yellow-500 text-xs"></i>
-                            </div>
-                            <span class="text-sm text-gray-600">Year-round learning</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Important Note -->
-            <div class="max-w-5xl mx-auto mt-8 bg-white border rounded-lg p-4" style="border-color: #950713;" data-aos="fade-up" data-aos-delay="400">
-                <div class="flex">
-                    <div class="flex-shrink-0 mr-3">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background-color: rgba(149, 7, 19, 0.1);">
-                            <i class="fas fa-info" style="color: #950713;"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-700 mb-1">Important Note</p>
-                        <p class="text-sm text-gray-600">
-                            The first price in each range applies to students from YEG-partnered schools. Contact us for detailed pricing based on your specific requirements.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
 
 @endsection
 
