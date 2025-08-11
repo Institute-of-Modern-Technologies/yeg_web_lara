@@ -12,6 +12,56 @@ use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     /**
+     * Display the form for creating a new payment for the given student.
+     *
+     * @param  int  $studentId
+     * @return \Illuminate\Http\Response
+     */
+    public function create($studentId)
+    {
+        try {
+            $student = Student::findOrFail($studentId);
+            
+            // Get the applicable fee for this student
+            $fee = \App\Models\Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            
+            // Calculate previous payments
+            $previousPayments = Payment::where('student_id', $studentId)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+            
+            // Calculate balance
+            $balance = $amountToBePaid - $previousPayments;
+            
+            // If the request is an AJAX request, return a partial view for the modal
+            if (request()->ajax()) {
+                return view('admin.payments.partials.create_form', compact('student', 'fee', 'amountToBePaid', 'previousPayments', 'balance'))->render();
+            }
+            
+            // Otherwise redirect to student view (fallback)
+            return redirect()->route('admin.students.show', $studentId);
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student not found or error loading payment form'
+                ], 404);
+            }
+            
+            return redirect()->route('admin.students.index')->with('error', 'Student not found');
+        }
+    }
+
+    /**
      * Store a newly created payment in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -149,24 +199,55 @@ class PaymentController extends Controller
     public function getStudentPayments($studentId)
     {
         try {
-            $student = Student::findOrFail($studentId);
+            $student = Student::with(['programType', 'school'])->findOrFail($studentId);
             $payments = Payment::where('student_id', $studentId)
                 ->orderBy('created_at', 'desc')
                 ->get();
             
-            return response()->json([
-                'success' => true,
-                'student' => [
-                    'id' => $student->id,
-                    'name' => $student->first_name . ' ' . $student->last_name
-                ],
-                'payments' => $payments
-            ]);
+            // Calculate the correct fee amount and total paid (same logic as billing controller)
+            $fee = \App\Models\Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+            
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            $totalPaid = Payment::where('student_id', $studentId)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+            $balance = $amountToBePaid - $totalPaid;
+            
+            // Add calculated values to student object
+            $student->fee_amount = $amountToBePaid;
+            $student->total_paid = $totalPaid;
+            $student->balance = $balance;
+            
+            // If it's an AJAX request, return JSON
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'student' => [
+                        'id' => $student->id,
+                        'name' => $student->first_name . ' ' . $student->last_name
+                    ],
+                    'payments' => $payments
+                ]);
+            }
+            
+            // Otherwise, return HTML view
+            return view('admin.payments.history', compact('student', 'payments'));
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage()
-            ], 500);
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'An error occurred: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->route('admin.billing.index')->with('error', 'Student not found');
         }
     }
 }

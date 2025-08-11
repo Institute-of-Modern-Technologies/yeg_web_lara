@@ -10,13 +10,25 @@
             <h1 class="text-2xl font-semibold text-gray-900">Student Billing</h1>
             <p class="text-gray-600 mt-1">Manage student payments and billing information</p>
         </div>
+        <div>
+            <!-- Test Modal Button -->
+            <button onclick="alert('JavaScript is working!')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2">
+                Test JS
+            </button>
+            <button onclick="testModal()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mr-2">
+                Test Modal
+            </button>
+            <button onclick="openPaymentModal(1)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                Test Payment Modal
+            </button>
+        </div>
     </div>
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Students Card -->
         <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-blue-500">
-            <div class="bg-gradient-to-r from-blue-50 to-white p-6">
+            <div class="bg-gradient-to-r from-blue-50 to-white p-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Total Students</p>
@@ -31,7 +43,7 @@
 
         <!-- Amount to be Paid Card -->
         <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-green-500">
-            <div class="bg-gradient-to-r from-green-50 to-white p-6">
+            <div class="bg-gradient-to-r from-green-50 to-white p-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-green-600 uppercase tracking-wider mb-1">Amount to be Paid</p>
@@ -46,7 +58,7 @@
 
         <!-- Amount Paid Card -->
         <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-indigo-500">
-            <div class="bg-gradient-to-r from-indigo-50 to-white p-6">
+            <div class="bg-gradient-to-r from-indigo-50 to-white p-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-indigo-600 uppercase tracking-wider mb-1">Amount Paid</p>
@@ -61,7 +73,7 @@
 
         <!-- Outstanding Balance Card -->
         <div class="card shadow-lg rounded-lg overflow-hidden border-l-4 border-yellow-500">
-            <div class="bg-gradient-to-r from-yellow-50 to-white p-6">
+            <div class="bg-gradient-to-r from-yellow-50 to-white p-3">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-yellow-600 uppercase tracking-wider mb-1">Outstanding Balance</p>
@@ -261,5 +273,184 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Test function to verify SweetAlert2 is working
+function testModal() {
+    console.log('testModal called');
+    
+    if (typeof Swal === 'undefined') {
+        console.error('SweetAlert2 is not loaded!');
+        alert('SweetAlert2 is not loaded!');
+        return;
+    }
+    
+    console.log('SweetAlert2 is available, showing test modal...');
+    
+    Swal.fire({
+        title: 'Test Modal',
+        text: 'SweetAlert2 is working correctly!',
+        icon: 'success',
+        confirmButtonText: 'Great!'
+    });
+}
+
+// Modal for payment entry
+function openPaymentModal(studentId) {
+    console.log('openPaymentModal called with studentId:', studentId);
+    
+    // Check if Swal is available
+    if (typeof Swal === 'undefined') {
+        console.error('SweetAlert2 (Swal) is not loaded!');
+        alert('Error: SweetAlert2 library is not loaded. Please refresh the page.');
+        return;
+    }
+    
+    console.log('SweetAlert2 is available, showing loading modal...');
+    
+    // Show loading indicator or feedback
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Preparing payment form',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Fetch student details and open payment modal
+    fetch(`/admin/students/${studentId}/payment/create`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        Swal.close();
+        
+        // Create modal with payment form
+        Swal.fire({
+            title: 'Add New Payment',
+            html: html,
+            width: '600px',
+            showConfirmButton: false,
+            showCloseButton: true,
+            customClass: {
+                container: 'payment-modal-container'
+            },
+            didOpen: () => {
+                // Initialize any form elements if needed
+                const paymentForm = document.getElementById('paymentForm');
+                if (paymentForm) {
+                    paymentForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        submitPaymentForm(this);
+                    });
+                    
+                    // Initialize live calculation for payment form
+                    initializePaymentCalculation();
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error loading payment form:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to load payment form. Please try again.'
+        });
+    });
+}
+
+// Initialize payment form calculation
+function initializePaymentCalculation() {
+    // Add event listeners for live calculation
+    const amountInput = document.getElementById('amount');
+    const discountInput = document.getElementById('discount');
+    
+    if (amountInput && discountInput) {
+        amountInput.addEventListener('input', calculateFinalAmount);
+        discountInput.addEventListener('input', calculateFinalAmount);
+        
+        // Calculate initial value
+        calculateFinalAmount();
+    }
+}
+
+// Calculate final amount live
+function calculateFinalAmount() {
+    const amountInput = document.getElementById('amount');
+    const discountInput = document.getElementById('discount');
+    const finalAmountInput = document.getElementById('final_amount');
+    
+    if (amountInput && discountInput && finalAmountInput) {
+        const amount = parseFloat(amountInput.value) || 0;
+        const discount = parseFloat(discountInput.value) || 0;
+        const finalAmount = Math.max(0, amount - discount).toFixed(2);
+        
+        finalAmountInput.value = finalAmount;
+        
+        console.log('Calculated final amount:', finalAmount, 'from amount:', amount, 'minus discount:', discount);
+    }
+}
+
+function submitPaymentForm(form) {
+    const formData = new FormData(form);
+    const submitUrl = form.getAttribute('action');
+    
+    // Show loading indicator
+    Swal.fire({
+        title: 'Processing...',
+        text: 'Saving payment information',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Submit the form via AJAX
+    fetch(submitUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: data.message || 'Payment successfully recorded',
+                confirmButtonText: 'View Receipt',
+                showCancelButton: true,
+                cancelButtonText: 'Close'
+            }).then((result) => {
+                if (result.isConfirmed && data.receipt_url) {
+                    window.location.href = data.receipt_url;
+                } else {
+                    // Refresh the current page to show updated data
+                    window.location.reload();
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Failed to record payment. Please try again.'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting payment:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while processing your request. Please try again.'
+        });
+    });
+}
 </script>
 @endsection

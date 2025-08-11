@@ -324,6 +324,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     
     // Student Management Routes
     Route::get('/students', ['\App\Http\Controllers\Admin\StudentController', 'index'])->name('admin.students.index');
+    Route::get('/students/{student}/payment/create', ['\App\Http\Controllers\Admin\PaymentController', 'create'])->name('admin.payments.create');
     Route::get('/students/create', ['\App\Http\Controllers\Admin\StudentController', 'create'])->name('admin.students.create');
     Route::post('/students', ['\App\Http\Controllers\Admin\StudentController', 'store'])->name('admin.students.store');
     Route::delete('/students/bulk-destroy', ['\App\Http\Controllers\Admin\StudentController', 'bulkDestroy'])->name('admin.students.bulk-destroy');
