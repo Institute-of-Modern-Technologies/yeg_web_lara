@@ -10,18 +10,7 @@
             <h1 class="text-2xl font-semibold text-gray-900">Student Billing</h1>
             <p class="text-gray-600 mt-1">Manage student payments and billing information</p>
         </div>
-        <div>
-            <!-- Test Modal Button -->
-            <button onclick="alert('JavaScript is working!')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2">
-                Test JS
-            </button>
-            <button onclick="testModal()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg mr-2">
-                Test Modal
-            </button>
-            <button onclick="openPaymentModal(1)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                Test Payment Modal
-            </button>
-        </div>
+
     </div>
 
     <!-- Summary Cards -->
@@ -144,8 +133,8 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <h3 class="text-lg font-medium text-gray-900">Student Billing Information</h3>
         </div>
-        <div>
-            <div class="overflow-hidden">
+        <div class="table-container" style="position: relative; overflow: visible;">
+            <div class="overflow-x-auto overflow-y-visible">
                 <table class="w-full table-fixed divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -203,13 +192,13 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="relative inline-block text-left" x-data="{ open: false }">
+                                    <div class="table-dropdown relative inline-block text-left" x-data="{ open: false }">
                                         <button @click="open = !open" class="bg-gray-100 rounded-full p-1 hover:bg-gray-200 focus:outline-none">
                                             <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                             </svg>
                                         </button>
-                                        <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10" style="display: none;">
+                                        <div x-show="open" @click.away="open = false" class="dropdown-menu" style="display: none;">
                                             <div class="py-1" role="menu" aria-orientation="vertical">
                                                 <a href="{{ route('admin.payments.student', $student->id) }}" class="text-gray-700 block px-4 py-2 text-xs hover:bg-gray-100">
                                                     <i class="fas fa-history mr-2"></i> History
@@ -260,6 +249,54 @@
 @endsection
 
 @section('scripts')
+<style>
+/* Simple dropdown positioning for table */
+.table-dropdown {
+    position: relative;
+}
+
+.table-dropdown .dropdown-menu {
+    position: absolute !important;
+    z-index: 1000 !important;
+    right: 0;
+    top: 100%;
+    min-width: 140px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* For last few rows, show dropdown upward */
+tbody tr:nth-last-child(-n+2) .dropdown-menu {
+    top: auto !important;
+    bottom: 100% !important;
+}
+
+/* Ensure table container allows dropdown overflow */
+.table-container {
+    overflow: visible !important;
+}
+
+/* Basic dropdown item styling */
+.dropdown-menu a,
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    color: #333;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    text-align: left;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background-color: #f5f5f5;
+}
+</style>
+
 <script>
 // Add any billing-specific JavaScript here if needed
 document.addEventListener('DOMContentLoaded', function() {
@@ -272,6 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
             searchForm.submit();
         });
     });
+
+
 });
 
 // Test function to verify SweetAlert2 is working
@@ -394,63 +433,272 @@ function calculateFinalAmount() {
     }
 }
 
-// Generate Bill function
+// Generate Bill function with WhatsApp and Email options
 function generateBill(studentId) {
     console.log('generateBill called with studentId:', studentId);
     
-    // Show loading indicator
+    // Show options modal
     Swal.fire({
-        title: 'Generating Bill...',
-        text: 'Preparing student billing statement',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
+        title: 'Send Bill',
+        text: 'How would you like to send the billing statement?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp',
+        cancelButtonText: '<i class="fas fa-envelope mr-2"></i> Send via Email',
+        showDenyButton: true,
+        denyButtonText: '<i class="fas fa-eye mr-2"></i> View Bill',
+        confirmButtonColor: '#25D366',
+        cancelButtonColor: '#3085d6',
+        denyButtonColor: '#6c757d',
+        reverseButtons: true,
+        customClass: {
+            confirmButton: 'swal2-confirm-whatsapp',
+            cancelButton: 'swal2-cancel-email',
+            denyButton: 'swal2-deny-view'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send via WhatsApp
+            sendBillViaWhatsApp(studentId);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Send via Email
+            sendBillViaEmail(studentId);
+        } else if (result.isDenied) {
+            // View Bill
+            viewBill(studentId);
         }
     });
-    
-    // Generate bill via AJAX
-    fetch(`/admin/billing/generate/${studentId}`, {
+}
+
+// Send bill via WhatsApp
+function sendBillViaWhatsApp(studentId) {
+    // First, get the bill information
+    fetch(`/admin/billing/get-bill-info/${studentId}`, {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     })
-    .then(response => {
-        if (response.ok) {
-            return response.blob();
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show input form with pre-filled message
+            Swal.fire({
+                title: 'Send Bill via WhatsApp',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Student Phone Number:</label>
+                        <input type="text" id="whatsapp-phone" value="${data.phone || ''}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" 
+                               placeholder="Enter phone number">
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Message:</label>
+                        <textarea id="whatsapp-message" rows="12" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                  placeholder="Enter WhatsApp message">${data.whatsapp_message}</textarea>
+                    </div>
+                `,
+                width: 600,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#25D366',
+                preConfirm: () => {
+                    const phone = document.getElementById('whatsapp-phone').value.trim();
+                    const message = document.getElementById('whatsapp-message').value.trim();
+                    
+                    if (!phone) {
+                        Swal.showValidationMessage('Please enter a phone number');
+                        return false;
+                    }
+                    
+                    if (!message) {
+                        Swal.showValidationMessage('Please enter a message');
+                        return false;
+                    }
+                    
+                    return { phone, message };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { phone, message } = result.value;
+                    
+                    // Format phone number and create WhatsApp URL
+                    let formattedPhone = phone.replace(/[^0-9]/g, '');
+                    if (!formattedPhone.startsWith('233') && formattedPhone.length === 10) {
+                        formattedPhone = '233' + formattedPhone.substring(1);
+                    }
+                    
+                    const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+                    
+                    // Open WhatsApp
+                    window.open(whatsappUrl, '_blank');
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'WhatsApp Opened!',
+                        text: 'WhatsApp has been opened with your custom message.',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Failed to load bill information.'
+            });
         }
-        throw new Error('Failed to generate bill');
-    })
-    .then(blob => {
-        Swal.close();
-        
-        // Create download link for PDF
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `student-bill-${studentId}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        // Show success message
-        Swal.fire({
-            icon: 'success',
-            title: 'Bill Generated!',
-            text: 'The billing statement has been downloaded successfully.',
-            confirmButtonText: 'OK'
-        });
     })
     .catch(error => {
-        console.error('Error generating bill:', error);
+        console.error('Error loading bill info:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Failed to generate bill. Please try again.'
+            text: 'An error occurred while loading bill information.'
         });
     });
+}
+
+// Send bill via Email
+function sendBillViaEmail(studentId) {
+    // First, get the bill information
+    fetch(`/admin/billing/get-bill-info/${studentId}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show input form with pre-filled email content
+            Swal.fire({
+                title: 'Send Bill via Email',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Student Email:</label>
+                        <input type="email" id="email-address" value="${data.email || ''}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" 
+                               placeholder="Enter email address">
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Subject:</label>
+                        <input type="text" id="email-subject" value="${data.email_subject || ''}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" 
+                               placeholder="Enter email subject">
+                        
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Message:</label>
+                        <textarea id="email-message" rows="10" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                  placeholder="Enter email message">${data.email_message}</textarea>
+                    </div>
+                `,
+                width: 700,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-envelope mr-2"></i> Send Email',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#3085d6',
+                preConfirm: () => {
+                    const email = document.getElementById('email-address').value.trim();
+                    const subject = document.getElementById('email-subject').value.trim();
+                    const message = document.getElementById('email-message').value.trim();
+                    
+                    if (!email) {
+                        Swal.showValidationMessage('Please enter an email address');
+                        return false;
+                    }
+                    
+                    if (!subject) {
+                        Swal.showValidationMessage('Please enter an email subject');
+                        return false;
+                    }
+                    
+                    if (!message) {
+                        Swal.showValidationMessage('Please enter an email message');
+                        return false;
+                    }
+                    
+                    return { email, subject, message };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { email, subject, message } = result.value;
+                    
+                    // Show sending indicator
+                    Swal.fire({
+                        title: 'Sending Email...',
+                        text: 'Please wait while we send the email',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Send email with custom content
+                    fetch(`/admin/billing/send-email/${studentId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            subject: subject,
+                            message: message
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Email Sent!',
+                                text: `Email sent successfully to ${email}`,
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message || 'Failed to send email. Please try again.'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error sending email:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while sending email. Please try again.'
+                        });
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Failed to load bill information.'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error loading bill info:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while loading bill information.'
+        });
+    });
+}
+
+// View bill directly
+function viewBill(studentId) {
+    // Open bill in new tab/window
+    window.open(`/admin/billing/generate/${studentId}`, '_blank');
 }
 
 function submitPaymentForm(form) {

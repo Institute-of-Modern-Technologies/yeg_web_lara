@@ -432,8 +432,10 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     
     // Billing Management Routes
     Route::get('/billing', '\App\Http\Controllers\Admin\BillingController@index')->name('admin.billing.index');
-    Route::get('/billing/{student}', '\App\Http\Controllers\Admin\BillingController@show')->name('admin.billing.show');
     Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
+    Route::get('/billing/get-bill-info/{student}', '\App\Http\Controllers\Admin\BillingController@getBillInfo')->name('admin.billing.get-bill-info');
+    Route::post('/billing/send-whatsapp/{student}', '\App\Http\Controllers\Admin\BillingController@sendBillViaWhatsApp')->name('admin.billing.send-whatsapp');
+    Route::post('/billing/send-email/{student}', '\App\Http\Controllers\Admin\BillingController@sendBillViaEmail')->name('admin.billing.send-email');
 });
 
 // School Admin Routes

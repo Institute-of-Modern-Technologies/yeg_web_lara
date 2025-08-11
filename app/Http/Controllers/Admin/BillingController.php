@@ -166,4 +166,248 @@ class BillingController extends Controller
         // Return bill view for HTML display
         return view('admin.billing.bill', $billData);
     }
+
+    /**
+     * Get bill information for input forms
+     */
+    public function getBillInfo(Student $student)
+    {
+        try {
+            // Calculate billing information
+            $fee = Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            $totalPaid = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+            $balance = $amountToBePaid - $totalPaid;
+
+            // Create WhatsApp message
+            $whatsappMessage = "Hello {$student->first_name},\n\n";
+            $whatsappMessage .= "Here is your billing statement from Institute of Modern Technologies:\n\n";
+            $whatsappMessage .= "📋 *BILLING DETAILS*\n";
+            $whatsappMessage .= "Student: {$student->first_name} {$student->last_name}\n";
+            $whatsappMessage .= "Program: {$student->programType->name}\n";
+            $whatsappMessage .= "School: {$student->school->name}\n\n";
+            $whatsappMessage .= "💰 *PAYMENT SUMMARY*\n";
+            $whatsappMessage .= "Amount to be Paid: GH₵" . number_format($amountToBePaid, 2) . "\n";
+            $whatsappMessage .= "Amount Paid: GH₵" . number_format($totalPaid, 2) . "\n";
+            $whatsappMessage .= "Outstanding Balance: GH₵" . number_format($balance, 2) . "\n\n";
+            
+            if ($balance > 0) {
+                $whatsappMessage .= "⚠️ You have an outstanding balance of GH₵" . number_format($balance, 2) . "\n";
+                $whatsappMessage .= "Please contact our office to arrange payment.\n\n";
+            } else {
+                $whatsappMessage .= "✅ Your account is fully paid. Thank you!\n\n";
+            }
+            
+            $whatsappMessage .= "For detailed bill, visit: " . route('admin.billing.generate', $student->id) . "\n\n";
+            $whatsappMessage .= "Thank you,\nInstitute of Modern Technologies";
+
+            // Create email message
+            $emailMessage = "Dear {$student->first_name} {$student->last_name},\n\n";
+            $emailMessage .= "We hope this email finds you well. Please find your current billing statement below:\n\n";
+            $emailMessage .= "STUDENT INFORMATION:\n";
+            $emailMessage .= "- Full Name: {$student->first_name} {$student->last_name}\n";
+            $emailMessage .= "- Student ID: " . ($student->student_id ?? 'N/A') . "\n";
+            $emailMessage .= "- Program: {$student->programType->name}\n";
+            $emailMessage .= "- School: {$student->school->name}\n";
+            $emailMessage .= "- Email: {$student->email}\n\n";
+            $emailMessage .= "PAYMENT SUMMARY:\n";
+            $emailMessage .= "- Amount to be Paid: GH₵" . number_format($amountToBePaid, 2) . "\n";
+            $emailMessage .= "- Amount Paid: GH₵" . number_format($totalPaid, 2) . "\n";
+            $emailMessage .= "- Outstanding Balance: GH₵" . number_format($balance, 2) . "\n\n";
+            
+            if ($balance > 0) {
+                $emailMessage .= "OUTSTANDING BALANCE:\n";
+                $emailMessage .= "You have an outstanding balance of GH₵" . number_format($balance, 2) . ". ";
+                $emailMessage .= "Please contact our office to arrange payment or make a payment as soon as possible.\n\n";
+            } else {
+                $emailMessage .= "ACCOUNT STATUS:\n";
+                $emailMessage .= "Congratulations! Your account is fully paid. Thank you for your prompt payment.\n\n";
+            }
+            
+            $emailMessage .= "For a detailed billing statement, please visit: " . route('admin.billing.generate', $student->id) . "\n\n";
+            $emailMessage .= "If you have any questions about your billing statement, please contact our office.\n\n";
+            $emailMessage .= "Thank you,\n";
+            $emailMessage .= "Institute of Modern Technologies\n";
+            $emailMessage .= "Email: info@imt.edu.gh\n";
+            $emailMessage .= "Phone: +233 XX XXX XXXX";
+
+            return response()->json([
+                'success' => true,
+                'phone' => $student->phone,
+                'email' => $student->email,
+                'whatsapp_message' => $whatsappMessage,
+                'email_subject' => 'Billing Statement - Institute of Modern Technologies',
+                'email_message' => $emailMessage,
+                'student_name' => $student->first_name . ' ' . $student->last_name,
+                'balance' => $balance
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load bill information: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Send bill via WhatsApp
+     */
+    public function sendBillViaWhatsApp(Student $student)
+    {
+        try {
+            // Get student's phone number
+            $phoneNumber = $student->phone;
+            
+            if (!$phoneNumber) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student phone number not found. Please update student contact information.'
+                ]);
+            }
+
+            // Calculate billing information
+            $fee = Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            $totalPaid = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+            $balance = $amountToBePaid - $totalPaid;
+
+            // Format phone number for WhatsApp (remove any non-digits and add country code if needed)
+            $formattedPhone = preg_replace('/[^0-9]/', '', $phoneNumber);
+            if (!str_starts_with($formattedPhone, '233') && strlen($formattedPhone) == 10) {
+                $formattedPhone = '233' . substr($formattedPhone, 1);
+            }
+
+            // Create WhatsApp message
+            $message = "Hello {$student->first_name},\n\n";
+            $message .= "Here is your billing statement from Institute of Modern Technologies:\n\n";
+            $message .= "📋 *BILLING DETAILS*\n";
+            $message .= "Student: {$student->first_name} {$student->last_name}\n";
+            $message .= "Program: {$student->programType->name}\n";
+            $message .= "School: {$student->school->name}\n\n";
+            $message .= "💰 *PAYMENT SUMMARY*\n";
+            $message .= "Amount to be Paid: GH₵" . number_format($amountToBePaid, 2) . "\n";
+            $message .= "Amount Paid: GH₵" . number_format($totalPaid, 2) . "\n";
+            $message .= "Outstanding Balance: GH₵" . number_format($balance, 2) . "\n\n";
+            
+            if ($balance > 0) {
+                $message .= "⚠️ You have an outstanding balance of GH₵" . number_format($balance, 2) . "\n";
+                $message .= "Please contact our office to arrange payment.\n\n";
+            } else {
+                $message .= "✅ Your account is fully paid. Thank you!\n\n";
+            }
+            
+            $message .= "For detailed bill, visit: " . route('admin.billing.generate', $student->id) . "\n\n";
+            $message .= "Thank you,\nInstitute of Modern Technologies";
+
+            // Create WhatsApp URL
+            $whatsappUrl = "https://wa.me/{$formattedPhone}?text=" . urlencode($message);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'WhatsApp message prepared successfully. Opening WhatsApp...',
+                'whatsapp_url' => $whatsappUrl
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to prepare WhatsApp message: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Send bill via Email
+     */
+    public function sendBillViaEmail(Student $student)
+    {
+        try {
+            // Get custom content from request
+            $requestData = json_decode(request()->getContent(), true);
+            $customEmail = $requestData['email'] ?? $student->email;
+            $customSubject = $requestData['subject'] ?? 'Billing Statement - Institute of Modern Technologies';
+            $customMessage = $requestData['message'] ?? '';
+            
+            if (!$customEmail) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email address is required.'
+                ]);
+            }
+
+            if (!$customMessage) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email message is required.'
+                ]);
+            }
+
+            // Calculate billing information for email data
+            $fee = Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            $totalPaid = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+            $balance = $amountToBePaid - $totalPaid;
+
+            // Prepare email data with custom content
+            $emailData = [
+                'student' => $student,
+                'fee' => $fee,
+                'amountToBePaid' => $amountToBePaid,
+                'totalPaid' => $totalPaid,
+                'balance' => $balance,
+                'billUrl' => route('admin.billing.generate', $student->id),
+                'customMessage' => $customMessage,
+                'customSubject' => $customSubject
+            ];
+
+            // Send email using Laravel's Mail facade with custom content
+            \Mail::send('emails.custom-billing-statement', $emailData, function($message) use ($student, $customEmail, $customSubject) {
+                $message->to($customEmail, $student->first_name . ' ' . $student->last_name)
+                        ->subject($customSubject)
+                        ->from(config('mail.from.address'), config('mail.from.name'));
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => "Email sent successfully to {$customEmail}"
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send email: ' . $e->getMessage()
+            ]);
+        }
+    }
 }
