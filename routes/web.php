@@ -436,7 +436,7 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
 });
 
 // School Portal Routes
-Route::middleware(['auth'])->prefix('school')->name('school.')->group(function () {
+Route::middleware(['auth', 'user.type:school_admin'])->prefix('school')->name('school.')->group(function () {
     Route::get('/dashboard', '\App\Http\Controllers\School\SchoolPortalController@dashboard')->name('dashboard');
     
     // Student Management Routes
