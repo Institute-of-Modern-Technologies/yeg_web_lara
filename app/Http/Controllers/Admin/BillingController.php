@@ -25,6 +25,12 @@ class BillingController extends Controller
                                ->orWhereNull('fees.school_id');
                      });
             })
+            // Only show students that admin can manage
+            ->where(function($query) {
+                $query->where('admin_can_manage', true)
+                      ->orWhere('is_school_managed', false)
+                      ->orWhereNull('is_school_managed');
+            })
             ->addSelect([
                 'fee_amount' => Fee::selectRaw('COALESCE(amount - partner_discount, amount)')
                     ->whereColumn('program_type_id', 'students.program_type_id')

@@ -9,6 +9,7 @@ use App\Models\ProgramType;
 use App\Models\School;
 use App\Models\Payment;
 use App\Models\Stage;
+use App\Models\User;
 
 class Student extends Model
 {
@@ -36,7 +37,11 @@ class Student extends Model
         'date_of_birth',
         'address',
         'region',
-        'state'
+        'state',
+        'created_by_school_id',
+        'is_school_managed',
+        'admin_can_manage',
+        'user_id'
     ];
     
     /**
@@ -95,6 +100,14 @@ class Student extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+    
+    /**
+     * Get the user account associated with this student.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
     
     /**

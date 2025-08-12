@@ -433,19 +433,24 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     // Billing Management Routes
     Route::get('/billing', '\App\Http\Controllers\Admin\BillingController@index')->name('admin.billing.index');
     Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
-    Route::get('/billing/get-bill-info/{student}', '\App\Http\Controllers\Admin\BillingController@getBillInfo')->name('admin.billing.get-bill-info');
-    Route::post('/billing/send-whatsapp/{student}', '\App\Http\Controllers\Admin\BillingController@sendBillViaWhatsApp')->name('admin.billing.send-whatsapp');
-    Route::post('/billing/send-email/{student}', '\App\Http\Controllers\Admin\BillingController@sendBillViaEmail')->name('admin.billing.send-email');
 });
 
-// School Admin Routes
-Route::middleware(['auth', 'user.type:school_admin'])->prefix('school')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('school.dashboard');
-    })->name('school.dashboard');
+// School Portal Routes
+Route::middleware(['auth'])->prefix('school')->name('school.')->group(function () {
+    Route::get('/dashboard', '\App\Http\Controllers\School\SchoolPortalController@dashboard')->name('dashboard');
+    
+    // Student Management Routes
+    Route::get('/students', '\App\Http\Controllers\School\SchoolPortalController@studentsIndex')->name('students.index');
+    Route::post('/students', '\App\Http\Controllers\School\SchoolPortalController@storeStudent')->name('students.store');
+    Route::get('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@getStudent')->name('students.show');
+    Route::put('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@updateStudent')->name('students.update');
+    Route::delete('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@deleteStudent')->name('students.destroy');
+    
+    // Admin Permission Management
+    Route::post('/toggle-admin-permission', '\App\Http\Controllers\School\SchoolPortalController@toggleAdminPermission')->name('toggle-admin-permission');
 });
 
-// Student Routes
+// ... (rest of the code remains the same)
 Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(function () {
     // Student Dashboard Route
     Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('student.dashboard');

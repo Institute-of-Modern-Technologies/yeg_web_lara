@@ -1,205 +1,194 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>School Admin Dashboard - Young Experts Group</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="bg-blue-600 text-white shadow-md">
-            <div class="container mx-auto px-6 py-3">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center">
-                        <a href="{{ url('/') }}" class="flex items-center">
-                            <span class="text-white text-xl font-medium">Young</span>
-                            <span class="text-yellow-300 mx-1 text-xl">Experts</span>
-                            <span class="text-white text-xl font-medium">Group</span>
-                        </a>
-                        <span class="ml-4 text-sm bg-blue-700 px-2 py-1 rounded">School Admin</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm">Welcome, {{ Auth::user()->name }}</span>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded transition-colors duration-200">
-                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                            </button>
-                        </form>
-                    </div>
+@extends('layouts.school')
+
+@section('title', 'Dashboard')
+
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">{{ $school->name }} Dashboard</h1>
+        <p class="mt-2 text-gray-400">Welcome back! Here's an overview of your school's activity.</p>
+    </div>
+
+    <!-- Admin Permission Toggle -->
+    <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-white">Admin Management Permission</h3>
+                <p class="text-sm text-gray-400 mt-1">
+                    Allow YEG administrators to manage your students. You can revoke this permission at any time.
+                </p>
+            </div>
+            <div class="flex items-center">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" 
+                           id="admin-permission-toggle" 
+                           class="sr-only peer" 
+                           {{ $school->allow_admin_management ? 'checked' : '' }}>
+                    <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-green-500 peer-checked:to-green-600"></div>
+                </label>
+                <span class="ml-3 text-sm font-medium text-white">
+                    {{ $school->allow_admin_management ? 'Enabled' : 'Disabled' }}
+                </span>
+            </div>
+        </div>
+        @if($school->allow_admin_management && $school->admin_permission_granted_at)
+            <div class="mt-3 text-xs text-gray-500">
+                Permission granted on {{ $school->admin_permission_granted_at->format('M d, Y \a\t g:i A') }}
+                @if($school->admin_permission_granted_by)
+                    by {{ $school->admin_permission_granted_by }}
+                @endif
+            </div>
+        @endif
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 hover:shadow-blue-500/10 transition-all duration-200">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-gray-400">Total Students</h3>
+                    <p class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">{{ $totalStudents }}</p>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Main Content -->
-        <div class="flex flex-1">
-            <!-- Sidebar -->
-            <aside class="w-64 bg-blue-800 text-white p-4 hidden md:block">
-                <nav>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded bg-blue-700">
-                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-users mr-2"></i> Students
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-book mr-2"></i> Courses
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-calendar mr-2"></i> Schedule
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-cog mr-2"></i> Settings
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <!-- Content Area -->
-            <main class="flex-1 p-6">
-                <h1 class="text-3xl font-bold mb-6">School Admin Dashboard</h1>
-
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-500 bg-opacity-10 text-blue-500">
-                                <i class="fas fa-users text-2xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h2 class="text-gray-600 text-sm">Total Students</h2>
-                                <p class="text-2xl font-bold">65</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-500 bg-opacity-10 text-green-500">
-                                <i class="fas fa-book text-2xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h2 class="text-gray-600 text-sm">Active Courses</h2>
-                                <p class="text-2xl font-bold">12</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-purple-500 bg-opacity-10 text-purple-500">
-                                <i class="fas fa-clipboard-check text-2xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h2 class="text-gray-600 text-sm">Pending Enrollments</h2>
-                                <p class="text-2xl font-bold">8</p>
-                            </div>
-                        </div>
-                    </div>
+        <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 hover:shadow-green-500/10 transition-all duration-200">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
+                    <i class="fas fa-user-check text-2xl"></i>
                 </div>
-
-                <!-- Student Management Section -->
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-xl font-bold">Student Management</h2>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-between mb-4">
-                            <div class="relative">
-                                <input type="text" placeholder="Search students..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                            </div>
-                            <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                                <i class="fas fa-plus mr-1"></i> Add New Student
-                            </a>
-                        </div>
-
-                        <!-- Students Table -->
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white">
-                                <thead>
-                                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm">
-                                        <th class="py-3 px-4 text-left">Name</th>
-                                        <th class="py-3 px-4 text-left">Email</th>
-                                        <th class="py-3 px-4 text-left">Username</th>
-                                        <th class="py-3 px-4 text-left">Enrollment Date</th>
-                                        <th class="py-3 px-4 text-left">Status</th>
-                                        <th class="py-3 px-4 text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-600">
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-3 px-4">John Smith</td>
-                                        <td class="py-3 px-4">john.smith@example.com</td>
-                                        <td class="py-3 px-4">johnsmith</td>
-                                        <td class="py-3 px-4">2025-04-10</td>
-                                        <td class="py-3 px-4">
-                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Active</span>
-                                        </td>
-                                        <td class="py-3 px-4 text-center">
-                                            <button class="text-blue-500 hover:text-blue-700 mx-1">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-500 hover:text-red-700 mx-1">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-3 px-4">Lisa Johnson</td>
-                                        <td class="py-3 px-4">lisa.johnson@example.com</td>
-                                        <td class="py-3 px-4">lisaj</td>
-                                        <td class="py-3 px-4">2025-04-15</td>
-                                        <td class="py-3 px-4">
-                                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Active</span>
-                                        </td>
-                                        <td class="py-3 px-4 text-center">
-                                            <button class="text-blue-500 hover:text-blue-700 mx-1">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-500 hover:text-red-700 mx-1">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="py-3 px-4">David Brown</td>
-                                        <td class="py-3 px-4">david.brown@example.com</td>
-                                        <td class="py-3 px-4">dbrown</td>
-                                        <td class="py-3 px-4">2025-05-02</td>
-                                        <td class="py-3 px-4">
-                                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pending</span>
-                                        </td>
-                                        <td class="py-3 px-4 text-center">
-                                            <button class="text-blue-500 hover:text-blue-700 mx-1">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-500 hover:text-red-700 mx-1">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-gray-400">Active Students</h3>
+                    <p class="text-3xl font-bold bg-gradient-to-r from-green-400 to-green-500 bg-clip-text text-transparent">{{ $activeStudents }}</p>
                 </div>
-            </main>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6 hover:shadow-purple-500/10 transition-all duration-200">
+            <div class="flex items-center">
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg">
+                    <i class="fas fa-user-cog text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-gray-400">With Accounts</h3>
+                    <p class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent">{{ $studentsWithAccounts }}</p>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+            <div class="space-y-3">
+                <a href="{{ route('school.students.index') }}" 
+                   class="flex items-center p-4 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg hover:shadow-blue-500/25">
+                    <i class="fas fa-users mr-3 text-lg"></i>
+                    <span class="font-medium">Manage Students</span>
+                </a>
+                <a href="#" 
+                   class="flex items-center p-4 text-gray-300 bg-gradient-to-r from-gray-800 to-gray-850 rounded-xl hover:from-gray-700 hover:to-gray-800 hover:text-white transition-all duration-200">
+                    <i class="fas fa-chart-bar mr-3 text-lg"></i>
+                    <span class="font-medium">View Reports</span>
+                </a>
+                <a href="#" 
+                   class="flex items-center p-4 text-gray-300 bg-gradient-to-r from-gray-800 to-gray-850 rounded-xl hover:from-gray-700 hover:to-gray-800 hover:text-white transition-all duration-200">
+                    <i class="fas fa-cog mr-3 text-lg"></i>
+                    <span class="font-medium">School Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-900 to-gray-950 rounded-2xl shadow-2xl border border-gray-800 p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Recent Activity</h3>
+            <div class="space-y-3">
+                @if($students->count() > 0)
+                    @foreach($students->take(3) as $student)
+                        <div class="flex items-center p-4 bg-gradient-to-r from-gray-800 to-gray-850 rounded-xl hover:from-gray-750 hover:to-gray-800 transition-all duration-200">
+                            <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-sm font-semibold shadow-lg">
+                                {{ substr($student->full_name ?: $student->first_name, 0, 1) }}
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-semibold text-white">{{ $student->full_name ?: $student->first_name . ' ' . $student->last_name }}</p>
+                                <p class="text-xs text-gray-400">Added {{ $student->created_at->diffForHumans() }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-8">
+                        <i class="fas fa-clock text-3xl text-gray-600 mb-2"></i>
+                        <p class="text-gray-400 text-sm">No recent activity</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<!-- SweetAlert2 for modals -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Admin Permission Toggle
+document.getElementById('admin-permission-toggle').addEventListener('change', function() {
+    const allowAdmin = this.checked;
+    
+    fetch('{{ route("school.toggle-admin-permission") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            allow_admin: allowAdmin
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Permission Updated',
+                text: data.message,
+                timer: 3000,
+                showConfirmButton: false
+            });
+            
+            // Update the status text
+            const statusText = document.querySelector('.ml-3.text-sm.font-medium.text-gray-900');
+            statusText.textContent = allowAdmin ? 'Enabled' : 'Disabled';
+            
+            // Reload page to update timestamp
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message
+            });
+            // Revert toggle
+            this.checked = !allowAdmin;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating permission.'
+        });
+        // Revert toggle
+        this.checked = !allowAdmin;
+    });
+});
+</script>
+@endsection
