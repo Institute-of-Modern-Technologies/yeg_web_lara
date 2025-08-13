@@ -435,19 +435,24 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
 });
 
-// School Portal Routes - Modified with more permissive auth to prevent redirect loops
+// School Authentication Routes - Clean, simple approach
+Route::get('/school/login', '\App\Http\Controllers\Auth\SchoolAuthController@showLoginForm')->name('school.login');
+Route::post('/school/login', '\App\Http\Controllers\Auth\SchoolAuthController@login')->name('school.login.attempt');
+Route::post('/school/logout', '\App\Http\Controllers\Auth\SchoolAuthController@logout')->name('school.logout');
+
+// School Portal Routes - New clean implementation
 Route::middleware(['auth'])->prefix('school')->name('school.')->group(function () {
-    Route::get('/dashboard', '\App\Http\Controllers\School\SchoolPortalController@dashboard')->name('dashboard');
+    Route::get('/dashboard', '\App\Http\Controllers\School\NewSchoolPortalController@dashboard')->name('dashboard');
     
     // Student Management Routes
-    Route::get('/students', '\App\Http\Controllers\School\SchoolPortalController@studentsIndex')->name('students.index');
-    Route::post('/students', '\App\Http\Controllers\School\SchoolPortalController@storeStudent')->name('students.store');
-    Route::get('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@getStudent')->name('students.show');
-    Route::put('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@updateStudent')->name('students.update');
-    Route::delete('/students/{student}', '\App\Http\Controllers\School\SchoolPortalController@deleteStudent')->name('students.destroy');
+    Route::get('/students', '\App\Http\Controllers\School\NewSchoolPortalController@studentsIndex')->name('students.index');
+    Route::post('/students', '\App\Http\Controllers\School\NewSchoolPortalController@storeStudent')->name('students.store');
+    Route::get('/students/{student}', '\App\Http\Controllers\School\NewSchoolPortalController@getStudent')->name('students.show');
+    Route::put('/students/{student}', '\App\Http\Controllers\School\NewSchoolPortalController@updateStudent')->name('students.update');
+    Route::delete('/students/{student}', '\App\Http\Controllers\School\NewSchoolPortalController@deleteStudent')->name('students.destroy');
     
     // Admin Permission Management
-    Route::post('/toggle-admin-permission', '\App\Http\Controllers\School\SchoolPortalController@toggleAdminPermission')->name('toggle-admin-permission');
+    Route::post('/toggle-admin-permission', '\App\Http\Controllers\School\NewSchoolPortalController@toggleAdminPermission')->name('toggle-admin-permission');
 });
 
 // ... (rest of the code remains the same)
