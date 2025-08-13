@@ -2,42 +2,33 @@
 
 namespace App\Providers;
 
-use App\Models\Student;
-use App\Observers\StudentObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 
-class AppServiceProvider extends ServiceProvider
+class CacheResetServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register services.
      */
     public function register(): void
     {
-        $this->app->register(MiddlewareServiceProvider::class);
+        //
     }
 
     /**
-     * Bootstrap any application services.
+     * Bootstrap services.
      */
     public function boot(): void
     {
-        // Set default string length for MariaDB/MySQL older versions
-        Schema::defaultStringLength(191);
-        
-        // Register observers
-        Student::observe(StudentObserver::class);
-        
-        // Auto-fix production issues after deployment
+        // Only run this in production to avoid slowing down development
         if (app()->environment('production')) {
             try {
                 // Create a flag file to ensure this only runs once after deployment
                 $flagFile = storage_path('framework/cache/auto_cleared.flag');
                 
-                // Check if we've cleared the cache recently
-                if (!file_exists($flagFile) || (time() - filemtime($flagFile) > 3600)) {
+                // Check if we've cleared the cache already
+                if (!file_exists($flagFile) || (time() - filemtime($flagFile) > 86400)) {
                     // Clear all Laravel caches
                     Artisan::call('route:clear');
                     Artisan::call('config:clear');
@@ -45,9 +36,6 @@ class AppServiceProvider extends ServiceProvider
                     Artisan::call('view:clear');
                     
                     // Create or touch the flag file to prevent repeated clearing
-                    if (!is_dir(dirname($flagFile))) {
-                        mkdir(dirname($flagFile), 0755, true);
-                    }
                     file_put_contents($flagFile, date('Y-m-d H:i:s'));
                     
                     // Log that caches were cleared
