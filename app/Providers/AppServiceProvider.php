@@ -30,32 +30,7 @@ class AppServiceProvider extends ServiceProvider
         // Register observers
         Student::observe(StudentObserver::class);
         
-        // Auto-fix production issues after deployment
-        if (app()->environment('production')) {
-            try {
-                // Create a flag file to ensure this only runs once after deployment
-                $flagFile = storage_path('framework/cache/auto_cleared.flag');
-                
-                // Check if we've cleared the cache recently
-                if (!file_exists($flagFile) || (time() - filemtime($flagFile) > 3600)) {
-                    // Clear all Laravel caches
-                    Artisan::call('route:clear');
-                    Artisan::call('config:clear');
-                    Artisan::call('cache:clear');
-                    Artisan::call('view:clear');
-                    
-                    // Create or touch the flag file to prevent repeated clearing
-                    if (!is_dir(dirname($flagFile))) {
-                        mkdir(dirname($flagFile), 0755, true);
-                    }
-                    file_put_contents($flagFile, date('Y-m-d H:i:s'));
-                    
-                    // Log that caches were cleared
-                    Log::info('Application caches automatically cleared after deployment');
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to auto-clear caches: ' . $e->getMessage());
-            }
-        }
+        // Auto-fix functionality disabled to prevent 500 server errors
+        // Left Schema::defaultStringLength(191) in place as it's important for MySQL compatibility
     }
 }
