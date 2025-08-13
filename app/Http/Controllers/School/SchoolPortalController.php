@@ -15,7 +15,34 @@ use Illuminate\Support\Facades\Validator;
 
 class SchoolPortalController extends Controller
 {
-    // Middleware is applied via routes, no constructor needed
+    /**
+     * Constructor with authorization check
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            // Get authenticated user
+            $user = Auth::user();
+            
+            if (!$user) {
+                return redirect()->route('login');
+            }
+            
+            // Check if user is a school admin or super admin
+            $userType = \App\Models\UserType::find($user->user_type_id);
+            $isSchoolAdmin = $userType && $userType->slug === 'school_admin';
+            $isSuperAdmin = $userType && $userType->slug === 'super_admin';
+            
+            if (!$isSchoolAdmin && !$isSuperAdmin) {
+                // Not a school admin, redirect to login
+                Auth::logout();
+                return redirect()->route('login')
+                    ->with('error', 'You must be logged in as a school to access this area.');
+            }
+            
+            return $next($request);
+        });
+    }
 
     /**
      * Display the school dashboard
@@ -28,6 +55,7 @@ class SchoolPortalController extends Controller
         $school = School::where('email', $user->email)->first();
         
         if (!$school) {
+            Auth::logout(); // Logout to prevent redirect loops
             return redirect()->route('login')->with('error', 'School not found. Please contact administrator.');
         }
 
