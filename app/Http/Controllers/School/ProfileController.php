@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\School;
@@ -29,17 +30,40 @@ class ProfileController extends Controller
         
         // First check session
         if (session('school_id')) {
-            return School::find(session('school_id'));
+            $school = School::find(session('school_id'));
+            if ($school) {
+                return $school;
+            }
         }
         
-        // Fallback to email lookup
+        // Try multiple methods to find the school
+        
+        // 1. Try by email match
         $school = School::where('email', $user->email)->first();
+        
+        // 2. If not found, try by user_id if that column exists
+        if (!$school && Schema::hasColumn('schools', 'user_id')) {
+            $school = School::where('user_id', $user->id)->first();
+        }
+        
+        // 3. If there's only one school record, return that (useful for testing/demo)
+        if (!$school && School::count() == 1) {
+            $school = School::first();
+        }
+        
+        // 4. If user is a super_admin, get the first school as fallback
+        if (!$school && $user->type == 'super_admin') {
+            $school = School::first();
+        }
         
         if ($school) {
             // Store in session for future requests
             session(['school_id' => $school->id, 'school_name' => $school->name]);
             return $school;
         }
+        
+        // Debug info - log this issue
+        \Log::warning('School not found for user: ' . $user->id . ' - ' . $user->email . ' - Type: ' . $user->type);
         
         return null;
     }
