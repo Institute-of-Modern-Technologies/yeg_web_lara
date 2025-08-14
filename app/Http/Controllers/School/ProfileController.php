@@ -127,8 +127,11 @@ class ProfileController extends Controller
             $school->address = $validated['school_address'];
             $school->save();
 
-            // Update session with new school name
+            // Update session with new school name and force refresh user data
             session(['school_name' => $school->name]);
+            
+            // Force refresh the authenticated user to ensure profile_photo change is reflected
+            Auth::setUser($user->fresh());
 
             return redirect()->route('school.profile')->with('success', 'Profile updated successfully!');
 
