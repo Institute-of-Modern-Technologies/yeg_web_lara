@@ -250,12 +250,37 @@
         .stat-value {
             font-size: 24px;
             font-weight: 600;
-            margin-bottom: 5px;
+            color: #4B5563;
         }
         
         .stat-label {
             font-size: 14px;
-            opacity: 0.8;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+        
+        /* Active Navigation Link Styles */
+        .sidebar-link {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .active-nav-link, 
+        .sidebar-link.text-gray-600:hover {
+            color: var(--color-admin-purple);
+            background-color: #F3E8FF;
+            font-weight: 500;
+        }
+        
+        .active-nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--color-admin-purple-light), var(--color-admin-purple));
+            border-radius: 0 4px 4px 0;
         }
     </style>
     

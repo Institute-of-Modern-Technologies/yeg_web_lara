@@ -157,8 +157,15 @@
                         <!-- User Dropdown - Alpine.js Accordion Style -->
                         <div x-data="{ open: false }" class="relative" id="user-dropdown-container">
                             <button @click="open = !open" type="button" class="flex items-center space-x-2 text-white hover:bg-white hover:bg-opacity-10 p-2 rounded-md transition-all duration-200">
-                                <div class="w-8 h-8 rounded-full bg-white text-teal-600 flex items-center justify-center shadow-sm">
-                                    <span class="font-semibold">{{ auth()->user() ? substr(auth()->user()->name, 0, 1) : 'U' }}</span>
+                                <div class="w-8 h-8 rounded-full overflow-hidden bg-white text-teal-600 flex items-center justify-center shadow-sm">
+                                    @if(auth()->user() && auth()->user()->profile_photo)
+                                        <img src="{{ asset('storage/profile-photos/' . auth()->user()->profile_photo) }}?v={{ time() }}" 
+                                             alt="{{ auth()->user()->name }}" 
+                                             class="w-full h-full object-cover"
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'font-semibold\'>{{ auth()->user() ? substr(auth()->user()->name, 0, 1) : 'U' }}</span>'">
+                                    @else
+                                        <span class="font-semibold">{{ auth()->user() ? substr(auth()->user()->name, 0, 1) : 'U' }}</span>
+                                    @endif
                                 </div>
                                 <div class="hidden md:block text-left">
                                     <div class="text-sm font-medium">{{ auth()->user() ? auth()->user()->name : 'User' }}</div>
@@ -170,7 +177,7 @@
                             </button>
                             
                             <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
-                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <a href="{{ route('student.profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                     <i class="fas fa-user-circle mr-2 text-teal-600"></i> Profile
                                 </a>
                                 <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">

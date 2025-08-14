@@ -16,11 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class NewSchoolPortalController extends Controller
 {
     /**
-     * Constructor - Simple auth check
+     * Constructor - Authentication is handled by routes middleware
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // Authentication is handled by the 'auth' middleware in routes
+        // No need to call middleware here since routes already handle it
     }
 
     /**
@@ -56,7 +57,7 @@ class NewSchoolPortalController extends Controller
         
         if (!$school) {
             Auth::logout();
-            return redirect()->route('school.login')->with('error', 'School account not found.');
+            return redirect()->route('login')->with('error', 'School account not found.');
         }
 
         // Get school's students statistics
@@ -91,7 +92,7 @@ class NewSchoolPortalController extends Controller
         $school = $this->getCurrentSchool();
         
         if (!$school) {
-            return redirect()->route('school.login')->with('error', 'School account not found.');
+            return redirect()->route('login')->with('error', 'School account not found.');
         }
 
         $students = Student::where(function($query) use ($school) {

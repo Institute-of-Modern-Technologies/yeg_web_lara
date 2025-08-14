@@ -95,6 +95,10 @@ Route::prefix('students')->name('student.registration.')->group(function () {
 Route::middleware(['auth', 'user.type:student'])->prefix('student')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('student.dashboard');
     
+    // Profile Routes
+    Route::get('/profile', [\App\Http\Controllers\Student\ProfileController::class, 'show'])->name('student.profile');
+    Route::put('/profile', [\App\Http\Controllers\Student\ProfileController::class, 'update'])->name('student.profile.update');
+    
     // Student Activity Routes
     Route::post('/activities/{id}/complete', [\App\Http\Controllers\Student\ActivityController::class, 'complete'])->name('student.activities.complete');
     Route::post('/activities/{id}/revert', [\App\Http\Controllers\Student\ActivityController::class, 'revert'])->name('student.activities.revert');
@@ -435,14 +439,13 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
 });
 
-// School Authentication Routes - Clean, simple approach
-Route::get('/school/login', '\App\Http\Controllers\Auth\SchoolAuthController@showLoginForm')->name('school.login');
-Route::post('/school/login', '\App\Http\Controllers\Auth\SchoolAuthController@login')->name('school.login.attempt');
-Route::post('/school/logout', '\App\Http\Controllers\Auth\SchoolAuthController@logout')->name('school.logout');
-
-// School Portal Routes - New clean implementation
-Route::middleware(['auth'])->prefix('school')->name('school.')->group(function () {
+// School Portal Routes - Integrated with main authentication
+Route::middleware(['auth', 'user.type:school_admin'])->prefix('school')->name('school.')->group(function () {
     Route::get('/dashboard', '\App\Http\Controllers\School\NewSchoolPortalController@dashboard')->name('dashboard');
+    
+    // Profile Routes
+    Route::get('/profile', '\App\Http\Controllers\School\ProfileController@show')->name('profile');
+    Route::put('/profile', '\App\Http\Controllers\School\ProfileController@update')->name('profile.update');
     
     // Student Management Routes
     Route::get('/students', '\App\Http\Controllers\School\NewSchoolPortalController@studentsIndex')->name('students.index');

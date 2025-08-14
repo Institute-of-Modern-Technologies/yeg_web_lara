@@ -20,6 +20,100 @@
     <!-- SweetAlert2 for modals -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <style>
+        /* Ultra-Modern Navigation Link Styles */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            margin: 0 0.5rem;
+            position: relative;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            letter-spacing: 0.025em;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: scale(0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link:hover {
+            color: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            margin-right: 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link-active {
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-link-active::before {
+            opacity: 1;
+            transform: scale(1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.2),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link-active .nav-icon {
+            transform: scale(1.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+        }
+        
+        .nav-link-green .nav-icon {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.8) 0%, rgba(52, 211, 153, 0.8) 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link-blue .nav-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(96, 165, 250, 0.8) 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link-purple .nav-icon {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(167, 139, 250, 0.8) 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+    </style>
     @yield('styles')
 </head>
 <body class="font-sans antialiased bg-black">
@@ -37,20 +131,24 @@
                         <!-- Navigation Links -->
                         <div class="hidden md:ml-10 md:flex md:space-x-8">
                             <a href="{{ route('school.dashboard') }}" 
-                               class="border-transparent text-gray-400 hover:text-green-400 hover:border-green-400 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-all duration-200 {{ request()->routeIs('school.dashboard') ? 'border-green-400 text-green-400' : '' }}">
-                                Dashboard
+                               class="nav-link {{ request()->routeIs('school.dashboard') ? 'nav-link-active nav-link-green' : '' }}">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>Dashboard</span>
                             </a>
                             <a href="{{ route('school.students.index') }}" 
-                               class="border-transparent text-gray-400 hover:text-blue-400 hover:border-blue-400 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-all duration-200 {{ request()->routeIs('school.students.*') ? 'border-blue-400 text-blue-400' : '' }}">
-                                Students
+                               class="nav-link {{ request()->routeIs('school.students.*') ? 'nav-link-active nav-link-blue' : '' }}">
+                                <span class="nav-icon"><i class="fas fa-user-graduate"></i></span>
+                                <span>Students</span>
+                            </a>
+                            <a href="{{ route('school.profile') }}" 
+                               class="nav-link {{ request()->routeIs('school.profile*') ? 'nav-link-active nav-link-purple' : '' }}">
+                                <span class="nav-icon"><i class="fas fa-user-cog"></i></span>
+                                <span>Profile</span>
                             </a>
                             <a href="#" 
-                               class="border-transparent text-gray-400 hover:text-purple-400 hover:border-purple-400 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-all duration-200">
-                                Reports
-                            </a>
-                            <a href="#" 
-                               class="border-transparent text-gray-400 hover:text-yellow-400 hover:border-yellow-400 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-all duration-200">
-                                Settings
+                               class="nav-link">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>Reports</span>
                             </a>
                         </div>
                     </div>
@@ -68,13 +166,14 @@
                                 </button>
                                 
                                 <!-- Dropdown menu -->
-                                <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5" id="user-menu">
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 border border-gray-700 py-1 shadow-lg ring-1 ring-black ring-opacity-5" id="user-menu">
+                                    <a href="{{ route('school.profile') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                                        <i class="fas fa-user mr-2"></i>Profile
+                                    </a>
                                     <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            Sign out
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Sign out
                                         </button>
                                     </form>
                                 </div>
