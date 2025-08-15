@@ -29,7 +29,7 @@ class SchoolRegistrationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'email' => 'required|email|max:255',
             'location' => 'required|string|max:255',
             'gps_coordinates' => 'nullable|string|max:100',
             'owner_name' => 'required|string|max:255',
@@ -46,7 +46,7 @@ class SchoolRegistrationController extends Controller
         // Set default status for public registrations
         $validated['status'] = 'pending';
 
-        // Create the school
+        // Create the school without user account (will be created upon approval)
         $school = School::create($validated);
 
         return redirect()->route('school.register.success')->with('success', 'School registration submitted successfully. Your application is now pending approval.');

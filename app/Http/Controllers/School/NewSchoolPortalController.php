@@ -36,8 +36,22 @@ class NewSchoolPortalController extends Controller
             return School::find(session('school_id'));
         }
         
-        // Fallback to email lookup
-        $school = School::where('email', $user->email)->first();
+        // Try multiple lookup methods
+        $school = null;
+        
+        // 1. Try user_id lookup first (most reliable)
+        $school = School::where('user_id', $user->id)->first();
+        
+        // 2. Fallback to email lookup
+        if (!$school) {
+            $school = School::where('email', $user->email)->first();
+            
+            // If found by email, update the user_id for future lookups
+            if ($school && !$school->user_id) {
+                $school->user_id = $user->id;
+                $school->save();
+            }
+        }
         
         if ($school) {
             // Store in session for future requests

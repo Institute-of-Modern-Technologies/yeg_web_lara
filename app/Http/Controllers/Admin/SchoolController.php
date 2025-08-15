@@ -63,13 +63,14 @@ class SchoolController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'email' => 'required|email|max:255|unique:users,email', // Make email required and unique
             'location' => 'required|string|max:255',
             'gps_coordinates' => 'nullable|string|max:100',
             'owner_name' => 'required|string|max:255',
             'avg_students' => 'nullable|integer|min:1',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:pending,approved,rejected',
+            'password' => 'required|string|min:8', // Add password field for user creation
         ]);
 
         // Handle logo upload
@@ -77,12 +78,28 @@ class SchoolController extends Controller
             $logoPath = $request->file('logo')->store('school-logos', 'public');
             $validated['logo'] = $logoPath;
         }
+        
+        // Create user account for the school
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+        
+        // Assign school_admin user type
+        $userTypeId = UserType::where('name', 'school_admin')->first()->id;
+        $user->user_type_id = $userTypeId;
+        $user->save();
 
-        // Create the school
+        // Create the school and link to user
         $school = School::create($validated);
+        
+        // Link the school to the user
+        $school->user_id = $user->id;
+        $school->save();
 
         return redirect()->route('admin.schools.index')
-            ->with('success', 'School created successfully.');
+            ->with('success', 'School created successfully with login credentials.');
     }
 
     /**
@@ -218,7 +235,7 @@ class SchoolController extends Controller
                     $email = $username . '@placeholder.yeg.edu';
                 }
                 
-                User::create([
+                $user = User::create([
                     'name' => $school->name,
                     'email' => $email,
                     'username' => $username,
@@ -226,7 +243,11 @@ class SchoolController extends Controller
                     'user_type_id' => $schoolAdminType->id
                 ]);
                 
-                \Log::info('User account created for school: ' . $username);
+                // Link the user to the school
+                $school->user_id = $user->id;
+                $school->save();
+                
+                \Log::info('User account created and linked for school: ' . $username);
             } catch (\Exception $e) {
                 \Log::error('Failed to create user account for school: ' . $e->getMessage());
                 // Continue with school approval even if user creation fails
