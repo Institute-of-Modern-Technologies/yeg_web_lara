@@ -40,7 +40,7 @@
                             <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-700 border-4 border-gray-600 shadow-lg">
                                 @if($user->profile_photo)
                                     <img id="profile-preview" 
-                                         src="{{ asset('storage/profile-photos/' . rawurlencode($user->profile_photo)) }}?v={{ time() }}" 
+                                         src="{{ asset('uploads/profile-photos/' . rawurlencode($user->profile_photo)) }}?v={{ time() }}" 
                                          alt="{{ $user->name }}" 
                                          class="w-full h-full object-cover"
                                          onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-green-500 to-blue-600 text-white text-4xl font-bold\'>{{ substr($user->name, 0, 1) }}</div>'">

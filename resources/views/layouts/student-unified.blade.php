@@ -159,7 +159,7 @@
                             <button @click="open = !open" type="button" class="flex items-center space-x-2 text-white hover:bg-white hover:bg-opacity-10 p-2 rounded-md transition-all duration-200">
                                 <div class="w-8 h-8 rounded-full overflow-hidden bg-white text-teal-600 flex items-center justify-center shadow-sm">
                                     @if(auth()->user() && auth()->user()->profile_photo)
-                                        <img src="{{ asset('storage/profile-photos/' . auth()->user()->profile_photo) }}?v={{ time() }}" 
+                                        <img src="{{ asset('uploads/profile-photos/' . auth()->user()->profile_photo) }}?v={{ time() }}" 
                                              alt="{{ auth()->user()->name }}" 
                                              class="w-full h-full object-cover"
                                              onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'font-semibold\'>{{ auth()->user() ? substr(auth()->user()->name, 0, 1) : 'U' }}</span>'">

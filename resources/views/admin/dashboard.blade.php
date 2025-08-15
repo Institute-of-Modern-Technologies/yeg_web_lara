@@ -282,7 +282,7 @@
                             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                                 <div class="w-8 h-8 rounded-full bg-white/20 overflow-hidden flex items-center justify-center text-white font-medium">
                                      @if(Auth::user()->profile_photo)
-                                        <img src="{{ asset('storage/profile-photos/' . rawurlencode(Auth::user()->profile_photo)) }}?v={{ time() }}" 
+                                        <img src="{{ asset('uploads/profile-photos/' . rawurlencode(Auth::user()->profile_photo)) }}?v={{ time() }}" 
                                             alt="{{ Auth::user()->name }}" class="w-full h-full object-cover"
                                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '{{ substr(Auth::user()->name, 0, 1) }}'">
                                     @else

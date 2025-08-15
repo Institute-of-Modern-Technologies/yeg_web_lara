@@ -93,15 +93,18 @@ class ProfileController extends Controller
                 if ($file->isValid()) {
                     // Delete old photo if it exists
                     if ($user->profile_photo && $user->profile_photo != 'default-profile.png') {
-                        Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
-                        \Log::info('Deleted old profile photo: ' . $user->profile_photo);
+                        $oldPath = public_path('uploads/profile-photos/' . $user->profile_photo);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
+                            \Log::info('Deleted old profile photo: ' . $user->profile_photo);
+                        }
                     }
                     
                     // Create directory if it doesn't exist
-                    $directory = storage_path('app/public/profile-photos');
+                    $directory = public_path('uploads/profile-photos');
                     if (!file_exists($directory)) {
                         mkdir($directory, 0755, true);
-                        \Log::info('Created profile-photos directory');
+                        \Log::info('Created profile-photos directory in public');
                     }
                     
                     // Store the new photo with a unique filename
@@ -113,12 +116,11 @@ class ProfileController extends Controller
                     
                     \Log::info('Attempting to store file as: ' . $filename);
                     
-                    // Store the file
-                    $stored = $file->storeAs('profile-photos', $filename, 'public');
-                    
-                    if ($stored) {
+                    // Move the file directly to public directory
+                    $destination = public_path('uploads/profile-photos/' . $filename);
+                    if ($file->move(dirname($destination), $filename)) {
                         $user->profile_photo = $filename;
-                        \Log::info('Profile photo stored successfully: ' . $filename);
+                        \Log::info('Profile photo stored successfully in public: ' . $filename);
                     } else {
                         \Log::error('Failed to store profile photo');
                         throw new \Exception('Failed to store profile photo');

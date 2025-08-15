@@ -41,7 +41,11 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if it exists
             if ($user->profile_photo && $user->profile_photo != 'default-profile.png') {
-                Storage::disk('public')->delete('profile-photos/' . $user->profile_photo);
+                $oldPath = public_path('uploads/profile-photos/' . $user->profile_photo);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                    \Log::info('Deleted old admin profile photo: ' . $user->profile_photo);
+                }
             }
             
             // Store the new photo with a unique filename
@@ -50,8 +54,22 @@ class ProfileController extends Controller
             // Replace spaces with underscores to avoid URL encoding issues
             $safeFileName = str_replace(' ', '_', $originalName);
             $filename = time() . '_' . $safeFileName;
-            $file->storeAs('profile-photos', $filename, 'public');
-            $user->profile_photo = $filename;
+            // Create directory if it doesn't exist
+            $directory = public_path('uploads/profile-photos');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+                \Log::info('Created profile-photos directory in public');
+            }
+            
+            // Move the file directly to public directory
+            $destination = public_path('uploads/profile-photos/' . $filename);
+            if ($file->move(dirname($destination), $filename)) {
+                $user->profile_photo = $filename;
+                \Log::info('Admin profile photo stored successfully in public: ' . $filename);
+            } else {
+                \Log::error('Failed to store admin profile photo');
+                return redirect()->back()->with('error', 'Failed to upload profile photo. Please try again.');
+            }
         }
 
         // Update password if provided

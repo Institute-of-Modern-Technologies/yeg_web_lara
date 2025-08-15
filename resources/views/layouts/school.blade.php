@@ -161,7 +161,7 @@
                                 <button type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400 focus:ring-offset-black" id="user-menu-button">
                                     <span class="sr-only">Open user menu</span>
                                     @if(Auth::user()->profile_photo)
-                                        <img src="{{ asset('storage/profile-photos/' . rawurlencode(Auth::user()->profile_photo)) }}?v={{ time() }}" 
+                                        <img src="{{ asset('uploads/profile-photos/' . rawurlencode(Auth::user()->profile_photo)) }}?v={{ time() }}" 
                                              alt="{{ Auth::user()->name }}" 
                                              class="h-8 w-8 rounded-full object-cover border border-gray-600"
                                              onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '<div class=\'h-8 w-8 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center\'><span class=\'text-white text-sm font-medium\'>{{ substr(Auth::user()->name, 0, 1) }}</span></div>'">
