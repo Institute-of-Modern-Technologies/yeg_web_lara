@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SchoolApprovalNotification;
 use App\Models\School;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Str;
 
 class SchoolController extends Controller
 {
@@ -218,8 +221,9 @@ class SchoolController extends Controller
                     ['name' => 'School Admin', 'description' => 'School administrator account']
                 );
                 
+                // Always create a new user account for the school
                 // Create username from school name
-                $baseUsername = Str::slug($school->name);
+                $baseUsername = strtolower(preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $school->name)));
                 $username = $baseUsername;
                 $counter = 1;
                 
@@ -228,26 +232,52 @@ class SchoolController extends Controller
                     $username = $baseUsername . $counter++;
                 }
                 
-                // Create the user - generate a placeholder email if none exists
+                // Use school email or generate a placeholder email if none exists
                 $email = $school->email;
                 if (!$email) {
                     // Generate a placeholder email using the username
                     $email = $username . '@placeholder.yeg.edu';
+                } else {
+                    // If email already exists in users table, modify it to make it unique
+                    $originalEmail = $email;
+                    $emailCounter = 1;
+                    while (User::where('email', $email)->exists()) {
+                        $emailParts = explode('@', $originalEmail);
+                        $email = $emailParts[0] . $emailCounter . '@' . $emailParts[1];
+                        $emailCounter++;
+                    }
                 }
+                
+                // Default password for all school accounts
+                $password = 'school123';
                 
                 $user = User::create([
                     'name' => $school->name,
                     'email' => $email,
                     'username' => $username,
-                    'password' => Hash::make('school123'),
+                    'password' => Hash::make($password),
                     'user_type_id' => $schoolAdminType->id
                 ]);
+                
+                // Store plaintext password temporarily for notification
+                $user->temp_password = $password;
                 
                 // Link the user to the school
                 $school->user_id = $user->id;
                 $school->save();
                 
-                \Log::info('User account created and linked for school: ' . $username);
+                \Log::info('New user account created for school: ' . $username . ' with email: ' . $email);
+                
+                // Send notification email to school with login credentials
+                if ($school->email) {
+                    try {
+                        // Send email notification to the original school email
+                        Mail::to($school->email)->send(new SchoolApprovalNotification($school, $user, $password));
+                        \Log::info('School approval notification sent to: ' . $school->email);
+                    } catch (\Exception $e) {
+                        \Log::error('Failed to send school approval notification: ' . $e->getMessage());
+                    }
+                }
             } catch (\Exception $e) {
                 \Log::error('Failed to create user account for school: ' . $e->getMessage());
                 // Continue with school approval even if user creation fails
