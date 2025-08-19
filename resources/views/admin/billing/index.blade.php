@@ -206,6 +206,9 @@
                                                 <button type="button" onclick="openPaymentModal({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
                                                     <i class="fas fa-plus mr-2"></i> Pay
                                                 </button>
+                                                <button type="button" onclick="viewReceipt({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
+                                                    <i class="fas fa-receipt mr-2"></i> View Receipt
+                                                </button>
                                                 <button type="button" onclick="generateBill({{ $student->id }})" class="text-gray-700 block w-full text-left px-4 py-2 text-xs hover:bg-gray-100">
                                                     <i class="fas fa-file-invoice mr-2"></i> Generate Bill
                                                 </button>
@@ -268,9 +271,15 @@
 }
 
 /* For last few rows, show dropdown upward */
-tbody tr:nth-last-child(-n+2) .dropdown-menu {
+tbody tr:nth-last-child(-n+3) .dropdown-menu {
     top: auto !important;
     bottom: 100% !important;
+}
+
+/* For dropdowns near the right edge, position to left */
+tbody tr td:last-child .dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
 }
 
 /* Ensure table container allows dropdown overflow */
@@ -467,6 +476,56 @@ function generateBill(studentId) {
             // View Bill
             viewBill(studentId);
         }
+    });
+}
+
+// View receipt function
+function viewReceipt(studentId) {
+    console.log('viewReceipt called with studentId:', studentId);
+    
+    // Show loading indicator
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Fetching receipt details',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+    
+    // Use fetch to check if student has payments before redirecting
+    fetch(`/admin/billing/check-payments/${studentId}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.close();
+        
+        if (data.success) {
+            // Redirect to the receipt page
+            window.location.href = `/admin/billing/latest-receipt/${studentId}`;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Payments Found',
+                text: data.message || 'This student has no payment records to generate a receipt.',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error checking payments:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while checking payment records. Please try again.',
+            confirmButtonText: 'OK'
+        });
     });
 }
 
@@ -756,6 +815,50 @@ function submitPaymentForm(form) {
             icon: 'error',
             title: 'Error',
             text: 'An error occurred while processing your request. Please try again.'
+        });
+    });
+}
+
+// View receipt for student
+function viewReceipt(studentId) {
+    // Show loading indicator
+    Swal.fire({
+        title: 'Loading...',
+        text: 'Checking for payment records',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // First check if the student has any payments before trying to show receipt
+    fetch(`/admin/billing/check-payments/${studentId}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Student has payments, open receipt in new tab
+            window.location.href = `/admin/billing/latest-receipt/${studentId}`;
+        } else {
+            // No payments found
+            Swal.fire({
+                icon: 'info',
+                title: 'No Payments',
+                text: 'This student has no payment records yet.',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error checking payment records:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while checking for payment records. Please try again.'
         });
     });
 }

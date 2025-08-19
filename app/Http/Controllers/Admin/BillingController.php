@@ -416,4 +416,83 @@ class BillingController extends Controller
             ]);
         }
     }
+    
+    /**
+     * Check if student has any payment records
+     */
+    public function checkStudentPayments(Student $student)
+    {
+        try {
+            $hasPayments = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->exists();
+                
+            if ($hasPayments) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Student has payment records.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No payment records found for this student.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while checking for payment records: ' . $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
+     * Show the latest receipt for a student
+     */
+    public function getLatestReceipt(Student $student)
+    {
+        try {
+            // Get the latest completed payment for this student
+            $payment = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->latest()
+                ->first();
+                
+            if (!$payment) {
+                return back()->with('error', 'No payment records found for this student.');
+            }
+            
+            // Calculate billing information
+            $fee = Fee::where('program_type_id', $student->program_type_id)
+                ->where(function($query) use ($student) {
+                    $query->where('school_id', $student->school_id)
+                          ->orWhereNull('school_id');
+                })
+                ->where('is_active', true)
+                ->orderByRaw('school_id IS NULL')
+                ->first();
+                
+            $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
+            
+            // Calculate total paid including this payment
+            $totalPaid = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->sum('final_amount');
+                
+            $balance = $amountToBePaid - $totalPaid;
+            
+            // Load student relationship
+            $payment->load('student');
+            
+            // Pass all variables directly to the view
+            return view('admin.payments.receipt', compact(
+                'payment',
+                'amountToBePaid',
+                'totalPaid',
+                'balance'
+            ));
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred while loading the receipt: ' . $e->getMessage());
+        }
+    }
 }
