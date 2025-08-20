@@ -18,12 +18,7 @@ $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use App\Models\HeroSection;
-use App\Models\Event;
-use App\Models\Testimonial;
-use App\Models\SchoolLogo;
-use App\Models\Happening;
-use App\Models\Trainer;
+use Illuminate\Support\Facades\Schema;
 
 // Define the directories we need to ensure exist
 $directories = [
@@ -88,86 +83,116 @@ function migrateImage($oldPath, $newDir) {
 
 // Process Hero Sections
 echo "\n--- Processing Hero Sections ---\n";
-$heroSections = HeroSection::all();
-foreach ($heroSections as $heroSection) {
-    if (!empty($heroSection->image_path)) {
-        $newPath = migrateImage($heroSection->image_path, 'hero-sections');
-        if ($newPath !== $heroSection->image_path) {
-            $heroSection->image_path = $newPath;
-            $heroSection->save();
-            echo "Updated database record for Hero Section #{$heroSection->id}\n";
+if (Schema::hasTable('hero_sections')) {
+    $heroSections = DB::table('hero_sections')->get();
+    foreach ($heroSections as $heroSection) {
+        if (!empty($heroSection->image_path)) {
+            $newPath = migrateImage($heroSection->image_path, 'hero-sections');
+            if ($newPath !== $heroSection->image_path) {
+                DB::table('hero_sections')
+                    ->where('id', $heroSection->id)
+                    ->update(['image_path' => $newPath]);
+                echo "Updated database record for Hero Section #{$heroSection->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'hero_sections' not found, skipping\n";
 }
 
 // Process Events
 echo "\n--- Processing Events ---\n";
-$events = Event::all();
-foreach ($events as $event) {
-    if (!empty($event->media_path)) {
-        $newPath = migrateImage($event->media_path, 'events');
-        if ($newPath !== $event->media_path) {
-            $event->media_path = $newPath;
-            $event->save();
-            echo "Updated database record for Event #{$event->id}\n";
+if (Schema::hasTable('events')) {
+    $events = DB::table('events')->get();
+    foreach ($events as $event) {
+        if (!empty($event->media_path)) {
+            $newPath = migrateImage($event->media_path, 'events');
+            if ($newPath !== $event->media_path) {
+                DB::table('events')
+                    ->where('id', $event->id)
+                    ->update(['media_path' => $newPath]);
+                echo "Updated database record for Event #{$event->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'events' not found, skipping\n";
 }
 
 // Process Testimonials
 echo "\n--- Processing Testimonials ---\n";
-$testimonials = Testimonial::all();
-foreach ($testimonials as $testimonial) {
-    if (!empty($testimonial->image_path)) {
-        $newPath = migrateImage($testimonial->image_path, 'testimonials');
-        if ($newPath !== $testimonial->image_path) {
-            $testimonial->image_path = $newPath;
-            $testimonial->save();
-            echo "Updated database record for Testimonial #{$testimonial->id}\n";
+if (Schema::hasTable('testimonials')) {
+    $testimonials = DB::table('testimonials')->get();
+    foreach ($testimonials as $testimonial) {
+        if (!empty($testimonial->image_path)) {
+            $newPath = migrateImage($testimonial->image_path, 'testimonials');
+            if ($newPath !== $testimonial->image_path) {
+                DB::table('testimonials')
+                    ->where('id', $testimonial->id)
+                    ->update(['image_path' => $newPath]);
+                echo "Updated database record for Testimonial #{$testimonial->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'testimonials' not found, skipping\n";
 }
 
 // Process School Logos
 echo "\n--- Processing School Logos ---\n";
-$schoolLogos = SchoolLogo::all();
-foreach ($schoolLogos as $logo) {
-    if (!empty($logo->logo_path)) {
-        $newPath = migrateImage($logo->logo_path, 'schools');
-        if ($newPath !== $logo->logo_path) {
-            $logo->logo_path = $newPath;
-            $logo->save();
-            echo "Updated database record for School Logo #{$logo->id}\n";
+if (Schema::hasTable('school_logos')) {
+    $schoolLogos = DB::table('school_logos')->get();
+    foreach ($schoolLogos as $logo) {
+        if (!empty($logo->logo_path)) {
+            $newPath = migrateImage($logo->logo_path, 'schools');
+            if ($newPath !== $logo->logo_path) {
+                DB::table('school_logos')
+                    ->where('id', $logo->id)
+                    ->update(['logo_path' => $newPath]);
+                echo "Updated database record for School Logo #{$logo->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'school_logos' not found, skipping\n";
 }
 
 // Process Happenings
 echo "\n--- Processing Happenings ---\n";
-$happenings = Happening::all();
-foreach ($happenings as $happening) {
-    if (!empty($happening->image_path)) {
-        $newPath = migrateImage($happening->image_path, 'happenings');
-        if ($newPath !== $happening->image_path) {
-            $happening->image_path = $newPath;
-            $happening->save();
-            echo "Updated database record for Happening #{$happening->id}\n";
+if (Schema::hasTable('happenings')) {
+    $happenings = DB::table('happenings')->get();
+    foreach ($happenings as $happening) {
+        if (!empty($happening->image_path)) {
+            $newPath = migrateImage($happening->image_path, 'happenings');
+            if ($newPath !== $happening->image_path) {
+                DB::table('happenings')
+                    ->where('id', $happening->id)
+                    ->update(['image_path' => $newPath]);
+                echo "Updated database record for Happening #{$happening->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'happenings' not found, skipping\n";
 }
 
 // Process Trainers
 echo "\n--- Processing Trainers ---\n";
-$trainers = Trainer::all();
-foreach ($trainers as $trainer) {
-    if (!empty($trainer->image_path)) {
-        $newPath = migrateImage($trainer->image_path, 'trainers');
-        if ($newPath !== $trainer->image_path) {
-            $trainer->image_path = $newPath;
-            $trainer->save();
-            echo "Updated database record for Trainer #{$trainer->id}\n";
+if (Schema::hasTable('trainers')) {
+    $trainers = DB::table('trainers')->get();
+    foreach ($trainers as $trainer) {
+        if (!empty($trainer->image_path)) {
+            $newPath = migrateImage($trainer->image_path, 'trainers');
+            if ($newPath !== $trainer->image_path) {
+                DB::table('trainers')
+                    ->where('id', $trainer->id)
+                    ->update(['image_path' => $newPath]);
+                echo "Updated database record for Trainer #{$trainer->id}\n";
+            }
         }
     }
+} else {
+    echo "Table 'trainers' not found, skipping\n";
 }
 
 // Completion message
