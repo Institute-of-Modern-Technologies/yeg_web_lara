@@ -8,49 +8,41 @@ use Illuminate\Support\Facades\File;
 class ImagePathService
 {
     /**
-     * Resolve image path to handle both storage and public paths consistently
+     * Resolve the image path based on environment and image location.
+     * NO NEED FOR STORAGE:LINK - Direct file access approach
      *
-     * @param string $path
-     * @return string
+     * @param string $path The image path to resolve
+     * @return string The resolved path
      */
     public function resolveImagePath($path)
     {
-        // Strip quotes if they exist in the path
-        $path = trim($path, "'\"");
-        
-        // Check if path is a storage path
-        if (strpos($path, 'storage/') === 0) {
-            // This is a storage path without the public/ prefix
-            $path = substr($path, 8); // Remove 'storage/'
-            
-            // Check if the file exists in public storage
-            if (File::exists(public_path('storage/' . $path))) {
-                return asset('storage/' . $path);
-            }
-            
-            // If not in public storage, check if it's in the direct public directory
-            if (File::exists(public_path($path))) {
-                return asset($path);
-            }
-            
-            // Final fallback - return storage path and hope it exists
-            return asset('storage/' . $path);
+        // Skip processing for external URLs
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
         }
         
-        // Check if this is a direct public path
-        if (strpos($path, 'images/') === 0 || strpos($path, 'uploads/') === 0) {
-            if (File::exists(public_path($path))) {
-                return asset($path);
-            }
+        // Handle empty paths
+        if (empty($path)) {
+            return asset('images/placeholder-school.svg');
+        }
+        
+        // Remove leading slashes if present
+        $path = ltrim($path, '/');
+        
+        // DIRECT STORAGE ACCESS APPROACH:
+        // If path starts with storage/, we'll serve it directly from the storage directory
+        if (str_starts_with($path, 'storage/')) {
+            $storagePath = str_replace('storage/', '', $path);
             
-            // Check if the file exists in storage/app/public
-            $storagePath = str_replace('images/', '', $path);
-            $storagePath = str_replace('uploads/', '', $storagePath);
+            // Check if file exists in storage directory
             if (Storage::disk('public')->exists($storagePath)) {
-                return asset('storage/' . $storagePath);
+                // On production, serve directly from /storage URL
+                return url($path);
             }
-            
-            // Return original path as fallback
+        }
+        
+        // Check if the file exists in the public folder
+        if (file_exists(public_path($path))) {
             return asset($path);
         }
         

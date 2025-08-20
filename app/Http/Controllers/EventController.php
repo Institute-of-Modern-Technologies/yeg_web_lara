@@ -121,10 +121,11 @@ class EventController extends Controller
         // Handle media upload
         $mediaPath = null;
         if ($request->hasFile('media')) {
-            $media = $request->file('media');
-            $mediaName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $media->getClientOriginalName());
-            $media->move(public_path('storage/events'), $mediaName);
-            $mediaPath = 'events/' . $mediaName;
+            // Use the new helper for direct public uploads (no storage:link needed)
+            $mediaPath = \App\Helpers\ImageUploadHelper::uploadImageToPublic(
+                $request->file('media'), 
+                'events'
+            );
         }
         
         // Create new event
@@ -190,21 +191,18 @@ class EventController extends Controller
                 ->withInput();
         }
         
-        // Handle media upload if new media is provided
+        // Handle media upload if provided
         if ($request->hasFile('media')) {
-            // Delete old media if it exists
+            // Delete old media if exists
             if ($event->media_path) {
-                $oldMediaPath = public_path('storage/' . $event->media_path);
-                if (file_exists($oldMediaPath)) {
-                    unlink($oldMediaPath);
-                }
+                \App\Helpers\ImageUploadHelper::deleteImageFromPublic($event->media_path);
             }
             
-            // Store new media
-            $media = $request->file('media');
-            $mediaName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $media->getClientOriginalName());
-            $media->move(public_path('storage/events'), $mediaName);
-            $event->media_path = 'events/' . $mediaName;
+            // Store new media directly to public (no storage:link needed)
+            $event->media_path = \App\Helpers\ImageUploadHelper::uploadImageToPublic(
+                $request->file('media'),
+                'events'
+            );
         }
         
         // Update event data

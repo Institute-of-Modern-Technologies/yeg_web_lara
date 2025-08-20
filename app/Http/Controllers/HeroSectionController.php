@@ -71,13 +71,21 @@ class HeroSectionController extends Controller
                 ->withInput();
         }
         
-        // Handle image upload
+        // Handle image upload - DIRECT to public/images directory (no storage:link needed)
         $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/hero-sections'), $imageName);
-            $imagePath = 'hero-sections/' . $imageName;
+            
+            // Make sure the directory exists
+            $directory = public_path('images/hero-sections');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true); // Create recursively if needed
+            }
+            
+            // Move directly to public/images instead of storage
+            $image->move($directory, $imageName);
+            $imagePath = 'images/hero-sections/' . $imageName;
         }
         
         // Create new hero section
@@ -173,11 +181,19 @@ class HeroSectionController extends Controller
                 }
             }
             
-            // Store new image
+            // Store new image - DIRECT to public/images directory (no storage:link needed)
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/hero-sections'), $imageName);
-            $heroSection->image_path = 'hero-sections/' . $imageName;
+            
+            // Make sure the directory exists
+            $directory = public_path('images/hero-sections');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true); // Create recursively if needed
+            }
+            
+            // Move directly to public/images instead of storage
+            $image->move($directory, $imageName);
+            $heroSection->image_path = 'images/hero-sections/' . $imageName;
         }
         
         // Update hero section data
@@ -219,9 +235,17 @@ class HeroSectionController extends Controller
         
         // Delete image file if it exists
         if ($heroSection->image_path) {
-            $imagePath = public_path('storage/' . $heroSection->image_path);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
+            // Check for both formats: new format in public/images and old in public/storage
+            $newImagePath = public_path($heroSection->image_path);
+            $oldImagePath = public_path('storage/' . str_replace('images/', '', $heroSection->image_path));
+            
+            // Try to delete from new location first
+            if (file_exists($newImagePath)) {
+                unlink($newImagePath);
+            }
+            // Also check old location for backward compatibility
+            else if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
             }
         }
         
