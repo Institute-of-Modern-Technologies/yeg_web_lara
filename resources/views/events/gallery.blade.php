@@ -74,9 +74,15 @@
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <i class="fas fa-play-circle text-white text-5xl opacity-80 hover:opacity-100 transition-opacity"></i>
                                 </div>
-                                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+                                <x-image class="gallery-item w-full h-full object-cover rounded-md cursor-pointer hover:scale-[1.02] transition-all duration-300 ease-out shadow-sm hover:shadow-md" 
+                                 src="storage/{{ $event->media_path }}" 
+                                 alt="{{ $event->title }} - Photo {{ $loop->index + 1 }}" 
+                                 :attributes="['data-src' => app(\App\Services\ImagePathService::class)->resolveImagePath('storage/' . $event->media_path)]" />
                             @else
-                                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                                <x-image class="gallery-item w-full h-full object-cover rounded-md cursor-pointer hover:scale-[1.02] transition-all duration-300 ease-out shadow-sm hover:shadow-md" 
+                                 src="storage/{{ $event->media_path }}" 
+                                 alt="{{ $event->title }} - Photo {{ $loop->index + 1 }}" 
+                                 :attributes="['data-src' => app(\App\Services\ImagePathService::class)->resolveImagePath('storage/' . $event->media_path)]" />
                             @endif
                             
                             <!-- Level Badge -->

@@ -625,8 +625,8 @@
                     <i class="fas fa-print mr-2"></i> Print Receipt
                 </button>
                 
-                <!-- Send via WhatsApp Button -->
-                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                <!-- Send via WhatsApp Button - Direct Implementation -->
+                <button type="button" id="whatsapp-button" onclick="testWhatsAppFunction(); return false;" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
                     <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
                 </button>
                 
@@ -643,6 +643,69 @@
 <script src="{{ asset('js/tab-persistence.js') }}"></script>
 
 <script>
+    // Function to download PDF receipt directly without page navigation
+    function downloadReceiptPDF(url) {
+        // Show loading indicator
+        const loadingToast = Swal.fire({
+            title: 'Downloading PDF',
+            text: 'Please wait while we prepare your download...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Fetch the PDF content
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a download link
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                
+                // Extract filename from URL or use default
+                const filename = url.substring(url.lastIndexOf('/') + 1) || 'receipt.pdf';
+                a.download = 'receipt-' + filename;
+                
+                // Trigger download
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(downloadUrl);
+                    loadingToast.close();
+                    
+                    // Success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Download Complete!',
+                        text: 'The PDF receipt has been downloaded to your device.',
+                        timer: 3000
+                    });
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error downloading PDF:', error);
+                loadingToast.close();
+                
+                // Error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Download Failed',
+                    text: 'There was a problem downloading the receipt. Please try again.',
+                    confirmButtonText: 'Try Again',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Try opening in new tab as fallback
+                        window.open(url, '_blank');
+                    }
+                });
+            });
+    }
+
     // Student delete confirmation
     function confirmDelete(studentId) {
         Swal.fire({
@@ -671,6 +734,175 @@
                     }
                 });
             }
+        });
+    }
+
+    // WhatsApp button now uses direct onclick handler
+    // No need for complex overrides
+
+    // WhatsApp functionality for receipt sending
+    function testWhatsAppFunction() {
+        const studentId = window.location.pathname.split('/').pop();
+        
+        // Get bill information for this student
+        fetch(`/admin/billing/get-bill-info/${studentId}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Use parent contact if available
+                const phoneToUse = data.parent_contact || data.phone || '';
+                
+                // Show WhatsApp modal with pre-filled information
+                Swal.fire({
+                    title: 'Send Receipt via WhatsApp',
+                    html: `
+                        <div class="text-left">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">${data.has_parent_contact ? 'Parent Contact Number:' : 'Phone Number:'}</label>
+                            <input type="text" id="whatsapp-phone" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" 
+                                   placeholder="Enter phone number">
+                            <p class="mb-4 text-sm text-gray-700">✅ Payment receipt will be sent as PDF</p>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Message:</label>
+                            <textarea id="whatsapp-message" rows="8" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                      placeholder="Enter WhatsApp message">${data.whatsapp_message}</textarea>
+                        </div>
+                    `,
+                    width: 600,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#25D366',
+                    didOpen: () => {
+                        // Set the phone value after modal opens with multiple attempts
+                        const setPhoneValue = () => {
+                            const phoneInput = document.getElementById('whatsapp-phone');
+                            if (phoneInput) {
+                                phoneInput.value = phoneToUse;
+                                phoneInput.focus();
+                                phoneInput.blur();
+                                console.log('Phone value set to:', phoneToUse);
+                            } else {
+                                console.error('Phone input not found');
+                            }
+                        };
+                        
+                        // Try multiple times to ensure it works
+                        setTimeout(setPhoneValue, 50);
+                        setTimeout(setPhoneValue, 100);
+                        setTimeout(setPhoneValue, 200);
+                    },
+                    preConfirm: () => {
+                        const phone = document.getElementById('whatsapp-phone').value.trim();
+                        const message = document.getElementById('whatsapp-message').value.trim();
+                        
+                        if (!phone) {
+                            Swal.showValidationMessage('Please enter a phone number');
+                            return false;
+                        }
+                        
+                        if (!message) {
+                            Swal.showValidationMessage('Please enter a message');
+                            return false;
+                        }
+                        
+                        return { phone, message };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const { phone, message } = result.value;
+                        
+                        // Format phone number
+                        let formattedPhone = phone.replace(/[^0-9]/g, '');
+                        if (!formattedPhone.startsWith('233') && formattedPhone.length === 10) {
+                            formattedPhone = '233' + formattedPhone.substring(1);
+                        }
+                        
+                        // Generate and open PDF receipt, then WhatsApp
+                        if (data.has_pdf_receipt && data.receipt_url) {
+                            // Show loading
+                            Swal.fire({
+                                title: 'Preparing PDF Receipt',
+                                text: 'Generating PDF receipt for WhatsApp...',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            });
+                            
+                            // Create WhatsApp URL but don't open automatically
+                            const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+                            
+                            // Instead of opening windows directly, provide buttons to user
+                            setTimeout(() => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'PDF Receipt & WhatsApp Ready!',
+                                        html: `<div class="text-left">
+                                            <p><strong>Your receipt is ready!</strong> Use the buttons below to:</p>
+                                            <div class="mt-4 mb-3">
+                                                <button onclick="downloadReceiptPDF('${data.receipt_url}')" 
+                                                    class="mb-2 w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
+                                                    <i class="fas fa-download mr-2"></i> Download PDF Receipt
+                                                </button>
+                                            </div>
+                                            <div class="mb-3">
+                                                <button onclick="window.open('${whatsappUrl}', '_blank')" 
+                                                    class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+                                                    <i class="fab fa-whatsapp mr-2"></i> Open WhatsApp
+                                                </button>
+                                            </div>
+                                            <p class="text-sm mt-3"><strong>Note:</strong> To send the PDF via WhatsApp, download it first, then attach it in the WhatsApp conversation.</p>
+                                            <p class="text-sm">Sending to: <strong>${phone}</strong></p>
+                                        </div>`,
+                                        confirmButtonText: 'Got it!'
+                                    });
+                            }, 1000);
+                        } else {
+                            // No PDF available, just prepare WhatsApp URL for button
+                            const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+                            
+                            // Show modal with button to open WhatsApp
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Message Ready',
+                                html: `<div class="text-left">
+                                    <p><strong>Your WhatsApp message is ready to send!</strong></p>
+                                    <p class="text-sm mb-3">⚠️ No PDF receipt available for this payment.</p>
+                                    <div class="mb-3">
+                                        <button onclick="window.open('${whatsappUrl}', '_blank')" 
+                                            class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+                                            <i class="fab fa-whatsapp mr-2"></i> Open WhatsApp
+                                        </button>
+                                    </div>
+                                    <p class="text-sm">Sending to: <strong>${phone}</strong></p>
+                                </div>`,
+                                confirmButtonText: 'Done'
+                            });
+                        }
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Failed to load student information.'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error loading student info:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load student information. Please try again.'
+            });
         });
     }
 </script>

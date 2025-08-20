@@ -66,7 +66,7 @@
                     <div class="flex items-center mb-3 gap-3">
                         <div class="flex-shrink-0 h-14 w-14">
                             @if($school->logo)
-                            <img class="h-14 w-14 rounded-full object-cover shadow-sm" src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo">
+                            <x-image class="h-14 w-14 rounded-full object-cover shadow-sm" src="storage/{{ $school->logo }}" alt="{{ $school->name }} Logo" />
                             @else
                             <div class="h-14 w-14 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center shadow-sm">
                                 <i class="fas fa-school text-primary text-lg"></i>
@@ -201,7 +201,7 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
                                     @if($school->logo)
-                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo">
+                                    <x-image class="h-10 w-10 rounded-full object-cover" src="storage/{{ $school->logo }}" alt="{{ $school->name }} Logo" />
                                     @else
                                     <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                                         <i class="fas fa-school text-gray-400"></i>

@@ -256,4 +256,27 @@ class PaymentController extends Controller
             return redirect()->route('admin.billing.index')->with('error', 'Student not found');
         }
     }
+
+    /**
+     * Get student ID from a payment ID.
+     *
+     * @param  int  $paymentId
+     * @return \Illuminate\Http\Response
+     */
+    public function getStudentFromPayment($paymentId)
+    {
+        try {
+            $payment = Payment::findOrFail($paymentId);
+            
+            return response()->json([
+                'success' => true,
+                'student_id' => $payment->student_id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Payment not found or error retrieving student information'
+            ], 404);
+        }
+    }
 }

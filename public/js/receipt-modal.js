@@ -8,6 +8,9 @@ function openReceiptModal(paymentId) {
     // Show modal
     receiptModal.classList.remove('hidden');
     
+    // Store the payment ID on the modal for reference
+    receiptModal.setAttribute('data-payment-id', paymentId);
+    
     // Load receipt content via AJAX
     fetch(`/admin/payments/receipt/${paymentId}`)
         .then(response => {
@@ -83,32 +86,13 @@ function configureShareButtons(paymentId, phone, email) {
         }, 500);
     });
     
-    // WhatsApp button handler
-    newWhatsappBtn.addEventListener('click', function() {
-        // If we have a phone number, use it; otherwise ask for phone number
-        if (phone) {
-            sendWhatsAppReceipt(paymentId, phone);
-        } else {
-            Swal.fire({
-                title: 'Enter Phone Number',
-                input: 'tel',
-                inputLabel: 'Phone number with country code (e.g. +233...)',
-                inputPlaceholder: '+233',
-                showCancelButton: true,
-                confirmButtonText: 'Send',
-                confirmButtonColor: '#25D366', // WhatsApp green
-                cancelButtonText: 'Cancel',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Please enter a phone number';
-                    }
-                }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    sendWhatsAppReceipt(paymentId, result.value);
-                }
-            });
-        }
+    // WhatsApp button handler - DISABLED to prevent conflicts
+    // The custom WhatsApp functionality is now handled in the student show page
+    newWhatsappBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Default WhatsApp handler disabled - using custom implementation');
+        return false;
     });
     
     // Email button handler
@@ -142,18 +126,150 @@ function configureShareButtons(paymentId, phone, email) {
 
 // Function to send receipt via WhatsApp
 function sendWhatsAppReceipt(paymentId, phone) {
-    // Clean phone number (remove spaces, ensure starts with +)
-    let formattedPhone = phone.trim();
-    if (!formattedPhone.startsWith('+')) {
-        formattedPhone = '+' + formattedPhone;
+    // Get student ID from the current page URL or data attribute
+    const studentId = getStudentIdFromPage();
+    
+    if (!studentId) {
+        console.error('Student ID not found');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Unable to determine student information. Please try again.'
+        });
+        return;
     }
     
-    // Create WhatsApp message
-    const message = `Your payment receipt from IMT is ready. View it here: ${window.location.origin}/admin/payments/receipt/${paymentId}`;
-    const whatsappURL = `https://wa.me/${formattedPhone.replace('+', '')}?text=${encodeURIComponent(message)}`;
-    
-    // Open WhatsApp in new window
-    window.open(whatsappURL, '_blank');
+    // Get bill information for this student
+    fetch(`/admin/billing/get-bill-info/${studentId}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Use parent contact if available, otherwise use provided phone
+            const phoneToUse = data.parent_contact || phone || data.phone || '';
+            
+            // Show WhatsApp modal with pre-filled information
+            Swal.fire({
+                title: 'Send Receipt via WhatsApp',
+                html: `
+                    <div class="text-left">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">${data.has_parent_contact ? 'Parent Contact Number:' : 'Phone Number:'}</label>
+                        <input type="text" id="whatsapp-phone" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md mb-4" 
+                               placeholder="Enter phone number">
+                        <p class="mb-4 text-sm text-gray-700">✅ Payment receipt will be sent as PDF</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp Message:</label>
+                        <textarea id="whatsapp-message" rows="8" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                  placeholder="Enter WhatsApp message">${data.whatsapp_message}</textarea>
+                    </div>
+                `,
+                width: 600,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#25D366',
+                didOpen: () => {
+                    // Set the phone value after modal opens
+                    setTimeout(() => {
+                        const phoneInput = document.getElementById('whatsapp-phone');
+                        if (phoneInput) {
+                            phoneInput.value = phoneToUse;
+                        }
+                    }, 100);
+                },
+                preConfirm: () => {
+                    const phone = document.getElementById('whatsapp-phone').value.trim();
+                    const message = document.getElementById('whatsapp-message').value.trim();
+                    
+                    if (!phone) {
+                        Swal.showValidationMessage('Please enter a phone number');
+                        return false;
+                    }
+                    
+                    if (!message) {
+                        Swal.showValidationMessage('Please enter a message');
+                        return false;
+                    }
+                    
+                    return { phone, message };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { phone, message } = result.value;
+                    
+                    // Format phone number
+                    let formattedPhone = phone.replace(/[^0-9]/g, '');
+                    if (!formattedPhone.startsWith('233') && formattedPhone.length === 10) {
+                        formattedPhone = '233' + formattedPhone.substring(1);
+                    }
+                    
+                    // Open PDF receipt and WhatsApp
+                    if (data.has_pdf_receipt && data.receipt_url) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Preparing PDF Receipt',
+                            text: 'Please wait while we prepare your PDF receipt...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            }
+                        });
+                        
+                        // Open PDF receipt in new tab
+                        window.open(data.receipt_url, '_blank');
+                        
+                        // Then open WhatsApp
+                        setTimeout(() => {
+                            const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+                            window.open(whatsappUrl, '_blank');
+                            
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Receipt PDF Generated!',
+                                html: `<div class="text-left">
+                                    <p>1. The PDF receipt has been opened in a new tab</p>
+                                    <p>2. WhatsApp has been opened with your message</p>
+                                    <p>3. <strong>To send the PDF:</strong> Download it from the PDF tab, then attach it in WhatsApp</p>
+                                </div>`,
+                                confirmButtonText: 'OK'
+                            });
+                        }, 1500);
+                    } else {
+                        // No PDF available, just open WhatsApp
+                        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'WhatsApp Opened!',
+                            text: 'WhatsApp has been opened with your message.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Failed to load student information.'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error loading student info:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to load student information. Please try again.'
+        });
+    });
 }
 
 // Function to send receipt via Email
@@ -167,12 +283,29 @@ function sendEmailReceipt(paymentId, email) {
     window.open(gmailURL, '_blank');
 }
 
+// Helper function to get student ID from the current page
+function getStudentIdFromPage() {
+    // Try to get from URL path (e.g., /admin/students/123)
+    const pathParts = window.location.pathname.split('/');
+    const studentIndex = pathParts.indexOf('students');
+    if (studentIndex !== -1 && pathParts[studentIndex + 1]) {
+        return pathParts[studentIndex + 1];
+    }
+    
+    // Try to get from data attribute or other sources
+    const studentElement = document.querySelector('[data-student-id]');
+    if (studentElement) {
+        return studentElement.getAttribute('data-student-id');
+    }
+    
+    return null;
+}
+
 // Function to close receipt modal
 function closeReceiptModal() {
     const receiptModal = document.getElementById('receiptModal');
     if (receiptModal) {
         receiptModal.classList.add('hidden');
-        // Optional: Reload page to reflect any changes
-        window.location.reload();
+        // No page reload to avoid interrupting WhatsApp functionality
     }
 }

@@ -89,7 +89,7 @@
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full parallax-bg" id="hero-parallax-bg">
-                <img class="max-w-full w-full h-full object-cover parallax-img fade-in-bg" src="{{ asset('images/Hero picture 3.png') }}" alt="Hero Image">
+                <x-image class="max-w-full w-full h-full object-cover parallax-img fade-in-bg" src="images/Hero picture 3.png" alt="Hero Image" />
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -1225,7 +1225,7 @@
                 <!-- Coding -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/coding.png') }}" alt="Coding" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/coding.png" alt="Coding" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Coding</h3>
                     <p class="text-gray-600 text-sm">
@@ -1236,7 +1236,7 @@
                 <!-- Digital Marketing -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
                     <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/digital-marketing.png') }}" alt="Digital Marketing" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/digital-marketing.png" alt="Digital Marketing" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Digital Marketing</h3>
                     <p class="text-gray-600 text-sm">
@@ -1247,7 +1247,7 @@
                 <!-- Graphics Design -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/graphic-designing.png') }}" alt="Graphics Design" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/graphic-designing.png" alt="Graphics Design" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Graphics Design</h3>
                     <p class="text-gray-600 text-sm">
@@ -1258,7 +1258,7 @@
                 <!-- Entrepreneurship -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/Enterpreneurship.png') }}" alt="Entrepreneurship" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/Enterpreneurship.png" alt="Entrepreneurship" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Entrepreneurship</h3>
                     <p class="text-gray-600 text-sm">
@@ -1269,7 +1269,7 @@
                 <!-- Artificial Intelligence -->
                 <div class="text-center">
                     <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/Artificial Intelligence.png" alt="Artificial Intelligence" />
                     </div>
                     <h3 class="text-primary font-bold mb-2">Artificial Intelligence</h3>
                     <p class="text-gray-600 text-sm">
@@ -1280,7 +1280,7 @@
                 <!-- Creativity Workshops -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <img class="max-w-full" src="{{ asset('images/creativity-workshop.png') }}" alt="Creativity Workshops" class="w-16 h-16 object-contain">
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/creativity-workshop.png" alt="Creativity Workshops" />
                     </div>
                     <h3 class="text-primary font-bold mb-2">Creativity Workshops</h3>
                     <p class="text-gray-600 text-sm">
@@ -1318,21 +1318,19 @@
                             <!-- First set of logos -->
                             @foreach($schoolLogos as $logo)
                                 <div class="inline-block mx-3 sm:mx-5 md:mx-7">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                    <x-image src="storage/{{ $logo->logo_path }}" 
                                          alt="{{ $logo->name }}" 
                                          style="height: 50px; max-width: 50px;" 
-                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
+                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300" />
                                 </div>
                             @endforeach
                             <!-- Second set for seamless looping -->
                             @foreach($schoolLogos as $logo)
                                 <div class="inline-block mx-3 sm:mx-5 md:mx-7">
-                                    <img src="{{ asset('storage/' . $logo->logo_path) }}" 
+                                    <x-image src="storage/{{ $logo->logo_path }}" 
                                          alt="{{ $logo->name }}" 
                                          style="height: 50px; max-width: 50px;" 
-                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
-                                         onerror="this.onerror=null; this.src='{{ asset('images/placeholder-school.svg') }}'">
+                                         class="w-auto object-contain opacity-70 hover:opacity-100 transition-opacity duration-300" />
                                 </div>
                             @endforeach
                         </div>

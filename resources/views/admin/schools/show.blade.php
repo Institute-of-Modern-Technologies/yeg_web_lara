@@ -48,7 +48,7 @@
                 <div class="flex-shrink-0 flex flex-col items-center">
                     <div class="w-48 h-48 mb-3 rounded-lg overflow-hidden shadow-lg border border-gray-200">
                         @if($school->logo)
-                            <img src="{{ asset('storage/' . $school->logo) }}" alt="{{ $school->name }} Logo" class="w-full h-full object-cover">
+                            <x-image src="storage/{{ $school->logo }}" alt="{{ $school->name }} Logo" class="w-full h-full object-cover" />
                         @else
                             <div class="w-full h-full bg-gray-100 flex items-center justify-center">
                                 <i class="fas fa-school text-gray-400 text-5xl"></i>

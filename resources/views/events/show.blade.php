@@ -190,11 +190,11 @@
         <!-- Hero Image Background -->
         <div class="absolute inset-0">
             @if($event->media_type == 'image')
-                <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+                <x-image src="storage/{{ $event->featured_image }}" class="w-full h-64 object-cover rounded-lg shadow-md" alt="{{ $event->title }}" />
             @else
                 <div class="relative w-full h-full bg-gray-900">
                     <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted>
-                        <source src="{{ asset('storage/' . $event->media_path) }}" type="video/mp4">
+                        <source src="{{ app(\App\Services\ImagePathService::class)->resolveImagePath('storage/' . $event->media_path) }}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>

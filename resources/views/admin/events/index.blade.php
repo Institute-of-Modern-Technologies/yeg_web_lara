@@ -53,7 +53,7 @@
                             <!-- Media Preview -->
                             <div class="flex-shrink-0 mr-0 md:mr-4 mb-0 w-full max-w-[220px] h-24 overflow-hidden rounded">
                                 @if($event->media_type == 'image')
-                                    <img src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-full object-cover">
+                                    <x-image src="storage/{{ $event->featured_image }}" class="h-24 w-32 object-cover rounded-md shadow-sm" alt="{{ $event->title }}" />
                                 @else
                                     <div class="bg-gray-900 w-full h-full flex items-center justify-center">
                                         <i class="fas fa-play-circle text-3xl text-white"></i>

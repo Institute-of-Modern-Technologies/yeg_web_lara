@@ -433,11 +433,13 @@ Route::middleware(['auth', 'user.type:super_admin'])->prefix('admin')->group(fun
     Route::post('/payments/store', '\App\Http\Controllers\Admin\PaymentController@store')->name('admin.payments.store');
     Route::get('/payments/student/{student}', '\App\Http\Controllers\Admin\PaymentController@getStudentPayments')->name('admin.payments.student');
     Route::get('/payments/receipt/{id}', '\App\Http\Controllers\Admin\PaymentController@showReceipt')->name('admin.payments.receipt');
+    Route::get('/payments/get-student/{paymentId}', '\App\Http\Controllers\Admin\PaymentController@getStudentFromPayment')->name('admin.payments.get-student');
     
     // Billing Management Routes
     Route::get('/billing', ['\App\Http\Controllers\Admin\BillingController', 'index'])->name('admin.billing.index');
     Route::get('/billing/check-payments/{student}', ['\App\Http\Controllers\Admin\BillingController', 'checkStudentPayments'])->name('admin.billing.check-payments');
     Route::get('/billing/latest-receipt/{student}', ['\App\Http\Controllers\Admin\BillingController', 'getLatestReceipt'])->name('admin.billing.latest-receipt');
+    Route::get('/billing/get-bill-info/{student}', ['\App\Http\Controllers\Admin\BillingController', 'getBillInfo'])->name('admin.billing.get-bill-info');
     Route::get('/billing/generate/{student}', '\App\Http\Controllers\Admin\BillingController@generateBill')->name('admin.billing.generate');
 });
 

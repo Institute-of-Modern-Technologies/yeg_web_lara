@@ -178,6 +178,9 @@ class BillingController extends Controller
      */
     public function getBillInfo(Student $student)
     {
+        // Reload student to ensure all relationships and attributes are available
+        $student = Student::with('programType', 'school')->find($student->id);
+        
         try {
             // Calculate billing information
             $fee = Fee::where('program_type_id', $student->program_type_id)
@@ -188,17 +191,23 @@ class BillingController extends Controller
                 ->where('is_active', true)
                 ->orderByRaw('school_id IS NULL')
                 ->first();
-
+                
             $amountToBePaid = $fee ? ($fee->amount - $fee->partner_discount) : 0;
             $totalPaid = Payment::where('student_id', $student->id)
                 ->where('status', 'completed')
                 ->sum('final_amount');
             $balance = $amountToBePaid - $totalPaid;
+            
+            // Get latest payment for PDF
+            $latestPayment = Payment::where('student_id', $student->id)
+                ->where('status', 'completed')
+                ->latest()
+                ->first();
 
-            // Create WhatsApp message
+            // Create WhatsApp message for payment receipt
             $whatsappMessage = "Hello {$student->first_name},\n\n";
-            $whatsappMessage .= "Here is your billing statement from Institute of Modern Technologies:\n\n";
-            $whatsappMessage .= "📋 *BILLING DETAILS*\n";
+            $whatsappMessage .= "Here is your payment receipt from Young Experts Group:\n\n";
+            $whatsappMessage .= "📋 *PAYMENT RECEIPT*\n";
             $whatsappMessage .= "Student: {$student->first_name} {$student->last_name}\n";
             $whatsappMessage .= "Program: {$student->programType->name}\n";
             $whatsappMessage .= "School: {$student->school->name}\n\n";
@@ -214,8 +223,18 @@ class BillingController extends Controller
                 $whatsappMessage .= "✅ Your account is fully paid. Thank you!\n\n";
             }
             
-            $whatsappMessage .= "For detailed bill, visit: " . route('admin.billing.generate', $student->id) . "\n\n";
-            $whatsappMessage .= "Thank you,\nInstitute of Modern Technologies";
+            // Get payment details for latest payment if available
+            if ($latestPayment) {
+                $whatsappMessage .= "📝 *RECEIPT DETAILS*\n";
+                $whatsappMessage .= "Receipt No: " . ($latestPayment->receipt_number ?? 'N/A') . "\n";
+                $whatsappMessage .= "Date: " . ($latestPayment->created_at ? $latestPayment->created_at->format('d/m/Y') : 'N/A') . "\n";
+                $whatsappMessage .= "Amount: GH₵" . number_format($latestPayment->amount, 2) . "\n";
+                $whatsappMessage .= "Payment Method: " . ucfirst($latestPayment->payment_method ?? 'N/A') . "\n\n";
+            }
+
+            $whatsappMessage .= "📄 *Download the official receipt:*\n";
+            $whatsappMessage .= route('admin.billing.latest-receipt', $student->id) . "\n\n";
+            $whatsappMessage .= "Thank you,\nYoung Experts Group";
 
             // Create email message
             $emailMessage = "Dear {$student->first_name} {$student->last_name},\n\n";
@@ -247,15 +266,38 @@ class BillingController extends Controller
             $emailMessage .= "Email: info@imt.edu.gh\n";
             $emailMessage .= "Phone: +233 XX XXX XXXX";
 
+            // Generate PDF receipt if payment exists
+            $pdfUrl = null;
+            $hasPdfReceipt = false;
+            
+            if ($latestPayment) {
+                $hasPdfReceipt = true;
+                $pdfUrl = route('admin.billing.latest-receipt', $student->id);
+            }
+            
+            // Debug info for parent contact - adding raw student data
+            \Log::info('Student parent contact check', [
+                'student_id' => $student->id,
+                'parent_contact' => $student->parent_contact,
+                'parent_contact_raw' => $student->getAttributes()['parent_contact'] ?? null,
+                'phone' => $student->phone,
+                'using_number' => $student->parent_contact ?: $student->phone,
+                'all_attributes' => $student->getAttributes()
+            ]);
+            
             return response()->json([
                 'success' => true,
-                'phone' => $student->phone,
+                'phone' => $student->parent_contact ?: $student->phone, // Use parent_contact as priority
+                'parent_contact' => $student->parent_contact, // Send parent_contact explicitly
                 'email' => $student->email,
                 'whatsapp_message' => $whatsappMessage,
-                'email_subject' => 'Billing Statement - Institute of Modern Technologies',
+                'email_subject' => 'Payment Receipt - Young Experts Group',
                 'email_message' => $emailMessage,
                 'student_name' => $student->first_name . ' ' . $student->last_name,
-                'balance' => $balance
+                'balance' => $balance,
+                'has_parent_contact' => !empty($student->parent_contact),
+                'has_pdf_receipt' => $hasPdfReceipt,
+                'receipt_url' => $pdfUrl
             ]);
 
         } catch (\Exception $e) {
@@ -271,14 +313,24 @@ class BillingController extends Controller
      */
     public function sendBillViaWhatsApp(Student $student)
     {
+        // Reload student to ensure all data is available
+        $student = Student::find($student->id);
+        
         try {
-            // Get student's phone number
-            $phoneNumber = $student->phone;
+            // Get parent's contact number first, fall back to student's phone
+            $phoneNumber = $student->parent_contact ?: $student->phone;
+            
+            // Log the phone number we're using
+            \Log::info('WhatsApp sending to: ', [
+                'parent_contact' => $student->parent_contact,
+                'student_phone' => $student->phone,
+                'using' => $phoneNumber
+            ]);
             
             if (!$phoneNumber) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Student phone number not found. Please update student contact information.'
+                    'message' => 'No contact number found. Please update student contact information.'
                 ]);
             }
 

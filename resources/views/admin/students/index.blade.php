@@ -491,7 +491,7 @@
                 </button>
                 
                 <!-- Send via WhatsApp Button -->
-                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                <button type="button" id="whatsapp-button" onclick="sendWhatsAppReceipt(); return false;" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
                     <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
                 </button>
                 
@@ -508,8 +508,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        
         // Add event listeners to close receipt modal buttons
         const closeButtons = document.querySelectorAll('.close-receipt-modal');
         if (closeButtons.length > 0) {
@@ -520,6 +518,180 @@
             });
         }
     });
+    
+    // Custom WhatsApp function for sending receipts
+    function sendWhatsAppReceipt() {
+        // Get student ID from the modal data attribute or try to use payment ID
+        const receiptModal = document.getElementById('receiptModal');
+        const studentId = receiptModal ? receiptModal.getAttribute('data-student-id') : null;
+        const paymentId = receiptModal ? receiptModal.getAttribute('data-payment-id') : null;
+        
+        if (!studentId && !paymentId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Receipt information not found. Please try again.'
+            });
+            return false;
+        }
+        
+        // If we only have payment ID, we need to first get the student ID from the payment
+        if (!studentId && paymentId) {
+            // Show loading while we fetch payment info
+            Swal.fire({
+                title: 'Preparing receipt...',
+                text: 'Please wait while we prepare the receipt',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // First get student ID from the payment
+            fetch(`/admin/payments/get-student/${paymentId}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error || !data.student_id) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.error || 'Could not retrieve student information from this payment.'
+                    });
+                    return;
+                }
+                
+                // Now we have the student ID, proceed with regular WhatsApp flow
+                fetchBillingInfoAndOpenWhatsApp(data.student_id);
+            })
+            .catch(error => {
+                console.error('Error fetching payment info:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was a problem preparing the receipt. Please try again.'
+                });
+            });
+        } else {
+            // We already have the student ID, proceed directly
+            fetchBillingInfoAndOpenWhatsApp(studentId);
+        }
+        
+        return false;
+    }
+    
+    // Function to fetch billing info and open WhatsApp
+    function fetchBillingInfoAndOpenWhatsApp(studentId) {
+        // Show loading while we fetch billing info
+        Swal.fire({
+            title: 'Preparing receipt...',
+            text: 'Please wait while we prepare the receipt',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        // Fetch billing info for this student
+        fetch(`/admin/billing/get-bill-info/${studentId}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Close loading dialog
+            Swal.close();
+            
+            if (data.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.error
+                });
+                return;
+            }
+            
+            // Determine which phone number to use (parent's first, then student's)
+            let phone = data.parent_phone || data.student_phone || '';
+            
+            // Show the WhatsApp dialog
+            Swal.fire({
+                title: 'Send Receipt via WhatsApp',
+                html: `
+                    <div class="mb-4">
+                        <label for="whatsapp-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input id="whatsapp-phone" type="tel" value="${phone}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="mb-4">
+                        <label for="whatsapp-message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="whatsapp-message" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">Here is your payment receipt. Thank you!</textarea>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Send',
+                confirmButtonColor: '#25D366', // WhatsApp green
+                cancelButtonText: 'Cancel',
+                preConfirm: () => {
+                    const phone = document.getElementById('whatsapp-phone').value;
+                    const message = document.getElementById('whatsapp-message').value;
+                    
+                    if (!phone) {
+                        Swal.showValidationMessage('Please enter a phone number');
+                        return false;
+                    }
+                    
+                    return { phone, message };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { phone, message } = result.value;
+                    const cleanedPhone = phone.replace(/[\s+\-()]/g, ''); // Remove spaces, plus, hyphens, and parentheses
+                    
+                    // Create URLs but don't open them automatically
+                    const receiptUrl = `/admin/billing/generate-bill/${studentId}`;
+                    const encodedMessage = encodeURIComponent(message);
+                    const whatsappUrl = `https://wa.me/${cleanedPhone}?text=${encodedMessage}`;
+                    
+                    // Show a modal with buttons to open the links
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Receipt & Message Ready',
+                        html: `<div class="text-left">
+                            <p><strong>Your receipt and message are ready!</strong></p>
+                            <div class="mt-4 mb-3">
+                                <button onclick="downloadReceiptPDF('${receiptUrl}')" 
+                                    class="mb-2 w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
+                                    <i class="fas fa-download mr-2"></i> Download Receipt
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <button onclick="window.open('${whatsappUrl}', '_blank')" 
+                                    class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+                                    <i class="fab fa-whatsapp mr-2"></i> Open WhatsApp
+                                </button>
+                            </div>
+                            <p class="text-sm mt-3"><strong>Note:</strong> To send the receipt via WhatsApp, download it first, then attach it in the WhatsApp conversation.</p>
+                        </div>`,
+                        confirmButtonText: 'Done'
+                    });
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching billing info:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was a problem preparing the receipt. Please try again.'
+            });
+        });
+    }
 </script>
 
 <!-- Receipt Modal -->
@@ -552,7 +724,7 @@
                 </button>
                 
                 <!-- Send via WhatsApp Button -->
-                <button id="whatsapp-receipt" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                <button type="button" id="whatsapp-button" onclick="sendWhatsAppReceipt(); return false;" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
                     <i class="fab fa-whatsapp mr-2"></i> Send via WhatsApp
                 </button>
                 
@@ -612,6 +784,69 @@
 @endsection
 
 <script>
+    // Function to download PDF receipt directly without page navigation
+    function downloadReceiptPDF(url) {
+        // Show loading indicator
+        const loadingToast = Swal.fire({
+            title: 'Downloading PDF',
+            text: 'Please wait while we prepare your download...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Fetch the PDF content
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a download link
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                
+                // Extract filename from URL or use default
+                const filename = url.substring(url.lastIndexOf('/') + 1) || 'receipt.pdf';
+                a.download = 'receipt-' + filename;
+                
+                // Trigger download
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(downloadUrl);
+                    loadingToast.close();
+                    
+                    // Success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Download Complete!',
+                        text: 'The PDF receipt has been downloaded to your device.',
+                        timer: 3000
+                    });
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error downloading PDF:', error);
+                loadingToast.close();
+                
+                // Error message
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Download Failed',
+                    text: 'There was a problem downloading the receipt. Please try again.',
+                    confirmButtonText: 'Try Again',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Try opening in new tab as fallback
+                        window.open(url, '_blank');
+                    }
+                });
+            });
+    }
+    
     // Single student delete confirmation
     function confirmDelete(studentId) {
         event.preventDefault();

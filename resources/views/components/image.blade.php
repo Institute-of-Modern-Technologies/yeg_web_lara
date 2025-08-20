@@ -1,0 +1,1 @@
+<img src="{{ $src }}" alt="{{ $alt }}" class="{{ $class }}" {{ $attributes }} onerror="this.onerror=null; if(!this.classList.contains('tried-fallback')) { this.classList.add('tried-fallback'); this.src='{{ asset('images/placeholder-school.svg') }}'; }" />

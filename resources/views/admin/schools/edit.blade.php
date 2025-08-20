@@ -114,7 +114,7 @@
                             <div class="max-w-xl border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
                                 <div class="flex justify-center mb-4">
                                     <!-- Image Preview -->
-                                    <img id="image-preview" class="w-32 h-32 object-cover border rounded-md {{ $school->logo ? '' : 'hidden' }}" src="{{ $school->logo ? asset('storage/' . $school->logo) : '' }}" alt="{{ $school->name }} Logo">
+                                    <x-image id="image-preview" class="w-32 h-32 object-cover border rounded-md {{ $school->logo ? '' : 'hidden' }}" src="{{ $school->logo ? 'storage/' . $school->logo : '' }}" alt="{{ $school->name }} Logo" />
                                     
                                     <!-- Default Icon (Shown when no image) -->
                                     <div id="default-preview" class="w-32 h-32 flex items-center justify-center bg-white border border-gray-300 rounded-md {{ $school->logo ? 'hidden' : '' }}">

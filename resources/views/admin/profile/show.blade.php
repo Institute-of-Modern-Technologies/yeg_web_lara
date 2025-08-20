@@ -25,11 +25,12 @@
                         <div class="relative group">
                             <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-4 border-white shadow-lg">
                                 @if($user->profile_photo)
-                                    <img id="profile-preview" 
-                                         src="{{ asset('uploads/profile-photos/' . rawurlencode($user->profile_photo)) }}?v={{ time() }}" 
+                                    <x-image id="profile-preview" 
+                                         src="uploads/profile-photos/{{ rawurlencode($user->profile_photo) }}" 
                                          alt="{{ $user->name }}" 
                                          class="w-full h-full object-cover"
-                                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-bold\'>{{ substr($user->name, 0, 1) }}</div>'">
+                                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-bold\'>{{ substr($user->name, 0, 1) }}</div>'"
+                                         :attributes="['data-timestamp' => time()]" />
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-bold">
                                         {{ substr($user->name, 0, 1) }}
