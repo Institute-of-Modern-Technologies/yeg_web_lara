@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ImagePathService
 {
@@ -16,6 +17,9 @@ class ImagePathService
      */
     public function resolveImagePath($path)
     {
+        // Keep track of the original path for debugging
+        $originalPath = $path;
+        
         // Skip processing for external URLs
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
@@ -29,52 +33,94 @@ class ImagePathService
         // Remove leading slashes if present
         $path = ltrim($path, '/');
         
-        // DIRECT STORAGE ACCESS APPROACH:
-        // If path starts with storage/, we'll serve it directly from the storage directory
+        // Check if the path starts with images/ and the file exists
+        if (str_starts_with($path, 'images/')) {
+            $fullPath = public_path($path);
+            if (file_exists($fullPath)) {
+                $resolvedPath = asset($path);
+                Log::debug("Image resolved (direct public path): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            }
+        }
+        
+        // If path starts with storage/, check both locations
         if (str_starts_with($path, 'storage/')) {
+            // First check if it exists directly in public/storage (symlinked)
+            if (file_exists(public_path($path))) {
+                $resolvedPath = asset($path);
+                Log::debug("Image resolved (public storage symlink): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            }
+            
+            // Then check if it exists in storage/app/public
             $storagePath = str_replace('storage/', '', $path);
-            
-            // Check if file exists in storage directory
             if (Storage::disk('public')->exists($storagePath)) {
-                // On production, serve directly from /storage URL
-                return url($path);
+                $resolvedPath = url($path); // Direct URL without asset() function
+                Log::debug("Image resolved (storage disk): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
             }
         }
         
-        // Check if the file exists in the public folder
-        if (file_exists(public_path($path))) {
-            return asset($path);
-        }
-        
-        // Handle profile photos (direct public path)
-        if (strpos($path, 'profile-photos/') !== false || strpos($path, 'profile_photos/') !== false) {
-            if (File::exists(public_path('uploads/' . $path))) {
-                return asset('uploads/' . $path);
-            } else if (File::exists(public_path($path))) {
-                return asset($path);
-            } else {
-                // Check storage as fallback
-                if (Storage::disk('public')->exists($path)) {
-                    return asset('storage/' . $path);
-                }
-                return asset($path); // Return as is as last resort
-            }
-        }
-        
-        // Handle relative paths that don't specify images/ or uploads/
-        if (!strpos($path, '/')) {
-            // Check in public/images
-            if (File::exists(public_path('images/' . $path))) {
-                return asset('images/' . $path);
+        // If the path doesn't have images/ or storage/ prefix, check various locations
+        if (!str_starts_with($path, 'images/') && !str_starts_with($path, 'storage/')) {
+            // 1. Check if file exists directly in public folder
+            if (file_exists(public_path($path))) {
+                $resolvedPath = asset($path);
+                Log::debug("Image resolved (direct public file): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
             }
             
-            // Check in storage/app/public
+            // 2. Try with images/ prefix
+            $imagesPath = 'images/' . $path;
+            if (file_exists(public_path($imagesPath))) {
+                $resolvedPath = asset($imagesPath);
+                Log::debug("Image resolved (public/images): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            }
+            
+            // 3. Try with storage/ prefix (for older paths)
+            $storagePath = 'storage/' . $path;
+            if (file_exists(public_path($storagePath))) {
+                $resolvedPath = asset($storagePath);
+                Log::debug("Image resolved (public/storage): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            }
+            
+            // 4. Check in storage disk directly
             if (Storage::disk('public')->exists($path)) {
-                return asset('storage/' . $path);
+                $resolvedPath = asset('storage/' . $path);
+                Log::debug("Image resolved (storage disk without prefix): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
             }
         }
         
-        // For any other path format, just return as asset
-        return asset($path);
+        // Handle profile photos (direct public path) - special case
+        if (strpos($path, 'profile-photos/') !== false || strpos($path, 'profile_photos/') !== false) {
+            // Check in uploads directory
+            if (File::exists(public_path('uploads/' . $path))) {
+                $resolvedPath = asset('uploads/' . $path);
+                Log::debug("Profile photo resolved (uploads): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            } 
+            
+            // Check in public directly
+            if (File::exists(public_path($path))) {
+                $resolvedPath = asset($path);
+                Log::debug("Profile photo resolved (public): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            } 
+            
+            // Check in storage
+            if (Storage::disk('public')->exists($path)) {
+                $resolvedPath = asset('storage/' . $path);
+                Log::debug("Profile photo resolved (storage): {$originalPath} → {$resolvedPath}");
+                return $resolvedPath;
+            }
+        }
+        
+        // Last resort: Just return the asset path and log the failure
+        $resolvedPath = asset($path);
+        Log::warning("Image path resolution failed, returning as-is: {$originalPath} → {$resolvedPath}");
+        return $resolvedPath;
     }
 }
