@@ -91,7 +91,7 @@ function confirmDelete(id, title) {
                             
                             <!-- Image Preview -->
                             <div class="flex-shrink-0 md:mr-4 mb-3 md:mb-0 w-full md:w-40 h-24 overflow-hidden rounded">
-                                <img src="{{ asset('storage/' . $section->image_path) }}" alt="{{ $section->title }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('/' . $section->image_path) }}" alt="{{ $section->title }}" class="w-full h-full object-cover">
                             </div>
                             
                             <!-- Content -->

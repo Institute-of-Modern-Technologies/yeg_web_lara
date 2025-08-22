@@ -100,7 +100,7 @@
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
                         <div class="w-32 h-32 rounded-full overflow-hidden border border-gray-300">
-                            <img src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
+                            <img src="{{ asset($testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
                         </div>
                     </div>
                     

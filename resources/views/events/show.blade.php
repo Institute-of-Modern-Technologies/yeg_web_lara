@@ -190,7 +190,7 @@
         <!-- Hero Image Background -->
         <div class="absolute inset-0">
             @if($event->media_type == 'image')
-                <x-image src="storage/{{ $event->featured_image }}" class="w-full h-64 object-cover rounded-lg shadow-md" alt="{{ $event->title }}" />
+                <x-image src="/{{ $event->featured_image }}" class="w-full h-64 object-cover rounded-lg shadow-md" alt="{{ $event->title }}" />
             @else
                 <div class="relative w-full h-full bg-gray-900">
                     <video class="absolute inset-0 w-full h-full object-cover" autoplay loop muted>

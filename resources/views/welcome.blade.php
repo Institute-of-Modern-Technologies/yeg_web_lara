@@ -89,7 +89,7 @@
         <div class="carousel-item active" id="default-slide">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full parallax-bg" id="hero-parallax-bg">
-                <x-image class="max-w-full w-full h-full object-cover parallax-img fade-in-bg" src="images/Hero picture 3.png" alt="Hero Image" />
+                <x-image class="max-w-full w-full h-full object-cover parallax-img fade-in-bg" src="{{ asset('/images/Hero picture 3.png') }}" alt="Hero Image" />
                 <!-- Subtle overlay for text readability -->
                 <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
             </div>
@@ -150,7 +150,7 @@
         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" id="slide-{{ $heroSection->id }}">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
-                <img class="max-w-full w-full h-full object-cover" src="{{ asset('storage/' . $heroSection->image_path) }}" alt="{{ $heroSection->title }}">
+                <img class="max-w-full w-full h-full object-cover" src="{{ asset('/'. $heroSection->image_path) }}" alt="{{ $heroSection->title }}">
                 <!-- Custom overlay with configured color and opacity -->
                 <div class="absolute inset-0" style="{{ app(\App\Services\HeroSectionService::class)->generateOverlayStyles($heroSection) }}"></div>
             </div>
@@ -632,7 +632,7 @@
                 <!-- Right Column - Illustration -->
                 <div class="flex justify-center items-center relative">
                     <div class="relative">
-                        <img class="max-w-full" src="{{ asset('images/clipart.png') }}" alt="FAQ Illustration" class="max-w-full h-auto rounded-lg">
+                        <img class="max-w-full h-auto rounded-lg" src="{{ asset('/images/clipart.png') }}" alt="FAQ Illustration">
                         <!-- Question Marks -->
                         <div class="absolute -top-4 right-12 text-3xl text-orange-400">?</div>
                         <div class="absolute top-12 -left-4 text-3xl text-orange-400">?</div>
@@ -885,35 +885,34 @@
                         @foreach($partnerSchools as $index => $school)
                         <div class="school-slide flex-shrink-0 w-full {{ $index > 0 ? 'hidden' : '' }}" data-index="{{ $index }}">
                             <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
-                                <div class="aspect-w-16 aspect-h-9 relative flex items-center justify-center p-8 bg-white">
+                                <div class="relative bg-white overflow-hidden" style="height: 400px;">
                                     <!-- School logo with robust fallback -->
-                                    <div class="school-logo-container flex items-center justify-center h-full w-full">
-                                        @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
-                                            <img src="{{ asset('storage/' . $school->image_path) }}" 
+                                    @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
+                                            <img src="{{ asset('/storage/' . $school->image_path) }}" 
                                                  alt="{{ $school->name }}" 
-                                                 class="w-auto h-auto max-h-96 mx-auto object-contain" 
-                                                 style="min-height: 250px; min-width: 350px;" 
+                                                 class="w-full h-full object-cover absolute inset-0" 
                                                  onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
                                             <div class="hidden text-center">
-                                                <img src="{{ asset('images/favicon.png') }}" 
+                                                <img src="{{ asset('/images/favicon.png') }}" 
                                                      alt="{{ $school->name }}" 
                                                      class="w-24 h-24 mx-auto mb-3">
                                                 <p class="text-gray-700 font-semibold text-lg">{{ $school->name }}</p>
                                             </div>
                                         @else
-                                            <div class="text-center">
-                                                <img src="{{ asset('images/favicon.png') }}" 
-                                                     alt="{{ $school->name }}" 
-                                                     class="w-24 h-24 mx-auto mb-3">
-                                                <p class="text-gray-700 font-semibold text-lg">{{ $school->name }}</p>
+                                            <div class="absolute inset-0 flex items-center justify-center bg-white">
+                                                <div class="text-center">
+                                                    <img src="{{ asset('/images/favicon.png') }}" 
+                                                         alt="{{ $school->name }}" 
+                                                         class="w-24 h-24 mx-auto mb-3">
+                                                    <p class="text-gray-700 font-semibold text-lg">{{ $school->name }}</p>
+                                                </div>
                                             </div>
                                         @endif
-                                    </div>
                                     
                                     <!-- School Name Badge -->
-                                    <div class="absolute bottom-6 left-6">
-                                        <div class="bg-red-700 text-white py-2 px-4 inline-block font-bold uppercase">
-                                            {{ $school->name }}
+                                    <div class="absolute bottom-12 left-8 z-10">
+                                        <div class="backdrop-blur-md bg-white/10 px-8 py-3 rounded-lg inline-flex items-center justify-center transition-all shadow-2xl" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.85), rgba(185, 28, 28, 0.95)); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
+                                            <span class="text-white font-bold tracking-wider text-shadow">{{ $school->name }}</span>
                                         </div>
                                     </div>
                                     
@@ -1124,11 +1123,11 @@
                     <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                         <div class="relative">
                             @if($event->media_type == 'image')
-                                <img class="max-w-full" src="{{ asset('storage/' . $event->media_path) }}" alt="{{ $event->title }}" class="w-full h-48 object-cover">
+                                <img class="max-w-full w-full h-48 object-cover" src="{{ asset('/' . $event->media_path) }}" alt="{{ $event->title }}">
                             @else
                                 <div class="relative w-full h-48 bg-gray-900">
-                                    <video class="absolute inset-0 w-full h-full object-cover" poster="{{ asset('images/video-poster.jpg') }}" controls>
-                                        <source src="{{ asset('storage/' . $event->media_path) }}" type="video/mp4">
+                                    <video class="absolute inset-0 w-full h-full object-cover" poster="{{ asset('/images/video-poster.jpg') }}" controls>
+                                        <source src="{{ asset('/' . $event->media_path) }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -1225,7 +1224,7 @@
                 <!-- Coding -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/coding.png" alt="Coding" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/coding.png') }}" alt="Coding" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Coding</h3>
                     <p class="text-gray-600 text-sm">
@@ -1236,7 +1235,7 @@
                 <!-- Digital Marketing -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
                     <div class="bg-orange-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/digital-marketing.png" alt="Digital Marketing" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/digital-marketing.png') }}" alt="Digital Marketing" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Digital Marketing</h3>
                     <p class="text-gray-600 text-sm">
@@ -1247,7 +1246,7 @@
                 <!-- Graphics Design -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/graphic-designing.png" alt="Graphics Design" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/graphic-designing.png') }}" alt="Graphics Design" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Graphics Design</h3>
                     <p class="text-gray-600 text-sm">
@@ -1258,7 +1257,7 @@
                 <!-- Entrepreneurship -->
                 <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/Enterpreneurship.png" alt="Entrepreneurship" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/Enterpreneurship.png') }}" alt="Entrepreneurship" />
                     </div>
                     <h3 class="text-[#950713] font-bold mb-2">Entrepreneurship</h3>
                     <p class="text-gray-600 text-sm">
@@ -1269,7 +1268,7 @@
                 <!-- Artificial Intelligence -->
                 <div class="text-center">
                     <div class="bg-yellow-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/Artificial Intelligence.png" alt="Artificial Intelligence" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/Artificial Intelligence.png') }}" alt="Artificial Intelligence" />
                     </div>
                     <h3 class="text-primary font-bold mb-2">Artificial Intelligence</h3>
                     <p class="text-gray-600 text-sm">
@@ -1280,7 +1279,7 @@
                 <!-- Creativity Workshops -->
                 <div class="text-center">
                     <div class="bg-blue-100 w-24 h-24 mx-auto rounded-lg p-4 mb-4 flex items-center justify-center">
-                        <x-image class="max-w-full w-16 h-16 object-contain" src="images/creativity-workshop.png" alt="Creativity Workshops" />
+                        <x-image class="max-w-full w-16 h-16 object-contain" src="{{ asset('/images/creativity-workshop.png') }}" alt="Creativity Workshops" />
                     </div>
                     <h3 class="text-primary font-bold mb-2">Creativity Workshops</h3>
                     <p class="text-gray-600 text-sm">
@@ -1392,7 +1391,7 @@
                                     <!-- Person Info -->
                                     <div class="flex items-center mb-4">
                                         <div class="w-14 h-14 rounded-full overflow-hidden mr-4">
-                                            <img class="max-w-full" src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
+                                            <img class="max-w-full w-full h-full object-cover" src="{{ asset($testimonial->image_path) }}" alt="{{ $testimonial->name }}">
                                         </div>
                                         <div>
                                             <h3 class="text-lg font-bold text-primary">{{ $testimonial->name }}</h3>
@@ -1522,7 +1521,7 @@
                             role: "{{ $testimonial->role }}",
                             institution: "{{ $testimonial->institution }}",
                             content: "{{ $testimonial->content }}",
-                            image: "{{ asset('storage/' . $testimonial->image_path) }}",
+                            image: "{{ asset($testimonial->image_path) }}",
                             rating: {{ $testimonial->rating }}
                         },
                     @endforeach

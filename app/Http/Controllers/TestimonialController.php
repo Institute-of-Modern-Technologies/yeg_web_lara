@@ -71,8 +71,16 @@ class TestimonialController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/testimonials'), $imageName);
-            $imagePath = 'testimonials/' . $imageName;
+            
+            // Ensure directory exists
+            $targetDir = public_path('images/testimonials');
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+            
+            // Move file to public/images/testimonials
+            $image->move($targetDir, $imageName);
+            $imagePath = 'images/testimonials/' . $imageName;
         }
         
         // Create new testimonial
@@ -138,19 +146,25 @@ class TestimonialController extends Controller
         
         // Handle image upload if new image is provided
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
+            // Remove old image if exists
             if ($testimonial->image_path) {
-                $oldImagePath = public_path('storage/' . $testimonial->image_path);
+                $oldImagePath = public_path($testimonial->image_path);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
             }
             
+            // Ensure directory exists
+            $targetDir = public_path('images/testimonials');
+            if (!file_exists($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+            
             // Store new image
             $image = $request->file('image');
             $imageName = time() . '_' . uniqid() . '_' . str_replace(' ', '_', $image->getClientOriginalName());
-            $image->move(public_path('storage/testimonials'), $imageName);
-            $testimonial->image_path = 'testimonials/' . $imageName;
+            $image->move($targetDir, $imageName);
+            $testimonial->image_path = 'images/testimonials/' . $imageName;
         }
         
         // Update testimonial data
@@ -182,7 +196,7 @@ class TestimonialController extends Controller
         
         // Delete the image file if it exists
         if ($testimonial->image_path) {
-            $imagePath = public_path('storage/' . $testimonial->image_path);
+            $imagePath = public_path($testimonial->image_path);
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }

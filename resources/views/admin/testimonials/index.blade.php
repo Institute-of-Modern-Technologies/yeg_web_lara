@@ -53,7 +53,7 @@
                             <!-- Image -->
                             <div class="flex-shrink-0 mr-4">
                                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden">
-                                    <img src="{{ asset('storage/' . $testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset($testimonial->image_path) }}" alt="{{ $testimonial->name }}" class="w-full h-full object-cover">
                                 </div>
                             </div>
                         </div>
