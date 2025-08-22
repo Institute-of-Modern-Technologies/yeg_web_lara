@@ -151,15 +151,15 @@
                     <div class="carousel-container h-full min-h-[600px] relative">
                         <!-- Carousel items -->
                         <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Educational Technology" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/login/1.png') }}" alt="Educational Technology" class="w-full h-full object-cover">
                         </div>
 
                         <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="Coding Education" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/login/2.png') }}" alt="Coding Education" class="w-full h-full object-cover">
                         </div>
                         
                         <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80" alt="IT Skills Development" class="w-full h-full object-cover">
+                            <img src="{{ asset('images/login/3.png') }}" alt="IT Skills Development" class="w-full h-full object-cover">
                         </div>
                         
                         <!-- Carousel controls -->
