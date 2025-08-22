@@ -36,31 +36,42 @@
         <div class="hidden md:block md:w-1/2 bg-primary relative overflow-hidden">
             <div class="carousel h-full">
                 <div class="carousel-item active h-full">
-                    <div class="h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')">
+                    <div class="h-full bg-cover bg-center" style="background-image: url('{{ asset('images/login/1.png') }}')">
                         <div class="h-full w-full flex items-center justify-center bg-black bg-opacity-40">
                             <div class="text-center px-8">
-                                <h2 class="text-3xl font-bold text-white mb-4">Welcome to Young Experts Group</h2>
-                                <p class="text-lg text-white">Empowering students through education and innovation</p>
+                                <h2 class="text-3xl font-bold text-white mb-4"></h2>
+                                <p class="text-lg text-white"></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item h-full">
-                    <div class="h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')">
+                    <div class="h-full bg-cover bg-center" style="background-image: url('{{ asset('images/login/2.png') }}')">
                         <div class="h-full w-full flex items-center justify-center bg-black bg-opacity-50">
                             <div class="text-center px-8">
-                                <h2 class="text-3xl font-bold text-white mb-4">Explore Opportunities</h2>
-                                <p class="text-lg text-white">Discover new skills and advance your knowledge</p>
+                                <h2 class="text-3xl font-bold text-white mb-4"></h2>
+                                <p class="text-lg text-white"></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item h-full">
-                    <div class="h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1232&q=80')">
+                    <div class="h-full bg-cover bg-center" style="background-image: url('{{ asset('images/login/3.png') }}')">
                         <div class="h-full w-full flex items-center justify-center bg-black bg-opacity-50">
                             <div class="text-center px-8">
-                                <h2 class="text-3xl font-bold text-white mb-4">Join Our Community</h2>
-                                <p class="text-lg text-white">Connect with peers and expert mentors</p>
+                                <h2 class="text-3xl font-bold text-white mb-4"></h2>
+                                <p class="text-lg text-white"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item h-full">
+                    <div class="h-full bg-cover bg-center" style="background-image: url('{{ asset('images/login/4.png') }}')">
+                        <div class="h-full w-full flex items-center justify-center bg-black bg-opacity-50">
+                            <div class="text-center px-8">
+                                <h2 class="text-3xl font-bold text-white mb-4"></h2>
+                                <p class="text-lg text-white"></p>
                             </div>
                         </div>
                     </div>
