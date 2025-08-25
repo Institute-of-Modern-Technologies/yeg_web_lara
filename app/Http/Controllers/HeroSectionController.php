@@ -175,7 +175,7 @@ class HeroSectionController extends Controller
         if ($request->hasFile('image')) {
             // Delete old image if it exists
             if ($heroSection->image_path) {
-                $oldImagePath = public_path('storage/' . $heroSection->image_path);
+                $oldImagePath = public_path($heroSection->image_path);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
@@ -235,17 +235,11 @@ class HeroSectionController extends Controller
         
         // Delete image file if it exists
         if ($heroSection->image_path) {
-            // Check for both formats: new format in public/images and old in public/storage
-            $newImagePath = public_path($heroSection->image_path);
-            $oldImagePath = public_path('storage/' . str_replace('images/', '', $heroSection->image_path));
+            // Simple direct path - matching our new storage approach
+            $imagePath = public_path($heroSection->image_path);
             
-            // Try to delete from new location first
-            if (file_exists($newImagePath)) {
-                unlink($newImagePath);
-            }
-            // Also check old location for backward compatibility
-            else if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
             }
         }
         
