@@ -150,7 +150,7 @@
         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" id="slide-{{ $heroSection->id }}">
             <!-- Background Image -->
             <div class="absolute inset-0 w-full h-full">
-                <img class="max-w-full w-full h-full object-cover" src="{{ asset('/'. $heroSection->image_path) }}" alt="{{ $heroSection->title }}">
+                <img class="max-w-full w-full h-full object-cover" src="{{ asset($heroSection->image_path) }}" alt="{{ $heroSection->title }}">
                 <!-- Custom overlay with configured color and opacity -->
                 <div class="absolute inset-0" style="{{ app(\App\Services\HeroSectionService::class)->generateOverlayStyles($heroSection) }}"></div>
             </div>
