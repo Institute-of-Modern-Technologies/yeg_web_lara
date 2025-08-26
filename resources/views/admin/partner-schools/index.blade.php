@@ -61,7 +61,7 @@
                         
                         <!-- School Image -->
                         <div class="mb-4 flex-shrink-0">
-                            <img src="{{ asset('storage/' . $school->image_path) }}" alt="{{ $school->name }}" class="w-full h-40 object-cover rounded-md">
+                            <img src="{{ asset('/' . $school->image_path) }}" alt="{{ $school->name }}" class="w-full h-40 object-cover rounded-md">
                         </div>
                         
                         <!-- School Info -->

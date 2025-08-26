@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PartnerSchool;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\ImageUploadHelper;
 
 class PartnerSchoolController extends Controller
 {
@@ -67,22 +68,10 @@ class PartnerSchoolController extends Controller
                 ->withInput();
         }
         
-        // Handle image upload
+        // Handle image upload using ImageUploadHelper
         $imagePath = null;
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $image = $request->file('image');
-            // Generate a clean, unique filename
-            $imageName = time() . '_' . uniqid() . '_' . preg_replace('/[^A-Za-z0-9\-\.]/', '', str_replace(' ', '-', $image->getClientOriginalName()));
-            
-            // Ensure the directory exists
-            $directory = public_path('storage/partner-schools');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            
-            // Move the uploaded file
-            $image->move($directory, $imageName);
-            $imagePath = 'partner-schools/' . $imageName;
+            $imagePath = ImageUploadHelper::uploadImageToPublic($request->file('image'), 'partner-schools');
         }
         
         // Create new partner school
@@ -145,30 +134,15 @@ class PartnerSchoolController extends Controller
                 ->withInput();
         }
         
-        // Handle image upload if a new image is provided
+        // Handle image upload if a new image is provided using ImageUploadHelper
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             // Delete old image if it exists
             if ($partnerSchool->image_path) {
-                $oldImagePath = public_path('storage/' . $partnerSchool->image_path);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+                ImageUploadHelper::deleteImageFromPublic($partnerSchool->image_path);
             }
             
-            // Store new image with improved handling
-            $image = $request->file('image');
-            // Generate a clean, unique filename
-            $imageName = time() . '_' . uniqid() . '_' . preg_replace('/[^A-Za-z0-9\-\.]/', '', str_replace(' ', '-', $image->getClientOriginalName()));
-            
-            // Ensure the directory exists
-            $directory = public_path('storage/partner-schools');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0755, true);
-            }
-            
-            // Move the uploaded file
-            $image->move($directory, $imageName);
-            $partnerSchool->image_path = 'partner-schools/' . $imageName;
+            // Upload new image using the helper
+            $partnerSchool->image_path = ImageUploadHelper::uploadImageToPublic($request->file('image'), 'partner-schools');
         }
         
         // Update partner school data
@@ -196,12 +170,9 @@ class PartnerSchoolController extends Controller
         
         $partnerSchool = PartnerSchool::findOrFail($id);
         
-        // Delete the image file if it exists
+        // Delete the image file if it exists using ImageUploadHelper
         if ($partnerSchool->image_path) {
-            $imagePath = public_path('storage/' . $partnerSchool->image_path);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            ImageUploadHelper::deleteImageFromPublic($partnerSchool->image_path);
         }
         
         $partnerSchool->delete();

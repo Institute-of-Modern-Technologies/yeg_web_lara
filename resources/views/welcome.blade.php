@@ -887,8 +887,8 @@
                             <div class="bg-gradient-to-r from-primary to-red-900 rounded-lg overflow-hidden relative">
                                 <div class="relative bg-white overflow-hidden" style="height: 400px;">
                                     <!-- School logo with robust fallback -->
-                                    @if($school->image_path && file_exists(public_path('storage/' . $school->image_path)))
-                                            <img src="{{ asset('/storage/' . $school->image_path) }}" 
+                                    @if($school->image_path && file_exists(public_path('/' . $school->image_path)))
+                                            <img src="{{ asset('/' . $school->image_path) }}" 
                                                  alt="{{ $school->name }}" 
                                                  class="w-full h-full object-cover absolute inset-0" 
                                                  onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
