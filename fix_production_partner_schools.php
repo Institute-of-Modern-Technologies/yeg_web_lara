@@ -9,17 +9,14 @@
  * 4. Updates database records with correct paths
  * 
  * Run on production server after deploying code changes.
+ * Compatible with PHP 5.x and PHP 7+
  */
 
 // Bootstrap the Laravel application
 require __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make('Illuminate\Contracts\Console\Kernel');
 $kernel->bootstrap();
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 echo "======================================================\n";
 echo "PRODUCTION PARTNER SCHOOLS IMAGE FIX\n";
@@ -143,49 +140,38 @@ echo "Set permissions on: images/partner-schools\n";
 
 // Check blade templates for incorrect paths
 echo "\nChecking blade templates for partner-schools path references...\n";
-$bladeFiles = glob(base_path('resources/views/**/*.blade.php'), GLOB_BRACE);
-$assetStoragePatterns = [
-    'asset(\'storage/partner-schools/',
-    'asset("/storage/partner-schools/',
-    'asset(\'/storage/partner-schools/',
-    'asset(\'partner-schools/',
-    'asset("/partner-schools/',
-    'asset(\'/partner-schools/'
-];
-
+$bladeFiles = glob(base_path('resources/views/*/*.blade.php'));
 $fileFixCount = 0;
 
 foreach ($bladeFiles as $file) {
     $content = file_get_contents($file);
     $originalContent = $content;
-    $modified = false;
     
-    foreach ($assetStoragePatterns as $pattern) {
-        // Replace with the correct path format
-        $content = str_replace($pattern, 'asset(\'/images/partner-schools/', $content);
-        
-        // For file_exists checks
-        if (strpos($content, 'file_exists(public_path(\'storage/partner-schools/')) !== false) {
-            $content = str_replace(
-                'file_exists(public_path(\'storage/partner-schools/',
-                'file_exists(public_path(\'/images/partner-schools/',
-                $content
-            );
-            $modified = true;
-        }
-        
-        if (strpos($content, 'file_exists(public_path(\'partner-schools/')) !== false) {
-            $content = str_replace(
-                'file_exists(public_path(\'partner-schools/',
-                'file_exists(public_path(\'/images/partner-schools/',
-                $content
-            );
-            $modified = true;
-        }
-    }
+    // Replace all possible patterns with the correct format
+    // Pattern 1: asset('storage/partner-schools/
+    $content = str_replace("asset('storage/partner-schools/", "asset('images/partner-schools/", $content);
+    
+    // Pattern 2: asset("/storage/partner-schools/
+    $content = str_replace('asset("/storage/partner-schools/', 'asset("/images/partner-schools/', $content);
+    
+    // Pattern 3: asset('/storage/partner-schools/
+    $content = str_replace("asset('/storage/partner-schools/", "asset('/images/partner-schools/", $content);
+    
+    // Pattern 4: asset('partner-schools/
+    $content = str_replace("asset('partner-schools/", "asset('images/partner-schools/", $content);
+    
+    // Pattern 5: asset("/partner-schools/
+    $content = str_replace('asset("/partner-schools/', 'asset("/images/partner-schools/', $content);
+    
+    // Pattern 6: asset('/partner-schools/
+    $content = str_replace("asset('/partner-schools/", "asset('/images/partner-schools/", $content);
+    
+    // For file_exists checks - simple string replacements
+    $content = str_replace("file_exists(public_path('storage/partner-schools/", "file_exists(public_path('images/partner-schools/", $content);
+    $content = str_replace("file_exists(public_path('partner-schools/", "file_exists(public_path('images/partner-schools/", $content);
     
     // Save the file if modified
-    if ($content !== $originalContent) {
+    if ($content != $originalContent) {
         file_put_contents($file, $content);
         echo "  Fixed path references in: " . basename($file) . "\n";
         $fileFixCount++;
