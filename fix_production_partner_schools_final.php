@@ -43,7 +43,7 @@ if (!file_exists($destinationDir)) {
 
 // Get all partner schools from the database
 echo "\nFinding partner schools with image paths to fix...\n";
-$partnerSchools = DB::table('partner_schools')->get();
+$partnerSchools = DB::table('partnered_schools')->get();
 echo "Found " . $partnerSchools->count() . " partner schools to check\n\n";
 
 // Check each partner school image
@@ -55,12 +55,12 @@ foreach ($partnerSchools as $school) {
     echo "Partner School #{$school->id}: {$school->name}\n";
     
     // Skip if no image path
-    if (empty($school->logo)) {
+    if (empty($school->image_path)) {
         echo "  No logo path found, skipping\n";
         continue;
     }
     
-    $oldPath = $school->logo;
+    $oldPath = $school->image_path;
     echo "  Current logo path: {$oldPath}\n";
     
     // Check if the path is already correct (starts with images/partner-schools)
@@ -106,9 +106,9 @@ foreach ($partnerSchools as $school) {
         echo "  ✓ File copied successfully\n";
         
         // Update the database record
-        DB::table('partner_schools')
+        DB::table('partnered_schools')
             ->where('id', $school->id)
-            ->update(['logo' => $newPath]);
+            ->update(['image_path' => $newPath]);
         
         echo "  ✓ Database record updated\n";
         $updatedCount++;
