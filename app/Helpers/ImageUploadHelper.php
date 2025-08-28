@@ -66,15 +66,37 @@ class ImageUploadHelper
         $fullPath = public_path($path);
         
         if (file_exists($fullPath)) {
-            unlink($fullPath);
-            return true;
+            try {
+                // Check if file is writable before attempting to delete
+                if (!is_writable($fullPath)) {
+                    Log::warning("Cannot delete file due to permissions: {$fullPath}");
+                    return true; // Continue without error - file will remain
+                }
+                
+                unlink($fullPath);
+                return true;
+            } catch (\Exception $e) {
+                Log::error("Failed to delete file: {$fullPath}. Error: " . $e->getMessage());
+                return true; // Continue without stopping execution
+            }
         }
         
         // Also check the old storage path (for backward compatibility)
         $oldStoragePath = public_path('storage/' . str_replace('images/', '', $path));
         if (file_exists($oldStoragePath)) {
-            unlink($oldStoragePath);
-            return true;
+            try {
+                // Check if file is writable before attempting to delete
+                if (!is_writable($oldStoragePath)) {
+                    Log::warning("Cannot delete file due to permissions: {$oldStoragePath}");
+                    return true; // Continue without error - file will remain
+                }
+                
+                unlink($oldStoragePath);
+                return true;
+            } catch (\Exception $e) {
+                Log::error("Failed to delete file: {$oldStoragePath}. Error: " . $e->getMessage());
+                return true; // Continue without stopping execution
+            }
         }
         
         return true; // File not found is not an error
